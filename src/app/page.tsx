@@ -14,10 +14,10 @@ export default function Home() {
           <h1 className="font-bold text-3xl lg:text-5xl mb-8">Comm-you-nity</h1>
           <p className="font-medium text-lg">Connect with your local community in a whole new way. Commyounity unites residents, schools, churches, and businesses to share news, events, and offers. Prioritizing your privacy, we don&apos;t sell your data or use intrusive algorithms. Join us today to build genuine connections and strengthen community bonds.</p>
           <div className="flex gap-4">
-            <Link href="#" className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-sky-600 hover:border-sky-600 hover:text-white transition-all duration-500 ease-out">
+            <Link href="/login" className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Sign up</span>
             </Link>
-            <Link href="#" className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-sky-600 hover:border-sky-600 hover:text-white transition-all duration-500 ease-out">
+            <Link href="/communities" className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Communities</span>
             </Link>
 

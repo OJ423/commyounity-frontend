@@ -4,8 +4,8 @@ import NavBar from './NavBar'
 
 export default function Header() {
   return(
-    <header className="w-[100%] box-sizing p-4 bg-white drop-shadow-lg">
-      <section className='flex justify-between max-w-screen-xl mx-auto items-center'>
+    <header className="w-[100%] box-sizing p-4 bg-white shadow-lg">
+      <section className='flex flex-row justify-between max-w-screen-xl mx-auto items-center'>
         <Link href='/'>
           <Image 
             src="/Commyounity.svg"

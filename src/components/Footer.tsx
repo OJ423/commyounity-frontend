@@ -3,6 +3,8 @@
 import { IoHomeOutline, IoStorefrontOutline, IoSchoolOutline, IoWalkOutline } from "react-icons/io5";
 import { MdOutlineChurch } from "react-icons/md";
 import { useAuth } from "./context/AuthContext";
+import Link from "next/link";
+import Image from "next/image";
 
 
 export default function Footer() {
@@ -16,10 +18,12 @@ export default function Footer() {
           <p className="font-light">Connecting all that is good in the community without using your data.</p>
         </div>
         <div className="grid grid-cols-3 gap-4 flex-wrap">
-          <div className="flex flex-col gap-4 items-center hover:opacity-50 cursor-pointer transition duration-500">
-            <IoHomeOutline size={25} />
-            <p className="text-xs font-light">Communities</p>
-          </div>
+          <Link href='/communities'>
+            <div className="flex flex-col gap-4 items-center hover:opacity-50 cursor-pointer transition duration-500">
+              <IoHomeOutline size={25} />
+              <p className="text-xs font-light">Communities</p>
+            </div>
+          </Link>
           <div className="flex flex-col gap-4 items-center hover:opacity-50 cursor-pointer transition duration-500">
            <IoStorefrontOutline size={25} />
            <p className="text-xs font-light">Businesses</p>
@@ -42,7 +46,7 @@ export default function Footer() {
             <>
             <h2 className="font-bold text-xl">Hey {user.username}</h2>
             {selectedCommunity ? 
-              <p>You&apos;re in {selectedCommunity.communityName} </p>
+              <p>You&apos;re in {selectedCommunity.community_name} </p>
               : null
             }
             </> 
@@ -64,7 +68,18 @@ export default function Footer() {
             </p> 
 
           </div>
-          : null
+          : 
+          <Link href='/'>
+            <Image 
+              src="/Commyounity.svg"
+              alt="Commyounity Logo"
+              className='w-40 md:w-60'
+              width={250}
+              height={12}
+              priority
+              style={{height:'auto'}}
+            />
+          </Link>
         }
       </section>
       <section className="mt-20 py-8 bg-gray-300 flex items-center justify-center w-[100%] box-sizing">
