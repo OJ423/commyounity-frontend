@@ -73,3 +73,16 @@ export type RegistrationInputs = {
   email: string,
   password: string,
 }
+
+export type JoinCommunityInputs = {
+  user_id: string,
+  community_id: string
+}
+
+export type JoinedCommunityResponse = {
+  msg: string,
+  community: {
+    community_id: number,
+    community_name: string
+  }
+}

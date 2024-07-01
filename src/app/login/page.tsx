@@ -9,16 +9,18 @@ import { useState } from "react";
 
 
 export default function Lists() {
-  const { user, setUser, setToken, setCommunities } = useAuth();
+  const { user, setUser, setToken, setCommunities, setSelectedCommunity } = useAuth();
   const [ newUser, setNewUser ] = useState<boolean>(false)
   
   const handleLogout = ():void => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('communities')
+    localStorage.removeItem('selectedCommunity')
     setToken(null);
     setUser(null)
     setCommunities([])
+    setSelectedCommunity(null)
   }
 
   function handleSignUpState() {

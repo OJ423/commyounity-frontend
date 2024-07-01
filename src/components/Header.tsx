@@ -1,11 +1,16 @@
+"use client"
+
 import Image from 'next/image'
 import Link from 'next/link'
 import NavBar from './NavBar'
+import { useAuth } from './context/AuthContext'
 
 export default function Header() {
+  const { selectedCommunity } = useAuth()
+
   return(
     <header className="w-[100%] box-sizing p-4 bg-white shadow-lg">
-      <section className='flex flex-row justify-between max-w-screen-xl mx-auto items-center'>
+      <section className='flex flex-row justify-between max-w-screen-xl mx-auto items-center gap-2'>
         <Link href='/'>
           <Image 
             src="/Commyounity.svg"
@@ -17,7 +22,14 @@ export default function Header() {
             style={{height:'auto'}}
           />
         </Link>
-        <NavBar />
+        <div className='flex gap-2 md:gap-4 items-center'>
+          {selectedCommunity ?
+          <p className='text-xs font-semibold text-center'> {selectedCommunity.community_name}</p>
+          :
+          null  
+          }
+          <NavBar />
+        </div>
 
       </section>
 
