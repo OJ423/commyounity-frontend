@@ -3,17 +3,18 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useAuth } from "@/components/context/AuthContext";
-import { getCommunityById, joinCommunity, leaveCommunity } from "@/utils/apiCalls";
-import { CommunityProfile, CardData, JoinCommunityInputs, JoinedCommunityResponse } from "@/utils/customTypes";
+import { getCommunityById } from "@/utils/apiCalls";
+import { CommunityProfile, CardData } from "@/utils/customTypes";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams, useParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from "react";
 import { IoPeopleOutline, IoSchoolOutline, IoStorefrontOutline, IoWalkOutline } from "react-icons/io5";
 import { MdOutlineChurch } from "react-icons/md";
 import GenericCard from "../../../components/GenericCard";
 import CommunityList from "@/components/CommunityList";
 import { transformBusinessData, transformChurchData, transformGroupData, transformSchoolData } from "@/utils/dataTransformers";
+import CommunityButtonLogic from "@/components/CommunityButtonLogic";
 
 
 export default function CommunityPage() {
@@ -25,89 +26,12 @@ export default function CommunityPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [communityMember, setCommunityMember] = useState<boolean>(false)
 
-  const { user, selectedCommunity, setSelectedCommunity, communities, setCommunities, token, setToken, setUser } = useAuth()
+  const { user, communities } = useAuth()
   
-  const router = useRouter()
   // Params for data fetch
   const searchParams = useSearchParams()
   const community_id = searchParams.get('community')
-  // Type guard for rendered checks
-  const isDefined = (value: any): value is string => value !== null && value !== undefined;
-  const isSelected = isDefined(community_id) && selectedCommunity?.community_id === +community_id;
-
-  const params = useParams<{community: string}>()
-
-  function resetData() {
-    setCommunityData(null)
-  }
-
-  function handleSwitchCommunity() {
-    if (community_id && communityMember) {
-      const chosenCommunity = {community_id: +community_id, community_name: params.community }
-      setSelectedCommunity(chosenCommunity)
-      localStorage.setItem('selectedCommunity', JSON.stringify(chosenCommunity));
-    }
-  }
-
-  function handleStopUsingCommunity() {
-      setSelectedCommunity(null)
-      localStorage.removeItem('selectedCommunity');
-  }
-
-  const invalidTokenResponse = () :void => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('communities')
-    localStorage.removeItem('selectedCommunity')
-    setToken(null);
-    setUser(null)
-    setCommunities([])
-    setSelectedCommunity(null)
-    router.push('/login')
-  }
-
-  async function handleJoinCommunity() {
-    try {
-      if (community_id && user) {
-        const fetchBody: JoinCommunityInputs = {user_id: user?.user_id, community_id: community_id};
-        const fetchData: JoinedCommunityResponse = await joinCommunity(fetchBody, token);
-        setSelectedCommunity(fetchData.community);
-        setCommunityMember(true);
-        await setCommunities([
-          ...communities,
-          fetchData.community
-        ]);
-        localStorage.setItem('communities', JSON.stringify(communities))
-        localStorage.setItem('selectedCommunity', JSON.stringify(fetchData.community))
-      }
-    } catch (error:any) {
-      if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
-        invalidTokenResponse()
-      }
-      console.log(error.response.data.msg)
-    }
-  }
-
-  async function handleLeaveCommunity() {
-    try {
-      if (community_id && user) {
-        const deleteCall = await leaveCommunity(user.user_id, community_id, token);
-        setCommunityMember(false);
-        setSelectedCommunity(null);
-        await setCommunities(
-          communities.filter(c => String(c.community_id) !== community_id)
-        )
-        localStorage.setItem('communities', JSON.stringify(communities))
-      }
-    } catch (error:any) {
-      if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
-        invalidTokenResponse()
-      }
-      console.log(error.response.data.msg)
-    }
-  }
- 
-
+  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -142,6 +66,11 @@ export default function CommunityPage() {
   return (
     <>
     <Header />
+      {isLoading ?
+      <main className="flex min-h-screen flex-col items-center justify-center px-4">
+        <p className="mt-[-120px] font-bold">Loading</p>
+      </main>
+      :
       <main className="flex min-h-screen flex-col items-center px-4">
       {
       communityData ?
@@ -183,52 +112,7 @@ export default function CommunityPage() {
                   <p className="text-center font-bold">{communityData.church_count}</p>
                 </div>
               </div>
-              {user ?
-                communityMember ?
-                  isSelected ?
-                  <div className="flex justify-between items-center gap-2">
-                    <div className="flex gap-4">
-                      <Link  href="" onClick={handleStopUsingCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                        <span>Jump Out</span>
-                      </Link>
-                      <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                        <span>Communities</span>
-                      </Link>
-                    </div>
-                    <Link  href="" onClick={handleLeaveCommunity} className="border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
-                      <span>Leave</span>
-                    </Link>
-                  </div>
-                  :
-                  <div className="flex justify-between items-center gap-2">
-                    <div className="flex gap-4">
-                      <Link  href="" onClick={handleSwitchCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                        <span>Jump In</span>
-                      </Link>
-                      <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                        <span>Communities</span>
-                      </Link>
-                    </div>
-                    <Link  href="" onClick={handleLeaveCommunity} className="border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
-                      <span>Leave</span>
-                    </Link>
-                  </div>
-                  :
-                  <div className="flex gap-4">
-                    <Link href="" onClick={handleJoinCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Join</span>
-                    </Link>
-                    <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Communities</span>
-                    </Link>
-                  </div>
-                  :
-                  <div>
-                    <Link  href='/login' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Login/Register To Join</span>
-                    </Link>
-                  </div>
-              }             
+              <CommunityButtonLogic setCommunityMember={setCommunityMember} communityMember={communityMember} communityData={communityData} setCommunityData={setCommunityData} />             
             </div>
         </section>
 
@@ -237,17 +121,14 @@ export default function CommunityPage() {
           <section id="#groups" className="max-w-screen-lg">
             <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Groups</h2>
-              <div>
-                <Link  href='/groups' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                  <span>Groups Home</span>
-                </Link>
-              </div>
             </div>
             <div className={`${groupData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {groupData.length ?
               <>
                 {groupData.map((group: CardData) => (
-                  <GenericCard key={group.id} data={group} />
+                  <>
+                    <GenericCard key={group.id} data={group} urlParams={'/groups/'} />
+                  </>
                 ))}
               </>
               :
@@ -285,17 +166,12 @@ export default function CommunityPage() {
           <section id="#businesses" className="max-w-screen-lg">
           <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Businesses</h2>
-              <div>
-                <Link  href='/businesses' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                  <span>Businesses Home</span>
-                </Link>
-              </div>
             </div>
             <div className={`${businessData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {businessData.length ?
               <>
                 {businessData.map((business: CardData) => (
-                  <GenericCard key={business.id} data={business} />
+                  <GenericCard key={business.id} data={business} urlParams={'/businesses/'} />
                 ))}
               </>
               :
@@ -331,17 +207,12 @@ export default function CommunityPage() {
           <section id="#schools" className="max-w-screen-lg">
              <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Schools</h2>
-              <div>
-                <Link  href='/schools' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                  <span>Schools Home</span>
-                </Link>
-              </div>
             </div>
             <div className={`${schoolData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {schoolData.length ?
               <>
                 {schoolData.map((school: CardData) => (
-                  <GenericCard key={school.id} data={school} />
+                  <GenericCard key={school.id} data={school} urlParams={'/schools/'} />
                 ))}
               </>
               :
@@ -378,18 +249,13 @@ export default function CommunityPage() {
           <section id="#churches" className="max-w-screen-lg">
             <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Churches</h2>
-              <div>
-                <Link  href='/churches' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                  <span>Churches Home</span>
-                </Link>
-              </div>
             </div>
 
             <div className={`${churchData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {churchData.length ?
               <>
                 {churchData.map((church: CardData) => (
-                  <GenericCard key={church.id} data={church} />
+                  <GenericCard key={church.id} data={church} urlParams={'/churches/'} />
                 ))}
               </>
               :
@@ -431,6 +297,7 @@ export default function CommunityPage() {
         </>
         }
       </main>
+      }
     <Footer />
   </>
   )

@@ -1,37 +1,32 @@
 import { CardData } from "@/utils/customTypes";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  IoPeopleOutline,
-  IoStorefrontOutline,
-  IoSchoolOutline,
-  IoWalkOutline,
-} from "react-icons/io5";
-import { MdOutlineChurch } from "react-icons/md";
 
 type ListProps = {
   data: CardData;
+  urlParams: string;
 };
 
-const GenericCard: React.FC<ListProps> = ({ data }) => {
+const GenericCard: React.FC<ListProps> = ({ data, urlParams }) => {
   return (
-      <section className="rounded bg-gray-200 pb-4 drop-shadow-xl">
-        <Image
-          src="/placeholder-image.webp"
-          width={200}
-          height={100}
-          quality={60}
-          priority
-          alt={`${data.name}`}
-          className="w-full h-60 object-cover rounded mb-4"
-        />
+    <section className="rounded bg-gray-200 pb-4 drop-shadow-xl flex flex-col justify-between">
+      <Image
+        src="/placeholder-image.webp"
+        width={200}
+        height={100}
+        quality={60}
+        priority
+        alt={`${data.name}`}
+        className="w-full h-60 object-cover rounded mb-4"
+      />
       <div className="p-4">
-        <h3 className="font-semibold text-lg pb-4">
-          {data.name}
-        </h3>
+        <h3 className="font-semibold text-lg pb-4">{data.name}</h3>
         <p className="font-medium text-sm">{data.bio}</p>
       </div>
-      </section>
+      <Link  href={`${urlParams}${data.id}`} className="m-4 w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+        <span>View</span>
+      </Link>
+    </section>
   );
 };
 

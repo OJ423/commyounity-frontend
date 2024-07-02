@@ -65,7 +65,7 @@ export async function joinCommunity(body: JoinCommunityInputs, token: string | n
 
 export async function leaveCommunity(user_id: string | null, community_id: string | null, token: string | null ) {
   try {
-    const response = await instance.delete(`users/community/leave/${user_id}/${community_id}`, {
+    const response = await instance.delete(`users/community/leave/${community_id}/${user_id}`, {
       headers: {
         'Authorization': `Bearer ${token}` 
       }}
@@ -74,6 +74,29 @@ export async function leaveCommunity(user_id: string | null, community_id: strin
   } catch (error) {
     console.log('Error logging in:', error);
     throw error;
+  }
+}
+
+export async function getCommunityGroups(community_id: string | null) {
+  if (community_id) {
+    try {
+      const response = await instance.get(`communities/${community_id}/groups`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error logging in:', error)
+      throw error
+    }
+  }
+}
+
+export async function getGroupById(group_id:string | null) {
+  if (group_id) {
+    try {
+      const response = await instance.get(`groups/${group_id}`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error loggin in:', error)
+    }
   }
 }
 

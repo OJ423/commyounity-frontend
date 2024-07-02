@@ -86,3 +86,30 @@ export type JoinedCommunityResponse = {
     community_name: string
   }
 }
+
+export type GroupData = {
+  group_id: number,
+  created_at: string,
+  group_name: string,
+  group_bio: string,
+  group_img: string,
+  community_id: number
+}
+
+export type PostData = {
+  post_id: number,
+  post_date: string,
+  post_title: string,
+  post_description: string,
+  post_location: string,
+  post_img: string,
+  pdf_link: string,
+  pdf_title: string,
+  author: number,
+  church_id: number | null,
+  school_id: number | null,
+  business_id: number | null,
+  group_id: number,
+  post_likes: number,
+  comment_count: string
+}

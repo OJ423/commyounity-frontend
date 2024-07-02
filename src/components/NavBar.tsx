@@ -6,13 +6,14 @@ import { useAuth } from "./context/AuthContext";
 import { MdOutlineHolidayVillage } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 
 
 
 export default function NavBar() {
   const [navOpen, setNavOpen] = useState<boolean>(false);
-  const { user, setToken, setUser } = useAuth();
+  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity } = useAuth();
   const pathname = usePathname()
   function handleMenuOpen():void {
     setNavOpen(!navOpen) 
@@ -21,8 +22,12 @@ export default function NavBar() {
   function handleLogOut():void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('selectedCommunity')
+    localStorage.removeItem('communities')
     setToken(null);
     setUser(null)
+    setSelectedCommunity(null)
+    setCommunities([])
   }
   
   return(
@@ -42,25 +47,43 @@ export default function NavBar() {
       <div onClick={handleMenuOpen} className={`${!navOpen ? 'invisible opacity-0': 'opacity-50'} w-full h-[100vh] top-0 left-0 bg-gray-300 fixed duration-500 ease-out transition-all cursor-pointer z-20`}>
       </div>
       <section className={`${!navOpen ? 'translate-x-[-100%]': 'translate-x-0'} w-[60vw] sm:w-[30vw] h-[100vh] bg-white left-0 top-0 opacity-100 fixed duration-500 ease-out transition-all p-8 flex flex-col gap-12 justify-center text-center items-center z-40 shadow-lg items-center`}>
+      <Link href='/'>
+          <Image 
+            src="/Commyounity.svg"
+            alt="Commyounity Logo"
+            className='w-40 md:w-60'
+            width={250}
+            height={12}
+            priority
+            style={{height:'auto'}}
+          />
+        </Link>
+        {selectedCommunity ? 
+        <p className="text-sm font-semibold text-gray-400">You&apos;re logged into {selectedCommunity.community_name}</p>
+        : null
+        }
         <ul className="text-left">
-          <Link href="/">
-            <li onClick={handleMenuOpen} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
-              Home
+          <Link href="/communities">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/communities') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Communities
             </li>
           </Link>
-          <Link href="/lists">
-            <li onClick={handleMenuOpen} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
-              Your To-Do Lists
-            </li>
-          </Link>
-          <Link href="/add-list">
-            <li onClick={handleMenuOpen} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
-              Add New List
+          {selectedCommunity ?
+          <>
+          <Link href="/groups">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/groups') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Groups
             </li>
           </Link>
           <li onClick={handleLogOut} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
               Logout
           </li>
+          </>
+          :
+          <li onClick={handleLogOut} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
+              Logout
+          </li>
+          }
         </ul>
       </section>
 
