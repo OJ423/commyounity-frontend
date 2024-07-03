@@ -1,18 +1,17 @@
-import { joinCommunity, leaveCommunity } from "@/utils/apiCalls";
+import { getUserMemberships, joinCommunity, leaveCommunity } from "@/utils/apiCalls";
 import { useAuth } from "./context/AuthContext"
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { CommunityProfile, JoinCommunityInputs, JoinedCommunityResponse } from "@/utils/customTypes";
+import { CommunitiesLocalStorage, CommunityProfile, JoinCommunityInputs, JoinedCommunityResponse } from "@/utils/customTypes";
 import Link from "next/link";
 
 interface CommunityButtonLogicProps {
   communityMember: boolean,
   setCommunityMember: React.Dispatch<React.SetStateAction<boolean>>,
   setCommunityData: React.Dispatch<React.SetStateAction<CommunityProfile | null>>,
-  communityData: CommunityProfile,
 }
 
-const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMember, setCommunityMember, communityData, setCommunityData}) => {
-  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities } = useAuth()
+const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMember, setCommunityMember, setCommunityData}) => {
+  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships } = useAuth()
 
   const router = useRouter()
 
@@ -28,11 +27,34 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     setCommunityData(null)
   }
 
-  function handleSwitchCommunity() {
-    if (community_id && communityMember) {
-      const chosenCommunity = {community_id: +community_id, community_name: params.community }
-      setSelectedCommunity(chosenCommunity)
-      localStorage.setItem('selectedCommunity', JSON.stringify(chosenCommunity));
+  async function setMemberships(user_id: number | undefined, communityId:number) {
+    try{
+      if (user) {
+        const memberships = await getUserMemberships(user_id, communityId, token);
+        setUserMemberships(memberships);
+        localStorage.setItem('userMemberships', JSON.stringify(memberships));
+      }
+    } catch(error:any) {
+      if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
+        invalidTokenResponse()
+      }
+      console.log(error.response.data.msg)
+    }
+  }
+
+  async function handleSwitchCommunity() {
+    try {
+      if (community_id && communityMember) {
+        const chosenCommunity = {community_id: +community_id, community_name: params.community }
+        setSelectedCommunity(chosenCommunity)
+        if(user) {
+          setMemberships(+user?.user_id, +community_id);
+        }
+        localStorage.setItem('selectedCommunity', JSON.stringify(chosenCommunity));
+      }
+    } catch(error:any) {
+      console.log(error)
+    } finally {
     }
   }
 
@@ -60,12 +82,19 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
         const fetchData: JoinedCommunityResponse = await joinCommunity(fetchBody, token);
         setSelectedCommunity(fetchData.community);
         setCommunityMember(true);
-        await setCommunities([
+        setMemberships(+user?.user_id, +community_id);
+        setCommunities([
           ...communities,
           fetchData.community
         ]);
         localStorage.setItem('communities', JSON.stringify(communities))
         localStorage.setItem('selectedCommunity', JSON.stringify(fetchData.community))
+        const savedCommunityMembership: string | null = localStorage.getItem('communities')
+        if (savedCommunityMembership) {
+          const parsedCommunityMembers = JSON.parse(savedCommunityMembership)
+          parsedCommunityMembers.push(fetchData.community)
+          localStorage.setItem('communities', JSON.stringify(parsedCommunityMembers))
+        }
       }
     } catch (error:any) {
       if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
@@ -79,12 +108,19 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     try {
       if (community_id && user) {
         const deleteCall = await leaveCommunity(user.user_id, community_id, token);
+        setMemberships(+user?.user_id, +community_id);
         setCommunityMember(false);
         setSelectedCommunity(null);
-        await setCommunities(
+        setCommunities(
           communities.filter(c => String(c.community_id) !== community_id)
         )
         localStorage.setItem('communities', JSON.stringify(communities))
+        const savedCommunityMembership: string | null = localStorage.getItem('communities')
+        if (savedCommunityMembership) {
+          const parsedCommunityMembers: CommunitiesLocalStorage[] = JSON.parse(savedCommunityMembership)
+          const updatedCommunities:CommunitiesLocalStorage[] = parsedCommunityMembers.filter(c => String(c.community_id) !== community_id)
+          localStorage.setItem('communities', JSON.stringify(updatedCommunities))
+        }
       }
     } catch (error:any) {
       if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
@@ -94,50 +130,51 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     }
   }
 
+
   return(
     <>
     {user ?
       communityMember ?
         isSelected ?
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex justify-between flex-wrap items-center gap-2 mt-8">
           <div className="flex gap-4">
-            <Link  href="" onClick={handleStopUsingCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+            <Link  href="" onClick={handleStopUsingCommunity} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Jump Out</span>
             </Link>
-            <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+            <Link href="/communities/" onClick={resetData} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Communities</span>
             </Link>
           </div>
-          <Link  href="" onClick={handleLeaveCommunity} className="border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+          <Link  href="" onClick={handleLeaveCommunity} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
             <span>Leave</span>
           </Link>
         </div>
         :
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex justify-between items-center gap-2 mt-8 flex-wrap">
           <div className="flex gap-4">
-            <Link  href="" onClick={handleSwitchCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+            <Link  href="" onClick={handleSwitchCommunity} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Jump In</span>
             </Link>
-            <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+            <Link href="/communities/" onClick={resetData} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
               <span>Communities</span>
             </Link>
           </div>
-          <Link  href="" onClick={handleLeaveCommunity} className="border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+          <Link  href="" onClick={handleLeaveCommunity} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
             <span>Leave</span>
           </Link>
         </div>
         :
-        <div className="flex gap-4">
-          <Link href="" onClick={handleJoinCommunity} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+        <div className="flex gap-4 mt-8">
+          <Link href="" onClick={handleJoinCommunity} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
             <span>Join</span>
           </Link>
-          <Link href="/communities/" onClick={resetData} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+          <Link href="/communities/" onClick={resetData} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
             <span>Communities</span>
           </Link>
         </div>
         :
         <div>
-          <Link  href='/login' className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+          <Link  href='/login' className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
             <span>Login/Register To Join</span>
           </Link>
         </div>

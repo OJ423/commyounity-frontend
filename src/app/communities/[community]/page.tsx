@@ -112,7 +112,7 @@ export default function CommunityPage() {
                   <p className="text-center font-bold">{communityData.church_count}</p>
                 </div>
               </div>
-              <CommunityButtonLogic setCommunityMember={setCommunityMember} communityMember={communityMember} communityData={communityData} setCommunityData={setCommunityData} />             
+              <CommunityButtonLogic setCommunityMember={setCommunityMember} communityMember={communityMember} setCommunityData={setCommunityData} />             
             </div>
         </section>
 

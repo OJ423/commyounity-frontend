@@ -39,6 +39,21 @@ export async function logUserIn(body: LogInInputs) {
   }
 }
 
+export async function getUserMemberships(user_id:number | undefined, community_id:number | undefined, token: string | null) {
+  try {
+    const response = await instance.get(`users/${user_id}/${community_id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` 
+      }}
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+}
+
+
 export async function registerUser(body: RegistrationInputs) {
   try {
     const response = await instance.post('users/register', body)
