@@ -26,11 +26,14 @@ export default function CommunityPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [communityMember, setCommunityMember] = useState<boolean>(false)
 
-  const { user, communities } = useAuth()
+  const { user, communities, selectedCommunity } = useAuth()
   
   // Params for data fetch
   const searchParams = useSearchParams()
   const community_id = searchParams.get('community')
+    // Type guard for rendered checks
+    const isDefined = (value: any): value is string => value !== null && value !== undefined;
+    const isSelected = isDefined(community_id) && selectedCommunity?.community_id === +community_id;
   
   
   useEffect(() => {
@@ -121,6 +124,13 @@ export default function CommunityPage() {
           <section id="#groups" className="max-w-screen-lg">
             <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Groups</h2>
+              {isSelected ? 
+              <Link href="/groups" className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+              <span>Groups Home</span>
+              </Link>
+              :
+              null
+              }
             </div>
             <div className={`${groupData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {groupData.length ?
@@ -166,6 +176,13 @@ export default function CommunityPage() {
           <section id="#businesses" className="max-w-screen-lg">
           <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Businesses</h2>
+              {isSelected ? 
+              <Link href="/businesses" className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+              <span>Businesses Home</span>
+              </Link>
+              :
+              null
+              }
             </div>
             <div className={`${businessData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {businessData.length ?
@@ -207,6 +224,13 @@ export default function CommunityPage() {
           <section id="#schools" className="max-w-screen-lg">
              <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Schools</h2>
+              {isSelected ? 
+              <Link href="/schools" className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+              <span>Schools Home</span>
+              </Link>
+              :
+              null
+              }
             </div>
             <div className={`${schoolData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>
               {schoolData.length ?
@@ -249,6 +273,13 @@ export default function CommunityPage() {
           <section id="#churches" className="max-w-screen-lg">
             <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
               <h2 className="font-bold text-3xl">Churches</h2>
+              {isSelected ? 
+              <Link href="/churches" className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+                <span>Churches Home</span>
+              </Link>
+              :
+              null
+              }
             </div>
 
             <div className={`${churchData.length === 0 ? "grid grid-cols-1 gap-8 mb-20" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}`}>

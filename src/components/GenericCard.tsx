@@ -17,7 +17,7 @@ const GenericCard: React.FC<ListProps> = ({ data, urlParams }) => {
         quality={60}
         priority
         alt={`${data.name}`}
-        className="w-full h-60 object-cover rounded mb-4"
+        className="w-full h-60 object-cover rounded-t mb-4"
       />
       <div className="p-4">
         <h3 className="font-semibold text-lg pb-4">{data.name}</h3>

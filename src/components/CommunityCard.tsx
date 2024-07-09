@@ -23,7 +23,7 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
         quality={60}
         priority
         alt={`${community.community_name} community image`}
-        className="w-full h-60 object-cover rounded mb-4"
+        className="w-full h-60 object-cover rounded-t mb-4"
       />
 
       <h3 className="font-semibold px-2 text-lg pb-4">

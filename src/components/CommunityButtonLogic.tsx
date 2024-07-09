@@ -1,7 +1,7 @@
-import { getUserMemberships, joinCommunity, leaveCommunity } from "@/utils/apiCalls";
+import { getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
 import { useAuth } from "./context/AuthContext"
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { CommunitiesLocalStorage, CommunityProfile, JoinCommunityInputs, JoinedCommunityResponse } from "@/utils/customTypes";
+import { CommunitiesLocalStorage, CommunityProfile, UserJoinInputs, JoinedCommunityResponse } from "@/utils/customTypes";
 import Link from "next/link";
 
 interface CommunityButtonLogicProps {
@@ -11,7 +11,7 @@ interface CommunityButtonLogicProps {
 }
 
 const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMember, setCommunityMember, setCommunityData}) => {
-  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships } = useAuth()
+  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships, setUserPostLikes } = useAuth()
 
   const router = useRouter()
 
@@ -68,18 +68,21 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     localStorage.removeItem('user');
     localStorage.removeItem('communities')
     localStorage.removeItem('selectedCommunity')
+    localStorage.removeItem('userMemberships')
+    localStorage.removeItem('userPostLikes')
     setToken(null);
     setUser(null)
     setCommunities([])
     setSelectedCommunity(null)
+    setUserMemberships(null)
+    setUserPostLikes([])
     router.push('/login')
   }
 
-  async function handleJoinCommunity() {
+  async function handleJoin() {
     try {
       if (community_id && user) {
-        const fetchBody: JoinCommunityInputs = {user_id: user?.user_id, community_id: community_id};
-        const fetchData: JoinedCommunityResponse = await joinCommunity(fetchBody, token);
+        const fetchData: JoinedCommunityResponse = await joinUser(user.user_id, community_id, "community", token);
         setSelectedCommunity(fetchData.community);
         setCommunityMember(true);
         setMemberships(+user?.user_id, +community_id);
@@ -104,11 +107,10 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     }
   }
 
-  async function handleLeaveCommunity() {
+  async function handleLeave() {
     try {
       if (community_id && user) {
-        const deleteCall = await leaveCommunity(user.user_id, community_id, token);
-        setMemberships(+user?.user_id, +community_id);
+        const deleteCall = await leaveUser(user.user_id, community_id, "community", token);
         setCommunityMember(false);
         setSelectedCommunity(null);
         setCommunities(
@@ -145,7 +147,7 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
               <span>Communities</span>
             </Link>
           </div>
-          <Link  href="" onClick={handleLeaveCommunity} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+          <Link  href="" onClick={handleLeave} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
             <span>Leave</span>
           </Link>
         </div>
@@ -159,13 +161,13 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
               <span>Communities</span>
             </Link>
           </div>
-          <Link  href="" onClick={handleLeaveCommunity} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+          <Link  href="" onClick={handleLeave} className="text-xs border-solid border-4 border-rose-600 text-rose-600 py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
             <span>Leave</span>
           </Link>
         </div>
         :
         <div className="flex gap-4 mt-8">
-          <Link href="" onClick={handleJoinCommunity} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+          <Link href="" onClick={handleJoin} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
             <span>Join</span>
           </Link>
           <Link href="/communities/" onClick={resetData} className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
@@ -173,7 +175,7 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
           </Link>
         </div>
         :
-        <div>
+        <div className="mt-8">
           <Link  href='/login' className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
             <span>Login/Register To Join</span>
           </Link>

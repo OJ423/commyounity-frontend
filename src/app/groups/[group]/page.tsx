@@ -2,11 +2,12 @@
 
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
+import MembershipButtonLogic from "@/components/MembershipButtonLogic"
 import PostCard from "@/components/PostCard"
+import { useAuth } from "@/components/context/AuthContext"
 import { getGroupById } from "@/utils/apiCalls"
-import { GroupCard, GroupData, PostData } from "@/utils/customTypes"
+import { GroupData, PostData } from "@/utils/customTypes"
 import Image from "next/image"
-import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -14,6 +15,8 @@ export default function GroupPage() {
   const params = useParams<{group:string}>()
   const [groupData, setGroupData] = useState<GroupData>()
   const [postData, setPostData] = useState<PostData[] | [] >([])
+  const [member, setMember] = useState<boolean>(false)
+  const {userMemberships} = useAuth()
 
   useEffect(() => {
     if(!params) {
@@ -24,20 +27,28 @@ export default function GroupPage() {
         const data = await getGroupById(params.group)
         setGroupData(data.group)
         setPostData(data.posts)
+        if(userMemberships) {
+          const memberCheck = userMemberships?.userMemberships?.groups.some(
+            (g) => g.group_id === data.group.group_id
+          );
+          if (memberCheck) {
+            setMember(true)
+          }
+        }
       } catch(error: any) {
         console.log(error.message);
       }
     }
     fetchData()
-  }, [params])
+  }, [userMemberships, params])
 
   return(
   <>
   <Header />
-  <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-lg mx-auto px-4">
+  <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
     <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
       <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
-        <h2 className="font-semibold text-lg">{groupData?.group_name}</h2>
+        <h1 className="font-semibold text-xl md:text-2xl">{groupData?.group_name}</h1>
         <Image 
           src="/placeholder-image.webp"
           width={200}
@@ -48,9 +59,7 @@ export default function GroupPage() {
           className="w-full h-60 object-cover rounded mb-4 shadow-xl"
         />
         <p>{groupData?.group_bio}</p>
-        <Link  href="" className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-          <span>Join</span>
-        </Link>
+        <MembershipButtonLogic member={member} setMember={setMember} type="group" id={groupData?.group_id} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
         <h2 className="font-semibold text-lg">{groupData?.group_name} Posts</h2>
@@ -61,6 +70,7 @@ export default function GroupPage() {
               <PostCard
                 key={post.post_id}
                 data={post}
+                member={member}
               />
             ))}
           </div>

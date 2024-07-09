@@ -31,7 +31,7 @@ export default function Lists() {
   <main className="flex min-h-screen flex-col items-center justify-between w-screen">
     <Header />
     {user ?
-      <button onClick={handleLogout} className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-[#1DBF6C] hover:text-white border-2 border-[#1DBF6C] hover:bg-[#1DBF6C] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-[#1DBF6C] duration-300  focus:bg-transparent">
+      <button onClick={handleLogout} className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300  focus:bg-transparent">
         Logout
       </button>
     :

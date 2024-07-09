@@ -13,7 +13,7 @@ import Image from "next/image";
 
 export default function NavBar() {
   const [navOpen, setNavOpen] = useState<boolean>(false);
-  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity } = useAuth();
+  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships } = useAuth();
   const pathname = usePathname()
   function handleMenuOpen():void {
     setNavOpen(!navOpen) 
@@ -24,10 +24,12 @@ export default function NavBar() {
     localStorage.removeItem('user');
     localStorage.removeItem('selectedCommunity')
     localStorage.removeItem('communities')
+    localStorage.removeItem('userMemberships')
     setToken(null);
     setUser(null)
     setSelectedCommunity(null)
     setCommunities([])
+    setUserMemberships(null)
   }
   
   return(

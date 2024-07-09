@@ -39,9 +39,9 @@ export type RegistrationInputs = {
   password: string,
 }
 
-export type JoinCommunityInputs = {
+export type UserJoinInputs = {
   user_id: string,
-  community_id: string
+  id: string
 }
 
 // API Responses
@@ -60,6 +60,10 @@ export type GroupData = {
   group_bio: string,
   group_img: string,
   community_id: number
+}
+
+export interface GroupJoinResponse  {
+  group: GroupCard
 }
 
 export type BusinessMembership = {
@@ -87,6 +91,16 @@ export type PostData = {
   group_id: number,
   post_likes: number,
   comment_count: string
+}
+
+export interface Comment {
+  comment_id: number,
+  comment_title: string,
+  comment_body: string,
+  author: number,
+  author_name: string,
+  post_id: number,
+  comment_ref: number | null
 }
 
 

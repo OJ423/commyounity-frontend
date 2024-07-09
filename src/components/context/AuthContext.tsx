@@ -18,10 +18,18 @@ interface Community {
 interface UserMemberships {
   user_id: number,
   username: string,
-  businesses: BusinessMembership[];
-  schools: SchoolCard[];
-  groups: GroupCard[];
-  churches: ChurchCard[];
+  userMemberships: {
+    businesses: BusinessMembership[];
+    schools: SchoolCard[];
+    groups: GroupCard[];
+    churches: ChurchCard[];
+  }
+}
+
+interface UserPostLikes {
+  user_post_likes_id: number,
+  user_id: number,
+  post_id: number
 }
 
 interface AuthContextProps {
@@ -30,11 +38,13 @@ interface AuthContextProps {
   selectedCommunity: Community | null;
   communities: Community[];
   userMemberships: UserMemberships | null;
+  userPostLikes: UserPostLikes[] | []
   setToken: (token: string | null) => void;
   setUser: (user: User | null) => void;
   setSelectedCommunity: (selectedCommunity: Community | null) => void;
   setCommunities: (communities: Community[] | []) => void;
   setUserMemberships: (userMemberships: UserMemberships | null) => void;
+  setUserPostLikes: (userPostLikes: UserPostLikes[] | []) => void; 
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -45,6 +55,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [selectedCommunity, setSelectedCommunity] = useState<Community | null>(null)
   const [communities, setCommunities] = useState<Community[] | [] >([]);
   const [userMemberships, setUserMemberships] = useState<UserMemberships | null>(null)
+  const [userPostLikes, setUserPostLikes] = useState<UserPostLikes[] | []>([])
 
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
@@ -52,6 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedCommunity = localStorage.getItem('selectedCommunity')
     const savedCommunities = localStorage.getItem('communities')
     const savedMemberships = localStorage.getItem('userMemberships')
+    const savedPostLikes = localStorage.getItem('userPostLikes')
     if (savedToken) {
       setToken(savedToken);
     }
@@ -67,12 +79,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (savedMemberships) {
       setUserMemberships(JSON.parse(savedMemberships))
     }
+    if (savedPostLikes) {
+      setUserPostLikes(JSON.parse(savedPostLikes))
+    }
     
-
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, selectedCommunity, communities, userMemberships, setToken, setUser, setSelectedCommunity, setCommunities, setUserMemberships  }}>
+    <AuthContext.Provider value={{ token, user, selectedCommunity, communities, userMemberships, userPostLikes, setToken, setUser, setSelectedCommunity, setCommunities, setUserMemberships, setUserPostLikes }}>
       {children}
     </AuthContext.Provider>
   );
