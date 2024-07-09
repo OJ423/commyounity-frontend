@@ -46,7 +46,6 @@ export async function getUserMemberships(user_id:number | undefined, community_i
         'Authorization': `Bearer ${token}` 
       }}
     );
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
@@ -73,6 +72,9 @@ export async function joinUser(user_id: string, id: string, type:string, token: 
     }
     if (type === 'community') {
       body = {user_id, community_id: id}
+    }
+    if (type === 'church') {
+      body = {user_id, church_id: id}
     }
     const response = await instance.post(`users/${type}/join`, body, {
       headers: {
@@ -111,10 +113,54 @@ export async function getCommunityGroups(community_id: string | null) {
   }
 }
 
+export async function getCommunityChurches(community_id: string | null) {
+  if (community_id) {
+    try {
+      const response = await instance.get(`communities/${community_id}/churches`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error logging in:', error)
+    }
+  }
+}
+
+export async function getCommunityBusinesses(community_id: string | null) {
+  if (community_id) {
+    try {
+      const response = await instance.get(`communities/${community_id}/businesses`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error logging in:', error)
+    }
+  }
+}
+
 export async function getGroupById(group_id:string | null) {
   if (group_id) {
     try {
       const response = await instance.get(`groups/${group_id}`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error loggin in:', error)
+    }
+  }
+}
+
+export async function getChurchById(church_id:string | null) {
+  if (church_id) {
+    try {
+      const response = await instance.get(`churches/${church_id}`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error loggin in:', error)
+    }
+  }
+}
+
+export async function getBusinessById(business_id:string | null) {
+  if (business_id) {
+    try {
+      const response = await instance.get(`businesses/${business_id}`)
       return response.data
     } catch(error:any) {
       console.error('Error loggin in:', error)

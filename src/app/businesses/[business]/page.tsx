@@ -5,17 +5,20 @@ import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
 import PostCard from "@/components/PostCard"
 import { useAuth } from "@/components/context/AuthContext"
-import { getGroupById } from "@/utils/apiCalls"
-import { GroupData, PostData } from "@/utils/customTypes"
+import { getBusinessById } from "@/utils/apiCalls"
+import { BusinessData, PostData } from "@/utils/customTypes"
 import Image from "next/image"
+import Link from "next/link"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { IoMailOutline, IoArrowRedoOutline } from "react-icons/io5";
 
-export default function GroupPage() {
-  const params = useParams<{group:string}>()
-  const [groupData, setGroupData] = useState<GroupData>()
+
+export default function BusinessPage() {
+  const params = useParams<{business:string}>()
+  const [businessData, setBusinessData] = useState<BusinessData>()
   const [postData, setPostData] = useState<PostData[] | [] >([])
-  const [member, setMember] = useState<boolean>(false)
+  const [member, setMember] = useState<boolean>(true)
   const {userMemberships} = useAuth()
 
   useEffect(() => {
@@ -24,12 +27,12 @@ export default function GroupPage() {
     }
     const fetchData = async () => {
       try {
-        const data = await getGroupById(params.group)
-        setGroupData(data.group)
+        const data = await getBusinessById(params.business)
+        setBusinessData(data.business)
         setPostData(data.posts)
         if(userMemberships) {
-          const memberCheck = userMemberships?.userMemberships?.groups.some(
-            (g) => g.group_id === data.group.group_id
+          const memberCheck = userMemberships?.userMemberships?.businesses.some(
+            (b) => b.business_id === data.business.business_id
           );
           if (memberCheck) {
             setMember(true)
@@ -48,15 +51,15 @@ export default function GroupPage() {
   <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
     <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
       <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
-        <h1 className="font-semibold text-xl md:text-2xl">{groupData?.group_name}</h1>
-        {groupData?.group_img ?
+        <h1 className="font-semibold text-xl md:text-2xl">{businessData?.business_name}</h1>
+        {businessData?.business_img ?
         <Image 
-          src={groupData.group_img}
+          src={businessData.business_img}
           width={200}
           height={100}
           quality={60}
           priority
-          alt={`${groupData?.group_name} profile picture`}
+          alt={`${businessData?.business_name} profile picture`}
           className="w-full h-60 object-cover rounded mb-4 shadow-xl"
         />
         :
@@ -66,15 +69,31 @@ export default function GroupPage() {
           height={100}
           quality={60}
           priority
-          alt={`${groupData?.group_name} profile picture`}
+          alt={`${businessData?.business_name} profile picture`}
           className="w-full h-60 object-cover rounded mb-4 shadow-xl"
         />
         }
-        <p>{groupData?.group_bio}</p>
-        <MembershipButtonLogic member={member} setMember={setMember} type="group" id={groupData?.group_id} />
+        <p>{businessData?.business_bio}</p>
+        <div className="flex justify-between w-full flex-wrap gap-1 items-center">
+          {businessData?.business_email ?
+          <Link className="flex gap-2 items-center" href={`mailto:${businessData?.business_email}`}> 
+            <IoMailOutline size={24}/>
+            <p className="text-sm font-medium text-indigo-600 hover:text-indigo-400 transition-all duration-300">Email</p>
+          </Link>
+          : null
+          }
+          {businessData?.business_website ?
+          <Link target="_blank" className="flex gap-2 items-center" href={`${businessData?.business_website}`}>
+            <IoArrowRedoOutline size={24}/>
+            <p className="text-sm font-medium text-indigo-600 hover:text-indigo-400 transition-all duration-300">Website</p>
+          </Link>
+          : null
+          }
+        </div>
+        <MembershipButtonLogic member={member} setMember={setMember} type="business" id={businessData?.business_id} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
-        <h2 className="font-semibold text-lg">{groupData?.group_name} Posts</h2>
+        <h2 className="font-semibold text-lg">{businessData?.business_name} Posts</h2>
         <>
         {postData.length ?
           <div className={"grid grid-cols-1 gap-8"}>
@@ -87,7 +106,7 @@ export default function GroupPage() {
             ))}
           </div>
           :
-          <p>This group hasn&apos;t posted yet.</p>
+          <p>This business hasn&apos;t posted yet.</p>
         }
           </>
 

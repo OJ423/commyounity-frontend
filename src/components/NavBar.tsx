@@ -77,6 +77,16 @@ export default function NavBar() {
               Groups
             </li>
           </Link>
+          <Link href="/businesses">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/businesses') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Businesses
+            </li>
+          </Link>
+          <Link href="/churches">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/churches') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Churches
+            </li>
+          </Link>
           <li onClick={handleLogOut} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
               Logout
           </li>

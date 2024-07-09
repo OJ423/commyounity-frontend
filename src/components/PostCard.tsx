@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { IoHeartOutline, IoChatboxOutline } from "react-icons/io5";
+import { BsFillReplyFill } from "react-icons/bs";
 import CommentList from "./CommentList";
 import { useAuth } from "./context/AuthContext";
 import { dislikePost, likePost } from "@/utils/apiCalls";
@@ -29,6 +30,10 @@ const PostCard: React.FC<PostCardProps> = ({data, member}) => {
     if (+data.comment_count && member) {
       setViewComments(!viewComments)
     }
+  }
+
+  function handleAddComment() {
+    alert("This is a place holder to add a comment")
   }
 
   async function handlePostLike() {
@@ -96,14 +101,30 @@ const PostCard: React.FC<PostCardProps> = ({data, member}) => {
   return(
     <>
     <section className="grid grid-cols-1 md:grid-cols-5 rounded shadow-xl transition-500 duration-200 ease-in ease-out cursor-pointer relative">
-      <Image 
-        src="/placeholder-image.webp"
-        alt={`${data.post_title} header image`}
-        priority
-        width={200}
-        height={200}
-        className="w-full h-40 md:col-span-2 md:h-full md:w-auto object-cover rounded-t md:rounded-tl"
-      />
+      {data.post_img ?
+        <div className="md:col-span-2 w-full h-40 rounded-t md:rounded-tl overflow-hidden">
+          <Image 
+            src={data.post_img}
+            alt={`${data.post_title} header image`}
+            priority
+            width={200}
+            height={200}
+            className="w-full object-cover rounded-t md:rounded-tl"
+          />
+        </div>
+      :
+        <div className="md:col-span-2 w-full md:h-40 rounded-t md:rounded-tl overflow-hidden">
+          <Image 
+            src="/placeholder-image.webp"
+            alt={`${data.post_title} header image`}
+            priority
+            width={200}
+            height={200}
+            className="w-full object-cover rounded-t md:rounded-tl"
+          />
+        </div>
+      }
+      
       <div className="md:col-span-3 p-4">
         <h2 className="font-bold text-lg mb-4">{data.post_title}</h2>
         <p className="font-light">{data.post_description}</p>
@@ -130,6 +151,9 @@ const PostCard: React.FC<PostCardProps> = ({data, member}) => {
           <div onClick={handleShowComments} className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200">
             <IoChatboxOutline size={24}/>
             <p className="text-black font-bold text-sm">{data.comment_count}</p>
+          </div>
+          <div onClick={handleAddComment} className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200">
+            <BsFillReplyFill size={24}/>
           </div>
         </div>
       </div>

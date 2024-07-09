@@ -94,7 +94,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   async function handleLeave() {
     try {
       if (user && selectedCommunity) {
-        const deleteCall = await leaveUser(user.user_id, String(id), "group", token);
+        const deleteCall = await leaveUser(user.user_id, String(id), type, token);
         await setMemberships(+user.user_id, selectedCommunity?.community_id, token);
         setMember(false);
       }
@@ -112,6 +112,10 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
 
   return (
     <>
+      {type === "business" ?
+      null
+      :
+       <> 
       {!member ? (
         <Link
           href="" onClick={handleJoin}
@@ -132,6 +136,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
           </Link>
         </div>
       )}
+      </>
+    }
     </>
   );
 };

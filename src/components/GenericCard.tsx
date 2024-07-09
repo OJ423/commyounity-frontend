@@ -10,6 +10,17 @@ type ListProps = {
 const GenericCard: React.FC<ListProps> = ({ data, urlParams }) => {
   return (
     <section className="rounded bg-gray-200 pb-4 drop-shadow-xl flex flex-col justify-between">
+      {data.img ?
+      <Image
+        src={data.img}
+        width={200}
+        height={100}
+        quality={60}
+        priority
+        alt={`${data.name}`}
+        className="w-full h-60 object-cover rounded-t mb-4"
+      />
+      :
       <Image
         src="/placeholder-image.webp"
         width={200}
@@ -19,6 +30,7 @@ const GenericCard: React.FC<ListProps> = ({ data, urlParams }) => {
         alt={`${data.name}`}
         className="w-full h-60 object-cover rounded-t mb-4"
       />
+      }
       <div className="p-4">
         <h3 className="font-semibold text-lg pb-4">{data.name}</h3>
         <p className="font-medium text-sm">{data.bio}</p>

@@ -62,6 +62,29 @@ export type GroupData = {
   community_id: number
 }
 
+export type ChurchData = {
+  church_id: number,
+  joined_date: string,
+  church_name: string,
+  church_bio: string,
+  church_email: string,
+  church_website: string,
+  church_img: string,
+  community_id: number
+}
+
+export type BusinessData = {
+  business_id: number,
+  signup_date: string,
+  business_name: string,
+  business_bio: string,
+  business_email: string,
+  business_website: string,
+  business_img: string,
+  community_id: number
+}
+
+
 export interface GroupJoinResponse  {
   group: GroupCard
 }
