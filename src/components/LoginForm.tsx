@@ -19,17 +19,28 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm<LogInInputs>();
 
+  
+
   const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
     try {
       setLoggingIn(true)
       const userData = await logUserIn(data);
-      setUser(userData.user);
+      const userContextData = {
+        user_id: userData.user.user_id,
+        username: userData.user.username,
+        user_bio: userData.user.user_bio,
+        user_avatar: userData.user.user_avatar,
+        date_joined: userData.user.date_joined,
+        email: userData.user.user_email,
+        status: userData.user.status,
+      }
+      setUser(userContextData);
       setToken(userData.token);
       setCommunities(userData.communities);
       localStorage.setItem("token", userData.token);
-      localStorage.setItem("user", JSON.stringify(userData.user));
+      localStorage.setItem("user", JSON.stringify(userContextData));
       localStorage.setItem("communities", JSON.stringify(userData.communities));
-      router.push("/");
+      router.push("/communities");
     } catch (error: any) {
       setLoggingIn(false)
       if (error.message === "Request failed with status code 404" || error.message === "Request failed with status code 400") {

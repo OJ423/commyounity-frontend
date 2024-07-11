@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useAuth } from "./context/AuthContext";
 import { MdOutlineHolidayVillage } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 
 
@@ -13,8 +13,9 @@ import Image from "next/image";
 
 export default function NavBar() {
   const [navOpen, setNavOpen] = useState<boolean>(false);
-  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships } = useAuth();
+  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships, setUserAdmins } = useAuth();
   const pathname = usePathname()
+  const router = useRouter()
   function handleMenuOpen():void {
     setNavOpen(!navOpen) 
   }
@@ -25,11 +26,14 @@ export default function NavBar() {
     localStorage.removeItem('selectedCommunity')
     localStorage.removeItem('communities')
     localStorage.removeItem('userMemberships')
+    localStorage.removeItem('userAdmins')
     setToken(null);
     setUser(null)
     setSelectedCommunity(null)
     setCommunities([])
     setUserMemberships(null)
+    setUserAdmins(null)
+    router.push('/login')
   }
   
   return(
@@ -48,7 +52,7 @@ export default function NavBar() {
       </section>
       <div onClick={handleMenuOpen} className={`${!navOpen ? 'invisible opacity-0': 'opacity-50'} w-full h-[100vh] top-0 left-0 bg-gray-300 fixed duration-500 ease-out transition-all cursor-pointer z-20`}>
       </div>
-      <section className={`${!navOpen ? 'translate-x-[-100%]': 'translate-x-0'} w-[60vw] sm:w-[30vw] h-[100vh] bg-white left-0 top-0 opacity-100 fixed duration-500 ease-out transition-all p-8 flex flex-col gap-12 justify-center text-center items-center z-40 shadow-lg items-center`}>
+      <section className={`${!navOpen ? 'translate-x-[-100%]': 'translate-x-0'} w-[60vw] sm:w-[30vw] h-[100vh] bg-white left-0 top-0 opacity-100 fixed duration-500 ease-out transition-all p-8 flex flex-col gap-12 justify-center text-left items-start z-40 shadow-lg`}>
       <Link href='/'>
           <Image 
             src="/Commyounity.svg"
@@ -61,17 +65,29 @@ export default function NavBar() {
           />
         </Link>
         {selectedCommunity ? 
-        <p className="text-sm font-semibold text-gray-400">You&apos;re logged into {selectedCommunity.community_name}</p>
+        <div>
+          <p className="text-sm font-semibold text-gray-400">You&apos;re logged into:</p>
+          <p className="text-sm font-semibold text-indigo-500">{selectedCommunity.community_name}</p>
+        </div>
         : null
         }
         <ul className="text-left">
+          <p className="text-xs uppercase font-light mt-8 text-gray-500">Explore</p>
           <Link href="/communities">
             <li onClick={handleMenuOpen} className={`${pathname.includes('/communities') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
               Communities
             </li>
           </Link>
+
           {selectedCommunity ?
           <>
+          <p className="text-xs uppercase font-light mt-8 text-gray-500">Your stuff</p>
+          <Link href="/timeline">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/timeline') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Timeline
+            </li>
+          </Link>
+          <p className="text-xs uppercase font-light mt-8 text-gray-500">In Comm-you-nity</p>
           <Link href="/groups">
             <li onClick={handleMenuOpen} className={`${pathname.includes('/groups') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
               Groups
@@ -85,6 +101,17 @@ export default function NavBar() {
           <Link href="/churches">
             <li onClick={handleMenuOpen} className={`${pathname.includes('/churches') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
               Churches
+            </li>
+          </Link>
+          <Link href="/schools">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/schools') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Schools
+            </li>
+          </Link>
+          <p className="text-xs uppercase font-light mt-8 text-gray-500">You</p>
+          <Link href="/profile">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/profile') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Profile
             </li>
           </Link>
           <li onClick={handleLogOut} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">

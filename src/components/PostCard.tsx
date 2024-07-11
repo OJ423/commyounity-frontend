@@ -10,6 +10,7 @@ import CommentList from "./CommentList";
 import { useAuth } from "./context/AuthContext";
 import { dislikePost, likePost } from "@/utils/apiCalls";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/utils/dataTransformers";
 
 type PostCardProps = {
   data: PostData;
@@ -84,43 +85,32 @@ const PostCard: React.FC<PostCardProps> = ({data, member}) => {
     router.push('/login')
   }
 
-
-  function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-  
-    const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'long' });
-    const year = date.getFullYear();
-  
-    return `${day} ${month} '${String(year).slice(-2)}`;
-  }
-  
   const formattedDate = formatDate(data.post_date);
 
 
   return(
     <>
-    <section className="grid grid-cols-1 md:grid-cols-5 rounded shadow-xl transition-500 duration-200 ease-in ease-out cursor-pointer relative">
+    <section className="grid grid-cols-1 md:grid-cols-5 items-center rounded shadow-xl transition-500 duration-200 ease-in ease-out cursor-pointer relative">
       {data.post_img ?
-        <div className="md:col-span-2 w-full h-40 rounded-t md:rounded-tl overflow-hidden">
+        <div className="md:col-span-2 w-full h-40 max-h-60 md:h-full rounded-t md:rounded-tl overflow-hidden">
           <Image 
             src={data.post_img}
             alt={`${data.post_title} header image`}
             priority
             width={200}
             height={200}
-            className="w-full object-cover rounded-t md:rounded-tl"
+            className="w-full h-full object-cover rounded-t md:rounded-tl"
           />
         </div>
       :
-        <div className="md:col-span-2 w-full md:h-40 rounded-t md:rounded-tl overflow-hidden">
+        <div className="md:col-span-2 w-full md:h-full rounded-t md:rounded-tl overflow-hidden">
           <Image 
             src="/placeholder-image.webp"
             alt={`${data.post_title} header image`}
             priority
             width={200}
             height={200}
-            className="w-full object-cover rounded-t md:rounded-tl"
+            className="w-full h-full object-cover rounded-t md:rounded-tl"
           />
         </div>
       }

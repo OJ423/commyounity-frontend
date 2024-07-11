@@ -9,7 +9,7 @@ type ListProps = {
 
 const GenericCard: React.FC<ListProps> = ({ data, urlParams }) => {
   return (
-    <section className="rounded bg-gray-200 pb-4 drop-shadow-xl flex flex-col justify-between">
+    <section className="rounded bg-gray-200 pb-4 shadow-xl flex flex-col justify-between">
       {data.img ?
       <Image
         src={data.img}

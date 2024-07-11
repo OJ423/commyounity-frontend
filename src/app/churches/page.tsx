@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
+import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
 import { getCommunityChurches } from "@/utils/apiCalls";
 import { CardData } from "@/utils/customTypes";
@@ -117,6 +118,7 @@ export default function Churches() {
           }
         </>
       </main>
+      <PersonalNav />
       <Footer />
     </>
   );

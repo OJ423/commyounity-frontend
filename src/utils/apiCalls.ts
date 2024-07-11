@@ -5,6 +5,8 @@ const instance = axios.create({
   baseURL: 'http://localhost:9090/api/',
 });
 
+// COMMUNITY CALLS
+
 export async function getCommunities() {
   try {
     const response = await instance.get('communities');
@@ -29,6 +31,8 @@ export async function getCommunityById(community_id: string | null) {
   }
 }
 
+// LOGIN AND REGISTRATION
+
 export async function logUserIn(body: LogInInputs) {
   try {
     const response = await instance.post('users/login', body);
@@ -38,6 +42,18 @@ export async function logUserIn(body: LogInInputs) {
     throw error;
   }
 }
+
+export async function registerUser(body: RegistrationInputs) {
+  try {
+    const response = await instance.post('users/register', body)
+    return response.data
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+}
+
+// GET USER MEMBERSHIPS, ADMIN PROFILES AND POSTS
 
 export async function getUserMemberships(user_id:number | undefined, community_id:number | undefined, token: string | null) {
   try {
@@ -53,16 +69,21 @@ export async function getUserMemberships(user_id:number | undefined, community_i
   }
 }
 
-
-export async function registerUser(body: RegistrationInputs) {
+export async function getUserAdmins(user_id:number | undefined, community_id:number | undefined, token: string | null) {
   try {
-    const response = await instance.post('users/register', body)
-    return response.data
+    const response = await instance.get(`users/manage/${user_id}/${community_id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` 
+      }}
+    );
+    return response.data;
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
   }
 }
+
+// HANDLE JOIN AND LEAVE COMMUNITIES
 
 export async function joinUser(user_id: string, id: string, type:string, token: string | null ) {
   try {
@@ -102,6 +123,8 @@ export async function leaveUser(user_id: string | null, id: string | null,type: 
   }
 }
 
+// GET COMMUNITY GROUPS ETC
+
 export async function getCommunityGroups(community_id: string | null) {
   if (community_id) {
     try {
@@ -109,6 +132,7 @@ export async function getCommunityGroups(community_id: string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error logging in:', error)
+      throw error;
     }
   }
 }
@@ -120,6 +144,7 @@ export async function getCommunityChurches(community_id: string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error logging in:', error)
+      throw error;
     }
   }
 }
@@ -131,9 +156,24 @@ export async function getCommunityBusinesses(community_id: string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error logging in:', error)
+      throw error;
     }
   }
 }
+
+export async function getCommunitySchools(community_id: string | null) {
+  if (community_id) {
+    try {
+      const response = await instance.get(`communities/${community_id}/schools`)
+      return response.data
+    } catch(error:any) {
+      console.error('Error logging in:', error)
+      throw error;
+    }
+  }
+}
+
+// GET GROUP ETC PROFILES
 
 export async function getGroupById(group_id:string | null) {
   if (group_id) {
@@ -142,6 +182,7 @@ export async function getGroupById(group_id:string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error loggin in:', error)
+      throw error;
     }
   }
 }
@@ -153,6 +194,7 @@ export async function getChurchById(church_id:string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error loggin in:', error)
+      throw error;
     }
   }
 }
@@ -164,10 +206,29 @@ export async function getBusinessById(business_id:string | null) {
       return response.data
     } catch(error:any) {
       console.error('Error loggin in:', error)
+      throw error;
     }
   }
 }
 
+export async function getSchoolById(school_id:string | null, token: string | null) {
+  if (school_id) {
+    try {
+      const response = await instance.get(`schools/${school_id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}` 
+        }}
+      );
+      console.log(response.data)
+      return response.data
+    } catch(error:any) {
+      console.error('Error loggin in:', error)
+      throw error;
+    }
+  }
+}
+
+// POST AND COMMENT CALLS
 
 export async function likePost(user_id:number | undefined, post_id:number | null, token: string | null) {
   if (user_id) {
@@ -204,6 +265,20 @@ export async function dislikePost(user_id:number | undefined, post_id:number | n
 export async function getPostComments(post_id:number) {
   try {
     const response = await instance.get(`posts/${post_id}`)
+    return response.data
+  } catch(error:any) {
+    console.error('Error log in:', error)
+    throw error
+  }
+}
+
+export async function getUsersCommunityPosts(user_id:number, community_id:number, filter:string | null) {
+  try {
+    const response = await instance.get(`posts/user/${user_id}/${community_id}`, {
+      params: {
+        "filter": filter
+      }
+    })
     return response.data
   } catch(error:any) {
     console.error('Error log in:', error)

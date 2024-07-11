@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
+import PersonalNav from "@/components/PersonalNav"
 import PostCard from "@/components/PostCard"
 import { useAuth } from "@/components/context/AuthContext"
 import { getGroupById } from "@/utils/apiCalls"
@@ -94,6 +95,7 @@ export default function GroupPage() {
       </div>
     </section>
   </main>
+  <PersonalNav />
   <Footer />
   </>
   )

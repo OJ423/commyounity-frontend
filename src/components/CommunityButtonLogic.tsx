@@ -1,4 +1,4 @@
-import { getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
+import { getUserAdmins, getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
 import { useAuth } from "./context/AuthContext"
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { CommunitiesLocalStorage, CommunityProfile, UserJoinInputs, JoinedCommunityResponse } from "@/utils/customTypes";
@@ -11,7 +11,7 @@ interface CommunityButtonLogicProps {
 }
 
 const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMember, setCommunityMember, setCommunityData}) => {
-  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships, setUserPostLikes } = useAuth()
+  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships, setUserPostLikes, userAdmins, setUserAdmins } = useAuth()
 
   const router = useRouter()
 
@@ -42,6 +42,21 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     }
   }
 
+  async function setAdmins(user_id: number | undefined, communityId:number) {
+    try{
+      if (user) {
+        const admins = await getUserAdmins(user_id, communityId, token);
+        setUserAdmins(admins);
+        localStorage.setItem('userAdmins', JSON.stringify(admins));
+      }
+    } catch(error:any) {
+      if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
+        invalidTokenResponse()
+      }
+      console.log(error.response.data.msg)
+    }
+  }
+
   async function handleSwitchCommunity() {
     try {
       if (community_id && communityMember) {
@@ -49,6 +64,7 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
         setSelectedCommunity(chosenCommunity)
         if(user) {
           setMemberships(+user?.user_id, +community_id);
+          setAdmins(+user?.user_id, +community_id)
         }
         localStorage.setItem('selectedCommunity', JSON.stringify(chosenCommunity));
       }
@@ -59,8 +75,15 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
   }
 
   function handleStopUsingCommunity() {
-      setSelectedCommunity(null)
-      localStorage.removeItem('selectedCommunity');
+    localStorage.removeItem('selectedCommunity');
+    localStorage.removeItem('selectedCommunity')
+    localStorage.removeItem('userMemberships')
+    localStorage.removeItem('userAdmins')
+    localStorage.removeItem('userPostLikes')
+    setSelectedCommunity(null)
+    setUserMemberships(null)
+    setUserAdmins(null)
+    setUserPostLikes([])
   }
 
   const invalidTokenResponse = () :void => {
@@ -69,12 +92,14 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
     localStorage.removeItem('communities')
     localStorage.removeItem('selectedCommunity')
     localStorage.removeItem('userMemberships')
+    localStorage.removeItem('userAdmins')
     localStorage.removeItem('userPostLikes')
     setToken(null);
     setUser(null)
     setCommunities([])
     setSelectedCommunity(null)
     setUserMemberships(null)
+    setUserAdmins(null)
     setUserPostLikes([])
     router.push('/login')
   }
@@ -86,6 +111,7 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
         setSelectedCommunity(fetchData.community);
         setCommunityMember(true);
         setMemberships(+user?.user_id, +community_id);
+        setAdmins(+user?.user_id, +community_id);
         setCommunities([
           ...communities,
           fetchData.community
@@ -131,7 +157,6 @@ const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMem
       console.log(error.response.data.msg)
     }
   }
-
 
   return(
     <>

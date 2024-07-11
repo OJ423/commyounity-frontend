@@ -5,21 +5,21 @@ import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
 import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
-import { getCommunityBusinesses } from "@/utils/apiCalls";
+import { getCommunitySchools } from "@/utils/apiCalls";
 import { CardData } from "@/utils/customTypes";
-import { transformBusinessData } from "@/utils/dataTransformers";
+import { transformSchoolData } from "@/utils/dataTransformers";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function Businesses() {
+export default function Schools() {
   const { selectedCommunity, communities } = useAuth();
-  const [ businessData, setBusinessData] = useState<CardData[] | []>([]);
+  const [ schoolData, setSchoolData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  function handleCreateBusiness() {
-    alert("this is a placeholder for creating a new business")
+  function handleCreateSchool() {
+    alert("this is a placeholder for creating a new school")
   }
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Businesses() {
     }
     const fetchData = async () => {
       try {
-        const data = await getCommunityBusinesses(
+        const data = await getCommunitySchools(
           String(selectedCommunity?.community_id)
         );
         const communityExists = communities.some(
@@ -37,15 +37,15 @@ export default function Businesses() {
         if (communityExists) {
           setCommunityMember(true)
         }
-        const businesses: CardData[] = await transformBusinessData(data.businesses);
-        setBusinessData(businesses);
+        const schools: CardData[] = await transformSchoolData(data.schools);
+        setSchoolData(schools);
         setIsLoading(false);
       } catch (error: any) {
         console.log(error.message);
       }
     };
     fetchData();
-  }, [selectedCommunity]);
+  }, [selectedCommunity, communities]);
 
   return (
     <>
@@ -53,18 +53,18 @@ export default function Businesses() {
       <main className="flex flex-col items-center px-4 py-20 justify-center">
         <>
           {selectedCommunity ?
-            <section id="#businesses" className="max-w-screen-lg">
+            <section id="#schools" className="max-w-screen-lg">
               <h1 className="font-bold text-3xl mb-4">
-                Businesses in {selectedCommunity.community_name}
+                Schools in {selectedCommunity.community_name}
               </h1>
               <>
-              {businessData.length ?
+              {schoolData.length ?
                 <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}>
-                  {businessData.map((business: CardData) => (
+                  {schoolData.map((school: CardData) => (
                     <GenericCard
-                      key={business.id}
-                      data={business}
-                      urlParams={"/businesses/"}
+                      key={school.id}
+                      data={school}
+                      urlParams={"/schools/"}
                     />
                   ))}
                 </div>
@@ -81,9 +81,9 @@ export default function Businesses() {
                       height={200}
                       className="rounded shadow-xl"
                     />
-                    <h2 className="font-semibold text-2xl">There are no businesses</h2>
+                    <h2 className="font-semibold text-2xl">There are no schools</h2>
                     <p>Why not create one?</p>
-                    <Link href='' onClick={handleCreateBusiness} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+                    <Link href='' onClick={handleCreateSchool} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-school-500 hover:text-white transition-all duration-500 ease-out">
                       <span>Create New Group</span>
                     </Link>
                   </section>
@@ -98,7 +98,7 @@ export default function Businesses() {
                       height={200}
                       className="rounded shadow-xl"
                     />
-                    <h2 className="font-semibold text-2xl">There are no businesses</h2>
+                    <h2 className="font-semibold text-2xl">There are no schools</h2>
                     <p>Join the community to create one</p>
                     <Link href={`/communities/${selectedCommunity.community_name}?community=${selectedCommunity.community_id}`} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
                       <span>Visit the community to join</span>
@@ -113,7 +113,7 @@ export default function Businesses() {
             : 
             <section className="min-h-96 flex flex-col justify-center items-start">
               <h2 className="font-bold text-2xl mb-4">No community selected</h2>
-              <p className="text-xl font-medium">Please <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href='/communities'>select a community</Link> to see its businesses.</p>
+              <p className="text-xl font-medium">Please <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href='/communities'>select a community</Link> to see its schools.</p>
             </section>
           }
         </>

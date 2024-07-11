@@ -84,6 +84,18 @@ export type BusinessData = {
   community_id: number
 }
 
+export type SchoolData = {
+  school_id: number,
+  create_date: string,
+  school_name: string,
+  school_bio: string,
+  school_email: string,
+  school_website: string,
+  school_phone: string,
+  school_img: string,
+  community_id: number
+}
+
 
 export interface GroupJoinResponse  {
   group: GroupCard
@@ -122,6 +134,7 @@ export interface Comment {
   comment_body: string,
   author: number,
   author_name: string,
+  user_avatar:string,
   post_id: number,
   comment_ref: number | null
 }

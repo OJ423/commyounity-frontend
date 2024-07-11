@@ -6,7 +6,7 @@ import NavBar from './NavBar'
 import { useAuth } from './context/AuthContext'
 
 export default function Header() {
-  const { selectedCommunity } = useAuth()
+  const { selectedCommunity, user } = useAuth()
 
   return(
     <header className="w-[100%] box-sizing p-4 bg-white shadow-lg">
@@ -28,7 +28,32 @@ export default function Header() {
           :
           null  
           }
-          <NavBar />
+          <div className='flex gap-2 items-center'>
+            <NavBar />
+            {user?
+            <Link className='w-12 h-12' href="/profile">
+              {user.user_avatar ?
+              <Image 
+                src={user.user_avatar}
+                alt='Click to visit profile page'
+                width={40}
+                height={40}
+                className='rounded-full object-cover w-full h-full'
+              />
+              :
+              <Image 
+                src='/empty-placeholder.jpg'
+                alt='Click to visit profile page'
+                width={20}
+                height={20}
+                className='rounded-full object-cover w-full h-full'
+              />
+              }
+
+            </Link>
+            : null
+            }
+          </div>
         </div>
 
       </section>

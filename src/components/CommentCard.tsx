@@ -4,6 +4,7 @@ import { Comment, PostData } from "@/utils/customTypes"
 import { useAuth } from "./context/AuthContext"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 interface CommentCardProps {
   comment: Comment,
@@ -27,6 +28,7 @@ const CommentCard: React.FC<CommentCardProps> = ({comment, comments, post}) => {
         } 
       }
     },[post, userMemberships])
+    console.log(comment.user_avatar)
 
   return(
     <>
@@ -55,10 +57,37 @@ const CommentCard: React.FC<CommentCardProps> = ({comment, comments, post}) => {
           :
             null
           }
-          <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">{comment.author_name}</p>
+          <div className="flex gap-4 items-center">
+            {comment.user_avatar ?
+            <div className="w-12 h-12">
+              <Image
+                src={comment.user_avatar}
+                alt={comment.author_name}
+                width={20}
+                height={20}
+                className="rounded-full w-full h-full object-cover"
+              />
+            </div>
+            : null
+            }
+            <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">{comment.author_name}</p>
+          </div>
         </div>
         :
-        <div className="flex justify-end items-center gap-2 mt-2 pt-2 border-t border-indigo-100">
+        <div className="flex justify-end items-center gap-4 mt-2 pt-2 border-t border-indigo-100">
+          {comment.user_avatar ?
+            <div className="w-12 h-12">
+              <Image
+                src={comment.user_avatar}
+                alt={comment.author_name}
+                width={20}
+                height={20}
+                quality={60}
+                className="rounded-full w-full h-full object-cover"
+              />
+            </div>
+            : null
+            }
           <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">{comment.author_name}</p>
         </div>
         }

@@ -15,6 +15,7 @@ import GenericCard from "../../../components/GenericCard";
 import CommunityList from "@/components/CommunityList";
 import { transformBusinessData, transformChurchData, transformGroupData, transformSchoolData } from "@/utils/dataTransformers";
 import CommunityButtonLogic from "@/components/CommunityButtonLogic";
+import PersonalNav from "@/components/PersonalNav";
 
 
 export default function CommunityPage() {
@@ -329,6 +330,7 @@ export default function CommunityPage() {
         }
       </main>
       }
+    <PersonalNav />
     <Footer />
   </>
   )

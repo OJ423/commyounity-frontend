@@ -1,3 +1,5 @@
+"use client"
+
 import { Community } from "@/utils/customTypes";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,12 +10,28 @@ import {
   IoWalkOutline,
 } from "react-icons/io5";
 import { MdOutlineChurch } from "react-icons/md";
+import { useAuth } from "./context/AuthContext";
+import { useEffect, useState } from "react";
 
 type ListProps = {
   community: Community;
 };
 
 const CommunityCard: React.FC<ListProps> = ({ community }) => {
+  const {communities} = useAuth();
+  const [communityMember, setCommunityMember] = useState<boolean>();
+
+  useEffect(() => {
+   if(communities) {
+    const memberCheck = communities.some(
+      (c) => c.community_id === community.community_id
+    );
+    if (memberCheck) {
+      setCommunityMember(true)
+    }
+   }
+  },[communities, community.community_id])
+
   return (
     <section className="rounded bg-gray-200 shadow-lg">
       <Image
@@ -34,15 +52,18 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
           <IoPeopleOutline size={25} />
           <p className="font-bold">{community.member_count} members</p>
         </div>
-        <Link
-          href={{
-            pathname: `/communities/${community.community_name}`,
-            query: {community: community.community_id},
-          }}
-          className="border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-        >
-          <span>View</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={{
+              pathname: `/communities/${community.community_name}`,
+              query: {community: community.community_id},
+            }}
+            className="border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+          >
+            <span>View</span>
+          </Link>
+
+        </div>
       </div>
       <div className="flex gap-4 items-center justify-between px-4 py-4 bg-gray-300 rounded-b">
         <div className="flex gap-2 justify-center">
