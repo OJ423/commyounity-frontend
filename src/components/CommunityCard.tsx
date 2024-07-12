@@ -12,13 +12,15 @@ import {
 import { MdOutlineChurch } from "react-icons/md";
 import { useAuth } from "./context/AuthContext";
 import { useEffect, useState } from "react";
+import SwitchCommunityButton from "./community-membership/SwitchCommunityButton";
+import StopUsingCommunity from "./community-membership/StopUsingCommunity";
 
 type ListProps = {
   community: Community;
 };
 
 const CommunityCard: React.FC<ListProps> = ({ community }) => {
-  const {communities} = useAuth();
+  const {communities, selectedCommunity} = useAuth();
   const [communityMember, setCommunityMember] = useState<boolean>();
 
   useEffect(() => {
@@ -50,7 +52,7 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
       <div className="flex gap-4 items-center justify-between px-2 pb-4">
         <div className="flex gap-2 justify-center">
           <IoPeopleOutline size={25} />
-          <p className="font-bold">{community.member_count} members</p>
+          <p className="font-bold">{community.member_count}</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -62,6 +64,10 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
           >
             <span>View</span>
           </Link>
+          {communityMember ? !selectedCommunity ?
+          <SwitchCommunityButton community_id={String(community.community_id)} community_name={community.community_name} communityMember={communityMember} />
+          : <StopUsingCommunity />
+        : null }
 
         </div>
       </div>

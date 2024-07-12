@@ -7,13 +7,14 @@ import { MdOutlineHolidayVillage } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { LogUserOut } from "@/utils/logOut";
 
 
 
 
 export default function NavBar() {
   const [navOpen, setNavOpen] = useState<boolean>(false);
-  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships, setUserAdmins } = useAuth();
+  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships, setUserAdmins, setUserPostLikes } = useAuth();
   const pathname = usePathname()
   const router = useRouter()
   function handleMenuOpen():void {
@@ -21,18 +22,13 @@ export default function NavBar() {
   }
 
   function handleLogOut():void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('selectedCommunity')
-    localStorage.removeItem('communities')
-    localStorage.removeItem('userMemberships')
-    localStorage.removeItem('userAdmins')
-    setToken(null);
-    setUser(null)
-    setSelectedCommunity(null)
-    setCommunities([])
-    setUserMemberships(null)
-    setUserAdmins(null)
+    LogUserOut({setToken,
+      setUser,
+      setCommunities,
+      setSelectedCommunity,
+      setUserMemberships,
+      setUserAdmins,
+      setUserPostLikes})
     router.push('/login')
   }
   

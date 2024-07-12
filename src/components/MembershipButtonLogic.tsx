@@ -112,6 +112,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
 
   return (
     <>
+    {user ?
+    <>
       {type === "business" ?
       null
       :
@@ -139,6 +141,9 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       </>
     }
     </>
+  : null
+  }
+  </>
   );
 };
 
