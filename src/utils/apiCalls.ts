@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { LogInInputs, RegistrationInputs, UserJoinInputs } from './customTypes';
+import { headers } from 'next/headers';
 
 const instance = axios.create({
   baseURL: 'http://localhost:9090/api/',
@@ -31,7 +32,7 @@ export async function getCommunityById(community_id: string | null) {
   }
 }
 
-// LOGIN AND REGISTRATION
+// USER LOGIN, REGISTRATION AND PATCH
 
 export async function logUserIn(body: LogInInputs) {
   try {
@@ -45,11 +46,37 @@ export async function logUserIn(body: LogInInputs) {
 
 export async function registerUser(body: RegistrationInputs) {
   try {
-    const response = await instance.post('users/register', body)
+    const registerBody = {username:body.username, email:body.email, password:body.password}
+    const response = await instance.post('users/register', registerBody)
+    console.log(response)
     return response.data
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
+  }
+}
+
+
+export async function verifyNewUserAccount(token: string) {
+  try {
+    const response = await instance.get(`/users/verify-email?token=${token}`)
+    return response.data
+  } catch (error) {
+    console.error('Error logged as', error)
+    throw error
+  }
+}
+
+export async function patchUser(body:any, user_id: string | undefined, token: string | null) {
+  try {
+    const response = await instance.patch(`users/edit/${user_id}`, body, {
+      headers: {
+      'Authorization': `Bearer ${token}`
+    }})
+    return response.data
+  } catch(error) {
+    console.error('An error has occurred: ', error)
+    throw error
   }
 }
 
@@ -285,6 +312,27 @@ export async function getUsersCommunityPosts(user_id:number, community_id:number
     throw error
   }
 }
+
+// BLOB STORAGE
+
+export async function uploadFile(file: any, token: string | null) {
+  const formData = new FormData();
+  formData.append('image', file);
+  try {
+    const response = await instance.post(`files/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch(error:any) {
+    console.error('Error uploading the file:', error)
+    throw error
+  }
+}
+
+
 
 
 

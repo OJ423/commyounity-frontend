@@ -42,7 +42,7 @@ export default function Header() {
               />
               :
               <Image 
-                src='/empty-placeholder.jpg'
+                src='/blank_user_avatar.png'
                 alt='Click to visit profile page'
                 width={20}
                 height={20}

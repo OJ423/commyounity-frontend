@@ -56,12 +56,14 @@ export default function LoginForm() {
       <>
       <h1 className="font-bold text-3xl mb-8">Log in</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+        <label htmlFor="username">Username</label>
         <input
           className="p-4 mb-4 rounded"
           placeholder="Email Address/Or Username"
           {...register("username", {
             required: "Email or Username is required",
           })}
+          id="username"
           name="username"
           autoComplete="username"
           />
@@ -70,7 +72,7 @@ export default function LoginForm() {
             Correct email format is required
           </span>
         )}
-
+        <label htmlFor="password">Password</label>
         <input
           className="p-4 mb-8 rounded"
           placeholder="Password"
@@ -78,7 +80,9 @@ export default function LoginForm() {
             required: "Password required",
             minLength: 6,
           })}
+          id="password"
           name="password"
+          type="password"
           autoComplete="current-password"
           />
         {errors.password && (

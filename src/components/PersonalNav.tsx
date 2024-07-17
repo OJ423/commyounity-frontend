@@ -14,11 +14,12 @@ export default function PersonalNav() {
   const [displayMenu, setDisplayMenu] = useState<boolean>(false);
   const { selectedCommunity, userMemberships, userAdmins } = useAuth()
   const [adminExists, setAdminExists] = useState<boolean>(false);
-  const [membershipsExist, setMemebershipsExist] = useState<boolean>(false);
+  const [membershipsExist, setMembershipsExist] = useState<boolean>(false);
 
   const handleDisplayMenu = () => {
     setDisplayMenu(!displayMenu)
   }
+
 
   useEffect(() => {
     if (userAdmins) {
@@ -38,7 +39,7 @@ export default function PersonalNav() {
         userMemberships.userMemberships.churches.length > 0 ||
         userMemberships.userMemberships.groups.length
       ) {
-        setMemebershipsExist(true);
+        setMembershipsExist(true);
       }
     }
   }, [userAdmins, userMemberships]);

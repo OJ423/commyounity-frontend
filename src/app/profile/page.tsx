@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/components/context/AuthContext";
 import ProfilePagesNav from "@/components/ProfilePagesNav";
+import UploadAvatar from "@/components/UploadAvatar";
 import { formatDate } from "@/utils/dataTransformers";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,7 +29,8 @@ export default function Profile() {
             <p className="text-sm font-medium mb-4">
               Profile Pic:
             </p>
-            <div className="w-[200px] h-[200px] lg:w-[300px] lg:h-[300px] xl:w-[400px] xl:h-[400px]">
+            <div className="w-[200px] h-[200px] lg:w-[300px] lg:h-[300px] xl:w-[400px] xl:h-[400px] relative">
+              {user.user_avatar ?
               <Image 
                 src={user.user_avatar}
                 alt={`${user.username} profile pic`}
@@ -36,6 +38,16 @@ export default function Profile() {
                 height={200}
                 className="w-full h-full object-cover rounded-xl"
               />
+              :
+              <Image 
+                src='/blank_user_avatar.png'
+                alt={`${user.username} profile pic`}
+                width={200}
+                height={200}
+                className="w-full h-full object-cover rounded-xl"
+              />
+              }
+              <UploadAvatar />
             </div>
           </div>
           <div className="flex flex-col gap-4 items-start">
@@ -69,8 +81,8 @@ export default function Profile() {
           <p className="text-sm font-medium mb-8">
             Your bio:
           </p>
-          <p className="text-lg font-light p-8 rounded border border-gray-300">
-            {user.user_bio}
+          <p className="text-lg font-light p-8 rounded border border-gray-300 w-full">
+            {user.user_bio ? user.user_bio : "Write a little about yourself to get to know other comm-YOU-nity members"}
           </p>
         </div>
         <div className="flex justify-between items-center gap-4 mb-20 md:mb-0">

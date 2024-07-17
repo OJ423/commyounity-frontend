@@ -1,17 +1,52 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FiHome, FiUser, FiUsers, FiSettings, FiMapPin } from "react-icons/fi";
+import {
+  FiHome,
+  FiActivity,
+  FiUser,
+  FiUsers,
+  FiSettings,
+  FiMapPin,
+  FiLogOut,
+} from "react-icons/fi";
 import { useAuth } from "./context/AuthContext";
 import Image from "next/image";
+import { LogUserOut } from "@/utils/logOut";
 
 export default function ProfilePagesNav() {
   const pathname = usePathname();
-  const { userAdmins, selectedCommunity, userMemberships } = useAuth();
+  const {
+    userAdmins,
+    selectedCommunity,
+    userMemberships,
+    setToken,
+    setUser,
+    setCommunities,
+    setSelectedCommunity,
+    setUserAdmins,
+    setUserMemberships,
+    setUserPostLikes,
+  } = useAuth();
   const [adminExists, setAdminExists] = useState<boolean>(false);
-  const [membershipsExist, setMemebershipsExist] = useState<boolean>(false);
+  const [membershipsExist, setMembershipsExist] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  function handleLogout():void {
+    LogUserOut({
+      setToken,
+      setUser,
+      setCommunities,
+      setSelectedCommunity,
+      setUserMemberships,
+      setUserAdmins,
+      setUserPostLikes,
+    });
+    router.push('/login');
+  }
 
   useEffect(() => {
     if (userAdmins) {
@@ -31,7 +66,7 @@ export default function ProfilePagesNav() {
         userMemberships.userMemberships.churches.length > 0 ||
         userMemberships.userMemberships.groups.length
       ) {
-        setMemebershipsExist(true);
+        setMembershipsExist(true);
       }
     }
   }, [userAdmins, userMemberships]);
@@ -42,6 +77,7 @@ export default function ProfilePagesNav() {
         <div className="flex gap-4 items-center justify-center md:hidden">
           <Link href="/profile">
             <FiUser
+              aria-label="Profile page"
               size={24}
               className={`${
                 pathname === "/profile" ? "text-indigo-600" : "text-auto"
@@ -53,6 +89,7 @@ export default function ProfilePagesNav() {
               {membershipsExist ? (
                 <Link href="/profile/memberships">
                   <FiUsers
+                    aria-label={`Your memberships in ${selectedCommunity.community_name}`} 
                     size={24}
                     className={`${
                       pathname.includes("/profile/memberships")
@@ -66,6 +103,7 @@ export default function ProfilePagesNav() {
                 {adminExists ? (
                   <Link href="/profile/admin">
                     <FiSettings
+                     aria-label={`Groups and things you manage in ${selectedCommunity.community_name}`}
                       size={24}
                       className={`${
                         pathname.includes("/profile/admin")
@@ -75,11 +113,19 @@ export default function ProfilePagesNav() {
                     />
                   </Link>
                 ) : null}
+                <Link href="/timeline">
+                  <FiActivity
+                    aria-label={`See latest posts for groups and things you are a member of in ${selectedCommunity.community_name}`}
+                    size={24}
+                    className={`hover:opacity-50 cursor-pointer transition-all duration-500`}
+                  />
+                </Link>
               </>
             </>
           ) : null}
           <Link href="/profile/communities">
             <FiMapPin
+              aria-label="Choose a community to engage with"
               size={24}
               className={`${
                 pathname.includes("/profile/communities")
@@ -88,8 +134,9 @@ export default function ProfilePagesNav() {
               } hover:opacity-50 cursor-pointer transition-all duration-500`}
             />
           </Link>
-          <Link href="/">
-            <FiHome
+          <Link href="" onClick={handleLogout}>
+            <FiLogOut
+              aria-label="Logout of community"
               size={24}
               className={`hover:opacity-50 cursor-pointer transition-all duration-500`}
             />
@@ -187,17 +234,26 @@ export default function ProfilePagesNav() {
               <p>Your Communities</p>
             </div>
           </Link>
-          <Link href="/">
+          <Link href="/timeline">
             <div
               className={`list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}
             >
-              <FiHome
+              <FiActivity
                 size={24}
                 className={`hover:opacity-50 cursor-pointer transition-all duration-500`}
               />
               <p>Timeline</p>
             </div>
           </Link>
+            <div onClick={handleLogout}
+              className={`cursor-pointer list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}
+            >
+              <FiLogOut
+                size={24}
+                className={`hover:opacity-50 cursor-pointer transition-all duration-500`}
+              />
+              <p>Logout</p>
+            </div>
         </div>
       </section>
       <div className="fixed top-8 right-8 z-20 hover:opacity-50 transition-all duration-500">

@@ -3,6 +3,7 @@ import { useAuth } from "./context/AuthContext";
 import { GroupJoinResponse } from "@/utils/customTypes";
 import { getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
 import { useRouter } from "next/navigation";
+import { LogUserOut } from "@/utils/logOut";
 
 type ButtonProps = {
   member: boolean;
@@ -27,24 +28,24 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     setUserMemberships,
     token,
     setToken,
-    setUserPostLikes
+    setUserPostLikes,
+    setUserAdmins
   } = useAuth();
   const router = useRouter();
 
   const invalidTokenResponse = (): void => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("communities");
-    localStorage.removeItem("selectedCommunity");
-    localStorage.removeItem("userMembership");
-    localStorage.removeItem("userPostLikes");
-    setToken(null);
-    setUser(null);
-    setCommunities([]);
-    setSelectedCommunity(null);
-    setUserPostLikes([])
-    router.push("/login");
+      LogUserOut({
+        setToken,
+        setUser,
+        setCommunities,
+        setSelectedCommunity,
+        setUserMemberships,
+        setUserAdmins,
+        setUserPostLikes,
+      });
+      router.push("/login");
   };
+
 
   async function setMemberships(user_id: number | undefined, communityId:number, token: string | null) {
     try{

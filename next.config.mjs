@@ -56,6 +56,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'comyounity-image-storage.s3.eu-west-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
