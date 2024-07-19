@@ -37,7 +37,7 @@ export default function VerifyPage() {
 
           const timeoutId = setTimeout(() => {
             router.push('/communities');
-          }, 3000);
+          }, 2000);
 
         } catch(error:any) {
           console.log(error)

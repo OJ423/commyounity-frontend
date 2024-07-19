@@ -84,9 +84,6 @@ export default function Groups() {
                     />
                     <h2 className="font-semibold text-2xl">There are no groups</h2>
                     <p>Why not create one?</p>
-                    <Link href='' onClick={handleCreateGroup} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Create New Group</span>
-                    </Link>
                   </section>
                   :
                   <section className="flex flex-col gap-4 justify-center items-start">

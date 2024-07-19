@@ -24,12 +24,11 @@ export default function StopUsingCommunity() {
   }
 
   return (
-    <Link
-      href=""
+    <button
       onClick={handleStopUsingCommunity}
       className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
     >
       <span>Jump Out</span>
-    </Link>
+    </button>
   );
 }

@@ -102,6 +102,10 @@ export interface GroupJoinResponse  {
   group: GroupCard
 }
 
+export interface ChurchJoinResponse  {
+  church: NewChurchData
+}
+
 export type BusinessMembership = {
   business_id: number,
   business_bio: string,
@@ -140,6 +144,52 @@ export interface Comment {
   comment_ref: number | null
 }
 
+// New Groups Etc Inputs
+
+export type NewGroupData = {
+  group_name: string,
+  group_bio: string,
+  group_img: string,
+  community_id: number,
+}
+
+export type NewChurchData = {
+  church_name: string,
+  church_bio: string,
+  church_email: string | null,
+  church_website: string | null,
+  church_img: string | null,
+  community_id: number,
+}
+
+export type NewBusinessData = {
+  business_name: string,
+  business_bio: string,
+  business_email: string | null,
+  business_website: string | null,
+  business_img: string | null,
+  community_id: number,
+}
+
+export type NewSchoolData = {
+  school_name: string,
+  school_bio: string,
+  school_email: string,
+  school_website: string,
+  school_phone: string,
+  school_img: string,
+  community_id: number,
+}
+
+export type GenericFormData = {
+  title: string,
+  bio: string,
+  img: File[] | null,
+  email: string | null,
+  website: string | null,
+  phone: string | null
+}
+
 
 // Transformed Data
 export interface CardData {
@@ -160,7 +210,7 @@ export interface ChurchCard {
   church_bio: string,
   church_id: number,
   church_img: string,
-  church_name: string
+  church_name: string,
 }
 
 export interface GroupCard {

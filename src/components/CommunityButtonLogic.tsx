@@ -1,7 +1,6 @@
-import { getUserAdmins, getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
 import { useAuth } from "./context/AuthContext"
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { CommunitiesLocalStorage, CommunityProfile, UserJoinInputs, JoinedCommunityResponse } from "@/utils/customTypes";
+import { useParams, useSearchParams } from "next/navigation";
+import { CommunityProfile } from "@/utils/customTypes";
 import Link from "next/link";
 import StopUsingCommunity from "./community-membership/StopUsingCommunity";
 import { LogUserOut } from "@/utils/logOut";
@@ -16,15 +15,13 @@ interface CommunityButtonLogicProps {
 }
 
 const CommunityButtonLogic: React.FC<CommunityButtonLogicProps> = ({communityMember, setCommunityMember, setCommunityData}) => {
-  const { user, setUser, token, setToken, selectedCommunity, setSelectedCommunity, communities, setCommunities, userMemberships, setUserMemberships, setUserPostLikes, userAdmins, setUserAdmins } = useAuth()
-
-  const router = useRouter()
+  const { user, selectedCommunity,  } = useAuth()
 
   const searchParams = useSearchParams()
   const community_id = searchParams.get('community')
   // Type guard for rendered checks
   const isDefined = (value: any): value is string => value !== null && value !== undefined;
-  const isSelected = isDefined(community_id) && selectedCommunity?.community_id === +community_id;
+  const isSelected = isDefined(community_id) && String(selectedCommunity?.community_id) === community_id;
 
   const params = useParams<{community: string}>()
 

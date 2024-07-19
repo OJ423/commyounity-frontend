@@ -29,8 +29,7 @@ export default function Header() {
           null  
           }
           <div className='flex gap-2 items-center'>
-            <NavBar />
-            {user?
+          {user?
             <Link className='w-12 h-12' href="/profile">
               {user.user_avatar ?
               <Image 
@@ -53,6 +52,7 @@ export default function Header() {
             </Link>
             : null
             }
+            <NavBar />
           </div>
         </div>
 

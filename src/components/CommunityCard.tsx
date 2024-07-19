@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Community } from "@/utils/customTypes";
 import Image from "next/image";
@@ -14,25 +14,26 @@ import { useAuth } from "./context/AuthContext";
 import { useEffect, useState } from "react";
 import SwitchCommunityButton from "./community-membership/SwitchCommunityButton";
 import StopUsingCommunity from "./community-membership/StopUsingCommunity";
+import { useRouter } from "next/navigation";
 
 type ListProps = {
   community: Community;
 };
 
 const CommunityCard: React.FC<ListProps> = ({ community }) => {
-  const {communities, selectedCommunity} = useAuth();
+  const { communities, selectedCommunity } = useAuth();
   const [communityMember, setCommunityMember] = useState<boolean>();
 
   useEffect(() => {
-   if(communities) {
-    const memberCheck = communities.some(
-      (c) => c.community_id === community.community_id
-    );
-    if (memberCheck) {
-      setCommunityMember(true)
+    if (communities) {
+      const memberCheck = communities.some(
+        (c) => c.community_id === community.community_id
+      );
+      if (memberCheck) {
+        setCommunityMember(true);
+      }
     }
-   }
-  },[communities, community.community_id])
+  }, [communities, community.community_id]);
 
   return (
     <section className="rounded bg-gray-200 shadow-lg">
@@ -58,17 +59,23 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
           <Link
             href={{
               pathname: `/communities/${community.community_name}`,
-              query: {community: community.community_id},
+              query: { community: community.community_id },
             }}
             className="border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
           >
             <span>View</span>
           </Link>
-          {communityMember ? !selectedCommunity ?
-          <SwitchCommunityButton community_id={String(community.community_id)} community_name={community.community_name} communityMember={communityMember} />
-          : <StopUsingCommunity />
-        : null }
-
+          {communityMember ? (
+            selectedCommunity?.community_id === community.community_id ? (
+              <StopUsingCommunity />
+            ) : (
+              <SwitchCommunityButton
+                community_id={String(community.community_id)}
+                community_name={community.community_name}
+                communityMember={communityMember}
+              />
+            )
+          ) : null}
         </div>
       </div>
       <div className="flex gap-4 items-center justify-between px-4 py-4 bg-gray-300 rounded-b">
