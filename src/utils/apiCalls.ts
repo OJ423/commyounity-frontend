@@ -1,5 +1,9 @@
 import axios from "axios";
 import {
+  EditBusinessData,
+  EditChurchData,
+  EditGroupData,
+  EditSchoolData,
   LogInInputs,
   NewBusinessData,
   NewChurchData,
@@ -293,7 +297,6 @@ export async function getSchoolById(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error loggin in:", error);
@@ -315,6 +318,7 @@ export async function addNewEntity(
   if (type === "group") urlParam = "groups"
   if (type === "church") urlParam = "churches"
   if (type === "business") urlParam = "businesses"
+  if (type === "school") urlParam = "schools"
 
   if (body) {
     try {
@@ -332,6 +336,82 @@ export async function addNewEntity(
     }
   }
 }
+
+export async function patchEntity(
+  body: EditGroupData | EditChurchData | EditSchoolData | EditBusinessData | null,
+  token: string | null,
+  type: string,
+  entity_id: number | undefined,
+  user_id: number | null,
+) {
+
+  let urlParam:string = "void";
+  if (type === "group") urlParam = "groups"
+  if (type === "church") urlParam = "churches"
+  if (type === "business") urlParam = "businesses"
+  if (type === "school") urlParam = "schools"
+
+  if (body) {
+    try {
+      const response = await instance.patch(`${urlParam}/edit/${entity_id}/${user_id}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }});
+      
+        return response.data
+
+    } catch (error: any) {
+      
+      console.error(`Error adding ${type}`, error);
+      throw error;
+    }
+  }
+}
+
+export async function patchEntityImg(
+  imgUrl: string,
+  token: string | null,
+  type: string,
+  entity_id: number | undefined,
+  user_id: number | null,
+) {
+
+  let urlParam:string = "void";
+  let body;
+  if (type === "group") {
+    urlParam = "groups"
+    body = {group_img: imgUrl}
+  }
+  if (type === "church") {
+    urlParam = "churches"
+    body = {church_img: imgUrl}
+  }
+  if (type === "business") {
+    urlParam = "businesses"
+    body = {business_img: imgUrl}
+  }
+  if (type === "school") {
+    urlParam = "schools"
+    body = {school_img: imgUrl}
+  }
+
+  if (body) {
+    try {
+      const response = await instance.patch(`${urlParam}/edit/${entity_id}/${user_id}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }});
+      
+        return response.data
+
+    } catch (error: any) {
+      
+      console.error(`Error adding ${type}`, error);
+      throw error;
+    }
+  }
+}
+
 
 // POST AND COMMENT CALLS
 

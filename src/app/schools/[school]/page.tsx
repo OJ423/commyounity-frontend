@@ -1,6 +1,9 @@
 "use client"
 
+import EditGroupForm from "@/components/EditGroupForm"
+import EditHeaderImage from "@/components/EditHeaderImage"
 import Footer from "@/components/Footer"
+import FormDrawer from "@/components/FormDrawer"
 import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
 import PersonalNav from "@/components/PersonalNav"
@@ -22,7 +25,13 @@ export default function SchoolPage() {
   const [nonParentView, setNonParentView] = useState<CardData | null>(null)
   const [postData, setPostData] = useState<PostData[] | [] >([])
   const [member, setMember] = useState<boolean>(true)
+  const [owner, setOwner] = useState<boolean>(false)
   const {selectedCommunity, userMemberships, token} = useAuth()
+
+  const [ showForm, setShowForm ] = useState<boolean>(false);
+  const handleDisplayForm = () => { 
+    setShowForm(!showForm)
+  };
 
   const handleRequestAccess = () => {
     alert("Place holder until request parent action is created")
@@ -35,7 +44,6 @@ export default function SchoolPage() {
     const fetchData = async () => {
       try {
         const data = await getSchoolById(params.school, token)
-        console.log(data)
         setSchoolData(data.school)
         setPostData(data.posts)
         if(userMemberships) {
@@ -117,6 +125,7 @@ export default function SchoolPage() {
     <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
       <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
         <h1 className="font-semibold text-xl md:text-2xl">{schoolData?.school_name}</h1>
+        <div className="w-full h-60 relative">
         {schoolData?.school_img ?
         <Image 
           src={schoolData.school_img}
@@ -138,6 +147,8 @@ export default function SchoolPage() {
           className="w-full h-60 object-cover rounded mb-4 shadow-xl"
         />
         }
+        <EditHeaderImage type="school" id={schoolData?.school_id} />
+        </div>
         <p>{schoolData?.school_bio}</p>
         <div className="flex justify-between w-full flex-wrap gap-1 items-center">
           {schoolData?.school_email ?
@@ -155,7 +166,7 @@ export default function SchoolPage() {
           : null
           }
         </div>
-        <MembershipButtonLogic member={member} setMember={setMember} type="business" id={schoolData?.school_id} />
+        <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="business" id={schoolData?.school_id} showForm={showForm} setShowForm={setShowForm} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
         <h2 className="font-semibold text-lg">{schoolData?.school_name} Posts</h2>
@@ -177,6 +188,10 @@ export default function SchoolPage() {
 
       </div>
     </section>
+    <FormDrawer setShowForm={setShowForm} showForm={showForm} handleDisplayForm={handleDisplayForm}>
+      <h2 className="font-bold text-xl">Edit your church</h2>
+      <EditGroupForm type="school" entityID={schoolData?.school_id} propData={schoolData} setShowForm={setShowForm} showForm={showForm} />
+    </FormDrawer>
   </main>
 }
   <PersonalNav />

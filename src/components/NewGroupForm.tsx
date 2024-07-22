@@ -17,6 +17,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
   const { user, setUser, token, setToken, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships,  setUserAdmins, setUserPostLikes } = useAuth();
 
   const [ newEntityErr, setNewEntityErr ] = useState<string | null>(null)
+  const [ formSubmitted, setFormSubmitted ] = useState<boolean>(false)
 
   const router = useRouter();
 
@@ -133,6 +134,22 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
         await setAdmins()
         return newBusiness.newBusiness
       }
+
+      if (type === "school" && selectedCommunity && user) {
+        const body = {
+          school_name: data.title,
+          school_bio: data.bio,
+          school_img: imageUrl,
+          school_email: data.email,
+          school_website: data.website,
+          school_phone: data.phone,
+          community_id: +selectedCommunity?.community_id,
+        };
+        const newSchool = await addNewEntity(body, token, type, +user?.user_id);
+        await setMemberships()
+        await setAdmins()
+        return newSchool.newSchool
+      }
       
     } catch (error: any) {
       console.log('There was an error', error)
@@ -146,19 +163,28 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
       if(type === "group") router.push(`/groups/${newEntity.group_id}`)
       if(type === "church") router.push(`/churches/${newEntity.church_id}`)
       if(type === "business") router.push(`/businesses/${newEntity.business_id}`)
+      if(type === "school") router.push(`/schools/${newEntity.school_id}`)
+      setFormSubmitted(true)
     }  
      catch(error:any) {
       console.error("There was an error:", error)
       setNewEntityErr(`There was an error creating the new ${type}` )
     }
   };
-
+  
   return (
+    <>
+    {formSubmitted ?
+     <div className="flex flex-col justified-center gap-8">
+      <h2 className="font-bold text-2xl">Thanks for submitting a new {type}</h2>
+      <p>You will be directed to your new {type} in a sec.</p>
+    </div>
+     :
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <label
         className="text-xs uppercase text-gray-700 font-bold"
         htmlFor="title"
-      >
+        >
         {type} name:
       </label>
       <input
@@ -170,7 +196,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
         })}
         id={`title`}
         name={`title`}
-      />
+        />
       {errors.title && (
         <span className="mb-4 text-rose-600 text-xs font-bold">
           {type} name is require
@@ -180,7 +206,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
       <label
         className="text-xs uppercase text-gray-700 font-bold"
         htmlFor="bio"
-      >
+        >
         {type} bio (Max 250 characters):
       </label>
       <textarea
@@ -201,12 +227,12 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
         </span>
       )}
 
-      {type === "business" || type === "School" || type === "church" ? (
+      {type === "business" || type === "school" || type === "church" ? (
         <>
           <label
             className="text-xs uppercase text-gray-700 font-bold"
             htmlFor="website"
-          >
+            >
             {type} website:
           </label>
           <input
@@ -215,12 +241,12 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
             {...register("website")}
             id="website"
             name="website"
-          />
+            />
 
           <label
             className="text-xs uppercase text-gray-700 font-bold"
             htmlFor="email"
-          >
+            >
             {type} email:
           </label>
           <input
@@ -231,7 +257,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
             })}
             id="email"
             name="email"
-          />
+            />
           {errors.bio && (
             <span className="mb-4 text-rose-600 text-xs font-bold">
               Please use a valid email address
@@ -240,7 +266,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
         </>
       ) : null}
 
-      {type === "School" ? (
+      {type === "school" ? (
         <>
           <label
             className="text-xs uppercase text-gray-700 font-bold"
@@ -261,7 +287,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
       <label
         className="text-xs uppercase text-gray-700 font-bold"
         htmlFor="img"
-      >
+        >
         Upload {type} image:
       </label>
       <input
@@ -270,17 +296,20 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
         id="img"
         name="img"
         type="file"
-      />
+        />
 
       <input
         className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
         type="submit"
-      />
+        />
       {newEntityErr ?
       <p className="text-rose-600 font-bold">{newEntityErr}</p>
       : null
       }
     </form>
+     
+    }
+    </>
   );
 };
 

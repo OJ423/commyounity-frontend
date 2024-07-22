@@ -1,6 +1,9 @@
 "use client"
 
+import EditGroupForm from "@/components/EditGroupForm"
+import EditHeaderImage from "@/components/EditHeaderImage"
 import Footer from "@/components/Footer"
+import FormDrawer from "@/components/FormDrawer"
 import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
 import PersonalNav from "@/components/PersonalNav"
@@ -17,7 +20,13 @@ export default function GroupPage() {
   const [groupData, setGroupData] = useState<GroupData>()
   const [postData, setPostData] = useState<PostData[] | [] >([])
   const [member, setMember] = useState<boolean>(false)
+  const [owner, setOwner] = useState<boolean>(false)
   const {userMemberships} = useAuth()
+
+  const [ showForm, setShowForm ] = useState<boolean>(false);
+  const handleDisplayForm = () => { 
+    setShowForm(!showForm)
+  };
 
   useEffect(() => {
     if(!params) {
@@ -50,6 +59,7 @@ export default function GroupPage() {
     <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
       <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
         <h1 className="font-semibold text-xl md:text-2xl">{groupData?.group_name}</h1>
+        <div className="w-full h-60 relative">
         {groupData?.group_img ?
         <Image 
           src={groupData.group_img}
@@ -71,8 +81,10 @@ export default function GroupPage() {
           className="w-full h-60 object-cover rounded mb-4 shadow-xl"
         />
         }
+        <EditHeaderImage type="group" id={groupData?.group_id} />
+        </div>
         <p>{groupData?.group_bio}</p>
-        <MembershipButtonLogic member={member} setMember={setMember} type="group" id={groupData?.group_id} />
+        <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="group" id={groupData?.group_id} showForm={showForm} setShowForm={setShowForm} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
         <h2 className="font-semibold text-lg">{groupData?.group_name} Posts</h2>
@@ -94,6 +106,10 @@ export default function GroupPage() {
 
       </div>
     </section>
+    <FormDrawer setShowForm={setShowForm} showForm={showForm} handleDisplayForm={handleDisplayForm}>
+      <h2 className="font-bold text-xl">Edit your church</h2>
+      <EditGroupForm type="group" entityID={groupData?.group_id} propData={groupData} setShowForm={setShowForm} showForm={showForm} />
+    </FormDrawer>
   </main>
   <PersonalNav />
   <Footer />

@@ -174,10 +174,10 @@ export type NewBusinessData = {
 export type NewSchoolData = {
   school_name: string,
   school_bio: string,
-  school_email: string,
-  school_website: string,
-  school_phone: string,
-  school_img: string,
+  school_email: string | null,
+  school_website: string | null,
+  school_phone: string | null,
+  school_img: string | null,
   community_id: number,
 }
 
@@ -188,6 +188,35 @@ export type GenericFormData = {
   email: string | null,
   website: string | null,
   phone: string | null
+}
+
+// Patch Entities
+
+export type EditGroupData = {
+  group_name: string,
+  group_bio: string,
+}
+
+export type EditChurchData = {
+  church_name: string,
+  church_bio: string,
+  church_email: string | null,
+  church_website: string | null,
+}
+
+export type EditBusinessData = {
+  business_name: string,
+  business_bio: string,
+  business_email: string | null,
+  business_website: string | null,
+}
+
+export type EditSchoolData = {
+  school_name: string,
+  school_bio: string,
+  school_email: string | null,
+  school_website: string | null,
+  school_phone: string | null,
 }
 
 

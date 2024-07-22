@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
+import NewGroup from "@/components/NewGroup";
 import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
 import { getCommunitySchools } from "@/utils/apiCalls";
@@ -109,6 +110,7 @@ export default function Schools() {
               
               }
               </>
+              <NewGroup type="school" />
             </section>
             : 
             <section className="min-h-96 flex flex-col justify-center items-start">

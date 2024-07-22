@@ -1,6 +1,9 @@
 "use client"
 
+import EditGroupForm from "@/components/EditGroupForm"
+import EditHeaderImage from "@/components/EditHeaderImage"
 import Footer from "@/components/Footer"
+import FormDrawer from "@/components/FormDrawer"
 import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
 import PersonalNav from "@/components/PersonalNav"
@@ -21,6 +24,13 @@ export default function BusinessPage() {
   const [postData, setPostData] = useState<PostData[] | [] >([])
   const [member, setMember] = useState<boolean>(true)
   const {userMemberships} = useAuth()
+  const [owner, setOwner] = useState<boolean>(false)
+  
+  
+  const [ showForm, setShowForm ] = useState<boolean>(false);
+  const handleDisplayForm = () => { 
+    setShowForm(!showForm)
+  };
 
   useEffect(() => {
     if(!params) {
@@ -53,27 +63,31 @@ export default function BusinessPage() {
     <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
       <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
         <h1 className="font-semibold text-xl md:text-2xl">{businessData?.business_name}</h1>
-        {businessData?.business_img ?
-        <Image 
-          src={businessData.business_img}
-          width={200}
-          height={100}
-          quality={60}
-          priority
-          alt={`${businessData?.business_name} profile picture`}
-          className="w-full h-60 object-cover rounded mb-4 shadow-xl"
-        />
-        :
-        <Image 
-          src="/placeholder-image.webp"
-          width={200}
-          height={100}
-          quality={60}
-          priority
-          alt={`${businessData?.business_name} profile picture`}
-          className="w-full h-60 object-cover rounded mb-4 shadow-xl"
-        />
-        }
+        <div className="w-full h-60 relative">
+          {businessData?.business_img ?
+
+            <Image 
+              src={businessData.business_img}
+              width={200}
+              height={100}
+              quality={60}
+              priority
+              alt={`${businessData?.business_name} profile picture`}
+              className="w-full h-60 object-cover rounded mb-4 shadow-xl"
+            />
+            :
+            <Image 
+              src="/placeholder-image.webp"
+              width={200}
+              height={100}
+              quality={60}
+              priority
+              alt={`${businessData?.business_name} profile picture`}
+              className="w-full h-60 object-cover rounded mb-4 shadow-xl"
+            />
+          }
+          <EditHeaderImage type="business" id={businessData?.business_id} />
+        </div>
         <p>{businessData?.business_bio}</p>
         <div className="flex justify-between w-full flex-wrap gap-1 items-center">
           {businessData?.business_email ?
@@ -91,7 +105,7 @@ export default function BusinessPage() {
           : null
           }
         </div>
-        <MembershipButtonLogic member={member} setMember={setMember} type="business" id={businessData?.business_id} />
+        <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="business" id={businessData?.business_id} showForm={showForm} setShowForm={setShowForm} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
         <h2 className="font-semibold text-lg">{businessData?.business_name} Posts</h2>
@@ -113,6 +127,10 @@ export default function BusinessPage() {
 
       </div>
     </section>
+    <FormDrawer setShowForm={setShowForm} showForm={showForm} handleDisplayForm={handleDisplayForm}>
+      <h2 className="font-bold text-xl">Edit your business</h2>
+      <EditGroupForm type="business" entityID={businessData?.business_id} propData={businessData} setShowForm={setShowForm} showForm={showForm} />
+    </FormDrawer>
   </main>
   <PersonalNav />
   <Footer />

@@ -9,20 +9,29 @@ import { useEffect } from "react";
 type ButtonProps = {
   member: boolean;
   setMember: React.Dispatch<React.SetStateAction<boolean>>;
+  owner: boolean;
+  setOwner: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
   id: number | undefined;
+  showForm: boolean;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MembershipButtonLogic: React.FC<ButtonProps> = ({
   member,
   setMember,
+  owner,
+  setOwner,
   type,
   id,
+  showForm,
+  setShowForm
 }) => {
   const {
     user,
     setUser,
     userMemberships,
+    userAdmins,
     setCommunities,
     selectedCommunity,
     setSelectedCommunity,
@@ -144,10 +153,16 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     }
   }
 
+  function handleEdit() {
+    setShowForm(!showForm)
+  }
+
+
   useEffect(() => {
+    const idToCheck = pathname.split("/").pop();
+    let isMember = false;
+    let isOwner = false;
     if (userMemberships) {
-      const idToCheck = pathname.split("/").pop();
-      let isMember = false;
 
       if (pathname.includes("groups")) {
         isMember = userMemberships.userMemberships.groups.some(
@@ -158,10 +173,33 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
           (c) => c && String(c.church_id) === idToCheck
         );
       }
-
       setMember(isMember);
     }
-  }, [userMemberships, pathname, setMember]);
+    if (userAdmins) {
+      if (pathname.includes("groups")) {
+        isOwner = userAdmins?.groups.some(
+          (g) => g && String(g.group_id) === idToCheck
+        )
+      }
+      if (pathname.includes("churches")) {
+        isOwner = userAdmins?.churches.some(
+          (c) => c && String(c.church_id) === idToCheck
+        )
+      }
+      if (pathname.includes("businesses")) {
+        isOwner = userAdmins?.businesses.some(
+          (b) => b && String(b.business_id) === idToCheck
+        )
+      }
+      if (pathname.includes("schools")) {
+        isOwner = userAdmins?.schools.some(
+          (s) => s && String(s.school_id) === idToCheck
+        )
+      }
+      setOwner(isOwner)
+    }
+  }, [userMemberships, userAdmins, pathname, setMember, setOwner]);
+
 
   return (
     <>
@@ -170,29 +208,43 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
           {type === "business" ? null : (
             <>
               {!member ? (
-                <Link
-                  href=""
+                <button
                   onClick={handleJoin}
                   className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
                 >
                   <span>Join</span>
-                </Link>
+                </button>
               ) : (
                 <div className="flex gap-4 items-center flex-wrap justify-between w-full">
                   <p className="text-xs font-bold p-3 rounded-xl bg-indigo-300">
                     You are a member
                   </p>
-                  <Link
+                  <button
                     onClick={handleLeave}
-                    href=""
                     className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out"
                   >
                     <span>Leave</span>
-                  </Link>
+                  </button>
                 </div>
               )}
             </>
           )}
+          { owner ? 
+          <section className="w-full flex flex-col gap-4 mt-8">
+            <h3 className="uppercase text-gray-500 text-xs font-bold pb-4 border-b-2">Admin zone:</h3>
+            <p className="text-sm">Edit your {type} or delete it. If deleting, bear in mind other users will no longer be able to use this group and all posts and comments will be deleted forever!</p>
+            <div className="flex items-center gap-8">
+              <button onClick={handleEdit} className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
+                Edit
+              </button>
+              <button className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+                Delete
+              </button>
+            </div>
+
+          </section>
+          : null
+          }
         </>
       ) : null}
     </>
