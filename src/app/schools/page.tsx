@@ -19,10 +19,6 @@ export default function Schools() {
   const [communityMember, setCommunityMember] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  function handleCreateSchool() {
-    alert("this is a placeholder for creating a new school")
-  }
-
   useEffect(() => {
     if (!selectedCommunity) {
       return;
@@ -83,10 +79,6 @@ export default function Schools() {
                       className="rounded shadow-xl"
                     />
                     <h2 className="font-semibold text-2xl">There are no schools</h2>
-                    <p>Why not create one?</p>
-                    <Link href='' onClick={handleCreateSchool} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-school-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Create New Group</span>
-                    </Link>
                   </section>
                   :
                   <section className="flex flex-col gap-4 justify-center items-start">

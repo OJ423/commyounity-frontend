@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
 import NewGroup from "@/components/NewGroup";
+import NewGroupIcon from "@/components/NewGroupIcon";
 import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
 import { getCommunityBusinesses } from "@/utils/apiCalls";
@@ -18,10 +19,6 @@ export default function Businesses() {
   const [ businessData, setBusinessData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  function handleCreateBusiness() {
-    alert("this is a placeholder for creating a new business")
-  }
 
   useEffect(() => {
     if (!selectedCommunity) {
@@ -46,7 +43,7 @@ export default function Businesses() {
       }
     };
     fetchData();
-  }, [selectedCommunity]);
+  }, [selectedCommunity, communities]);
 
   return (
     <>
@@ -55,9 +52,12 @@ export default function Businesses() {
         <>
           {selectedCommunity ?
             <section id="#businesses" className="max-w-screen-lg">
-              <h1 className="font-bold text-3xl mb-4">
-                Businesses in {selectedCommunity.community_name}
-              </h1>
+              <div className="flex gap-4 justify-between items-center flex-wrap mb-4">
+                <h1 className="font-bold text-3xl">
+                  Businesses in {selectedCommunity.community_name}
+                </h1>
+                <NewGroupIcon type="business" />
+              </div>
               <>
               {businessData.length ?
                 <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}>
@@ -72,22 +72,21 @@ export default function Businesses() {
                 :
                 <div className="grid grid-cols-1 gap-8">
                   {communityMember ?
-                  <section className="flex flex-col gap-4 justify-center items-start">
-                    <Image 
-                      src='/empty-placeholder.jpg'
-                      quality={80}
-                      alt="An empty subway train"
-                      priority
-                      width={400}
-                      height={200}
-                      className="rounded shadow-xl"
-                    />
-                    <h2 className="font-semibold text-2xl">There are no businesses</h2>
-                    <p>Why not create one?</p>
-                    <Link href='' onClick={handleCreateBusiness} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Create New Group</span>
-                    </Link>
-                  </section>
+                  <>
+                    <section className="flex flex-col gap-4 justify-center items-start">
+                      <Image 
+                        src='/empty-placeholder.jpg'
+                        quality={80}
+                        alt="An empty subway train"
+                        priority
+                        width={400}
+                        height={200}
+                        className="rounded shadow-xl"
+                      />
+                      <h2 className="font-semibold text-2xl">There are no businesses</h2>
+                    </section>
+                    <NewGroup type="business" />
+                  </>
                   :
                   <section className="flex flex-col gap-4 justify-center items-start">
                     <Image 
@@ -110,7 +109,6 @@ export default function Businesses() {
               
               }
               </>
-              <NewGroup type="business" />
             </section>
             : 
             <section className="min-h-96 flex flex-col justify-center items-start">

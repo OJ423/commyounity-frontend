@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
 import NewGroup from "@/components/NewGroup";
+import NewGroupIcon from "@/components/NewGroupIcon";
 import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
 import { getCommunityGroups } from "@/utils/apiCalls";
@@ -18,10 +19,6 @@ export default function Groups() {
   const [groupData, setGroupData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  function handleCreateGroup() {
-    alert("this is a placeholder for creating a new group")
-  }
 
   useEffect(() => {
     if (!selectedCommunity) {
@@ -46,7 +43,7 @@ export default function Groups() {
       }
     };
     fetchData();
-  }, [selectedCommunity]);
+  }, [selectedCommunity, communities]);
 
   return (
     <>
@@ -55,9 +52,12 @@ export default function Groups() {
         <>
           {selectedCommunity ?
             <section id="#groups" className="max-w-screen-lg">
-              <h1 className="font-bold text-3xl mb-4">
-                Groups in {selectedCommunity.community_name}
-              </h1>
+              <div className="flex gap-4 justify-between items-center flex-wrap mb-4">
+                <h1 className="font-bold text-3xl mb-4">
+                  Groups in {selectedCommunity.community_name}
+                </h1>
+                <NewGroupIcon type="group" />
+              </div>
               <>
               {groupData.length ?
                 <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}>
@@ -83,7 +83,6 @@ export default function Groups() {
                       className="rounded shadow-xl"
                     />
                     <h2 className="font-semibold text-2xl">There are no groups</h2>
-                    <p>Why not create one?</p>
                   </section>
                   :
                   <section className="flex flex-col gap-4 justify-center items-start">

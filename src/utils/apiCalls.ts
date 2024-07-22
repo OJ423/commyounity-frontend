@@ -119,7 +119,7 @@ export async function getUserMemberships(
 }
 
 export async function getUserAdmins(
-  user_id: number | undefined,
+  user_id: number | null,
   community_id: number | undefined,
   token: string | null
 ) {
@@ -305,7 +305,7 @@ export async function getSchoolById(
   }
 }
 
-// POST AND PATCH GROUPS SCHOOLS ETC
+// POST, PATCH, DELETE GROUPS SCHOOLS ETC
 
 export async function addNewEntity(
   body: NewGroupData | NewChurchData | NewSchoolData | NewBusinessData | null,
@@ -410,6 +410,29 @@ export async function patchEntityImg(
       throw error;
     }
   }
+}
+
+
+export async function deleteEntity(type: string, id:number | undefined, user_id:string | undefined, token:string | null) {
+  let urlParam:string = "void";
+  if (type === "group") urlParam = "groups"
+  if (type === "church") urlParam = "churches"
+  if (type === "business") urlParam = "businesses"
+  if (type === "school") urlParam = "schools"
+
+  try {
+    const response = await instance.delete(`${urlParam}/delete/${id}/${user_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }});
+      return response.data
+
+  } catch (error: any) {
+    
+    console.error(`Error adding ${type}`, error);
+    throw error;
+  }
+
 }
 
 

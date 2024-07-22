@@ -93,6 +93,14 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
       }
       else { imageUrl = "" }
 
+      let validatedWebsite: string | null = null;
+      if (data.website) {
+        if (data.website.startsWith("http")) {}
+        else {
+          validatedWebsite = `https://${data.website}`
+        }
+      }
+
       if (type === "group" && selectedCommunity && user) {
         const body = {
           group_name: data.title,
@@ -112,7 +120,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           church_bio: data.bio,
           church_img: imageUrl,
           church_email: data.email,
-          church_website: data.website,
+          church_website: validatedWebsite,
           community_id: +selectedCommunity?.community_id,
         };
         const newChurch = await addNewEntity(body, token, type, +user?.user_id);
@@ -126,7 +134,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           business_bio: data.bio,
           business_img: imageUrl,
           business_email: data.email,
-          business_website: data.website,
+          business_website: validatedWebsite,
           community_id: +selectedCommunity?.community_id,
         };
         const newBusiness = await addNewEntity(body, token, type, +user?.user_id);
@@ -141,7 +149,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           school_bio: data.bio,
           school_img: imageUrl,
           school_email: data.email,
-          school_website: data.website,
+          school_website: validatedWebsite,
           school_phone: data.phone,
           community_id: +selectedCommunity?.community_id,
         };

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
 import { ChurchJoinResponse, GroupJoinResponse } from "@/utils/customTypes";
-import { getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
+import { deleteEntity, getUserAdmins, getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
 import { usePathname, useRouter } from "next/navigation";
 import { LogUserOut } from "@/utils/logOut";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type ButtonProps = {
   member: boolean;
@@ -27,6 +27,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   showForm,
   setShowForm
 }) => {
+
   const {
     user,
     setUser,
@@ -41,6 +42,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     setUserPostLikes,
     setUserAdmins,
   } = useAuth();
+
   const router = useRouter();
 
   const pathname = usePathname();
@@ -72,6 +74,32 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
         );
         setUserMemberships(memberships);
         localStorage.setItem("userMemberships", JSON.stringify(memberships));
+      }
+    } catch (error: any) {
+      if (
+        error.response.data.msg === "Authorization header missing" ||
+        error.response.data.msg === "Invalid or expired token"
+      ) {
+        invalidTokenResponse();
+      }
+      console.log(error);
+    }
+  }
+
+  async function setAdmins(
+    user_id: number | null,
+    communityId: number | undefined,
+    token: string | null
+  ) {
+    try {
+      if (user) {
+        const admins = await getUserAdmins(
+          user_id,
+          communityId,
+          token
+        );
+        setUserAdmins(admins);
+        localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
     } catch (error: any) {
       if (
@@ -157,6 +185,41 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     setShowForm(!showForm)
   }
 
+  // Delete Functions & States
+
+  const [ confirmDelete, setConfirmDelete ] = useState<boolean>(false)
+
+  function handleDeleteCheck() {
+    setConfirmDelete(!confirmDelete)
+  }
+
+  async function handleDelete() {
+    let routeToPush:string = "void";
+    if (type === "group") routeToPush = "groups"
+    if (type === "church") routeToPush = "churches"
+    if (type === "business") routeToPush = "businesses"
+    if (type === "school") routeToPush = "schools"
+    try {
+      const deleteRequest = await deleteEntity(type, id, user?.user_id, token)
+      if (user && id && token) {
+        setMemberships(+user.user_id, id, token)
+        setAdmins(+user.user_id, id, token)
+        router.push(`/${routeToPush}`)
+      }
+    } catch(error:any) {
+      if (error.response) {
+        if (
+          error.response.data.msg === "Authorization header missing" ||
+          error.response.data.msg === "Invalid or expired token"
+        ) {
+          invalidTokenResponse();
+        }
+      }
+      console.log(error);
+    }
+  } 
+
+  // User Member/Owner Checks on Mount
 
   useEffect(() => {
     const idToCheck = pathname.split("/").pop();
@@ -237,9 +300,21 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
               <button onClick={handleEdit} className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
                 Edit
               </button>
-              <button className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
+              {
+                confirmDelete ?
+                <div className="flex gap-4 items-center">
+                  <button onClick={handleDelete} className="w-max border-solid border-4 border-rose-400 text-rose-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-400 hover:border-rose-400 hover:text-white transition-all duration-500 ease-out">
+                    Confirm?
+                  </button>
+                  <button onClick={handleDeleteCheck} className="w-max border-solid border-4 border-gray-400 text-gray-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-gray-400 hover:border-gray-400 hover:text-white transition-all duration-500 ease-out">
+                    Cancel
+                  </button>
+                </div>
+                :
+              <button onClick={handleDeleteCheck} className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
                 Delete
               </button>
+              }
             </div>
 
           </section>
