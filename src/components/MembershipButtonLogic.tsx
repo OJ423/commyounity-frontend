@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
 import { ChurchJoinResponse, GroupJoinResponse } from "@/utils/customTypes";
-import { deleteEntity, getUserAdmins, getUserMemberships, joinUser, leaveUser } from "@/utils/apiCalls";
+import {
+  deleteEntity,
+  getUserAdmins,
+  getUserMemberships,
+  joinUser,
+  leaveUser,
+} from "@/utils/apiCalls";
 import { usePathname, useRouter } from "next/navigation";
 import { LogUserOut } from "@/utils/logOut";
 import { useEffect, useState } from "react";
@@ -25,9 +31,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   type,
   id,
   showForm,
-  setShowForm
+  setShowForm,
 }) => {
-
   const {
     user,
     setUser,
@@ -93,11 +98,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   ) {
     try {
       if (user) {
-        const admins = await getUserAdmins(
-          user_id,
-          communityId,
-          token
-        );
+        const admins = await getUserAdmins(user_id, communityId, token);
         setUserAdmins(admins);
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
@@ -182,31 +183,31 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   }
 
   function handleEdit() {
-    setShowForm(!showForm)
+    setShowForm(!showForm);
   }
 
   // Delete Functions & States
 
-  const [ confirmDelete, setConfirmDelete ] = useState<boolean>(false)
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false);
 
   function handleDeleteCheck() {
-    setConfirmDelete(!confirmDelete)
+    setConfirmDelete(!confirmDelete);
   }
 
   async function handleDelete() {
-    let routeToPush:string = "void";
-    if (type === "group") routeToPush = "groups"
-    if (type === "church") routeToPush = "churches"
-    if (type === "business") routeToPush = "businesses"
-    if (type === "school") routeToPush = "schools"
+    let routeToPush: string = "void";
+    if (type === "group") routeToPush = "groups";
+    if (type === "church") routeToPush = "churches";
+    if (type === "business") routeToPush = "businesses";
+    if (type === "school") routeToPush = "schools";
     try {
-      const deleteRequest = await deleteEntity(type, id, user?.user_id, token)
+      const deleteRequest = await deleteEntity(type, id, user?.user_id, token);
       if (user && id && token) {
-        setMemberships(+user.user_id, id, token)
-        setAdmins(+user.user_id, id, token)
-        router.push(`/${routeToPush}`)
+        setMemberships(+user.user_id, id, token);
+        setAdmins(+user.user_id, id, token);
+        router.push(`/${routeToPush}`);
       }
-    } catch(error:any) {
+    } catch (error: any) {
       if (error.response) {
         if (
           error.response.data.msg === "Authorization header missing" ||
@@ -217,7 +218,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       }
       console.log(error);
     }
-  } 
+  }
 
   // User Member/Owner Checks on Mount
 
@@ -226,7 +227,6 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     let isMember = false;
     let isOwner = false;
     if (userMemberships) {
-
       if (pathname.includes("groups")) {
         isMember = userMemberships.userMemberships.groups.some(
           (g) => g && String(g.group_id) === idToCheck
@@ -242,27 +242,26 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       if (pathname.includes("groups")) {
         isOwner = userAdmins?.groups.some(
           (g) => g && String(g.group_id) === idToCheck
-        )
+        );
       }
       if (pathname.includes("churches")) {
         isOwner = userAdmins?.churches.some(
           (c) => c && String(c.church_id) === idToCheck
-        )
+        );
       }
       if (pathname.includes("businesses")) {
         isOwner = userAdmins?.businesses.some(
           (b) => b && String(b.business_id) === idToCheck
-        )
+        );
       }
       if (pathname.includes("schools")) {
         isOwner = userAdmins?.schools.some(
           (s) => s && String(s.school_id) === idToCheck
-        )
+        );
       }
-      setOwner(isOwner)
+      setOwner(isOwner);
     }
   }, [userMemberships, userAdmins, pathname, setMember, setOwner]);
-
 
   return (
     <>
@@ -292,34 +291,49 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
               )}
             </>
           )}
-          { owner ? 
-          <section className="w-full flex flex-col gap-4 mt-8">
-            <h3 className="uppercase text-gray-500 text-xs font-bold pb-4 border-b-2">Admin zone:</h3>
-            <p className="text-sm">Edit your {type} or delete it. If deleting, bear in mind other users will no longer be able to use this group and all posts and comments will be deleted forever!</p>
-            <div className="flex items-center gap-8">
-              <button onClick={handleEdit} className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                Edit
-              </button>
-              {
-                confirmDelete ?
-                <div className="flex gap-4 items-center">
-                  <button onClick={handleDelete} className="w-max border-solid border-4 border-rose-400 text-rose-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-400 hover:border-rose-400 hover:text-white transition-all duration-500 ease-out">
-                    Confirm?
+          {owner ? (
+            <section className="w-full flex flex-col gap-4 mt-8">
+              <h3 className="uppercase text-gray-500 text-xs font-bold pb-4 border-b-2">
+                Admin zone:
+              </h3>
+              <p className="text-sm">
+                Edit your {type} or delete it. If deleting, bear in mind other
+                users will no longer be able to use this {type} and all posts
+                and comments will be deleted forever!
+              </p>
+              <div className="flex items-center gap-8">
+                <button
+                  onClick={handleEdit}
+                  className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                >
+                  Edit
+                </button>
+                {confirmDelete ? (
+                  <div className="flex gap-4 items-center">
+                    <button
+                      onClick={handleDelete}
+                      className="w-max border-solid border-4 border-rose-400 text-rose-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-400 hover:border-rose-400 hover:text-white transition-all duration-500 ease-out"
+                    >
+                      Confirm?
+                    </button>
+                    <button
+                      onClick={handleDeleteCheck}
+                      className="w-max border-solid border-4 border-gray-400 text-gray-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-gray-400 hover:border-gray-400 hover:text-white transition-all duration-500 ease-out"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleDeleteCheck}
+                    className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out"
+                  >
+                    Delete
                   </button>
-                  <button onClick={handleDeleteCheck} className="w-max border-solid border-4 border-gray-400 text-gray-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-gray-400 hover:border-gray-400 hover:text-white transition-all duration-500 ease-out">
-                    Cancel
-                  </button>
-                </div>
-                :
-              <button onClick={handleDeleteCheck} className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out">
-                Delete
-              </button>
-              }
-            </div>
-
-          </section>
-          : null
-          }
+                )}
+              </div>
+            </section>
+          ) : null}
         </>
       ) : null}
     </>

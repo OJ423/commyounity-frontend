@@ -95,7 +95,9 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
 
       let validatedWebsite: string | null = null;
       if (data.website) {
-        if (data.website.startsWith("http")) {}
+        if (data.website.startsWith("http")) {
+          validatedWebsite = data.website
+        }
         else {
           validatedWebsite = `https://${data.website}`
         }
@@ -266,7 +268,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
             id="email"
             name="email"
             />
-          {errors.bio && (
+          {errors.email && (
             <span className="mb-4 text-rose-600 text-xs font-bold">
               Please use a valid email address
             </span>

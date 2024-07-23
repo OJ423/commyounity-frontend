@@ -4,11 +4,14 @@ import {
   EditChurchData,
   EditGroupData,
   EditSchoolData,
+  GroupData,
   LogInInputs,
   NewBusinessData,
   NewChurchData,
   NewGroupData,
+  NewPostData,
   NewSchoolData,
+  PostAPIData,
   RegistrationInputs,
   UserJoinInputs,
 } from "./customTypes";
@@ -437,6 +440,37 @@ export async function deleteEntity(type: string, id:number | undefined, user_id:
 
 
 // POST AND COMMENT CALLS
+
+export async function addPost(type:string, id: number | undefined, data: NewPostData | undefined, author: string | undefined, imageUrl:string, token: string | null) {
+  let body:any = {
+    post_title: data?.post_title,
+    post_description: data?.post_description,
+    post_location: data?.post_location,
+    post_img: imageUrl,
+    web_link: data?.web_link,
+    web_title: data?.web_title,
+    author: author
+  }
+  if (type === "group") body.group_id = id
+  if (type === "church") body.church_id = id
+  if (type === "school") body.school_id = id
+  if (type === "business") body.business_id = id
+
+  try {
+    const response = await instance.post('posts/', body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return response.data
+    
+  } catch(error:any) {
+    console.log(error)
+    throw error
+  }
+
+}
 
 export async function likePost(
   user_id: number | undefined,

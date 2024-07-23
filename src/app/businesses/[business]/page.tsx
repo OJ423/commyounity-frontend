@@ -6,6 +6,7 @@ import Footer from "@/components/Footer"
 import FormDrawer from "@/components/FormDrawer"
 import Header from "@/components/Header"
 import MembershipButtonLogic from "@/components/MembershipButtonLogic"
+import NewPostIcon from "@/components/NewPostIcon"
 import PersonalNav from "@/components/PersonalNav"
 import PostCard from "@/components/PostCard"
 import { useAuth } from "@/components/context/AuthContext"
@@ -20,8 +21,10 @@ import { IoMailOutline, IoArrowRedoOutline } from "react-icons/io5";
 
 export default function BusinessPage() {
   const params = useParams<{business:string}>()
+
   const [businessData, setBusinessData] = useState<BusinessData>()
   const [postData, setPostData] = useState<PostData[] | [] >([])
+  const [fetchPosts, setFetchPosts] = useState<boolean>(false)
   const [member, setMember] = useState<boolean>(true)
   const {userMemberships} = useAuth()
   const [owner, setOwner] = useState<boolean>(false)
@@ -54,7 +57,7 @@ export default function BusinessPage() {
       }
     }
     fetchData()
-  }, [userMemberships, params])
+  }, [userMemberships, params, fetchPosts])
 
   return(
   <>
@@ -86,7 +89,12 @@ export default function BusinessPage() {
               className="w-full h-60 object-cover rounded mb-4 shadow-xl"
             />
           }
-          <EditHeaderImage type="business" id={businessData?.business_id} />
+          <>
+            { owner ? 
+              <EditHeaderImage type="business" id={businessData?.business_id} />
+              : null
+            }
+          </>
         </div>
         <p>{businessData?.business_bio}</p>
         <div className="flex justify-between w-full flex-wrap gap-1 items-center">
@@ -108,7 +116,13 @@ export default function BusinessPage() {
         <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="business" id={businessData?.business_id} showForm={showForm} setShowForm={setShowForm} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
-        <h2 className="font-semibold text-lg">{businessData?.business_name} Posts</h2>
+        <div className="flex gap-4 items-center justify-between">
+          <h2 className="font-semibold text-lg">{businessData?.business_name} Posts</h2>
+          { owner ?
+            <NewPostIcon type={"business"} id={businessData?.business_id} fetchPosts={fetchPosts} setFetchPosts={setFetchPosts} />
+          : null
+          }
+        </div>
         <>
         {postData.length ?
           <div className={"grid grid-cols-1 gap-8"}>

@@ -122,13 +122,13 @@ export type PostData = {
   post_description: string,
   post_location: string,
   post_img: string,
-  pdf_link: string,
-  pdf_title: string,
+  web_link: string,
+  web_title: string,
   author: number,
   church_id: number | null,
   school_id: number | null,
   business_id: number | null,
-  group_id: number,
+  group_id: number | null,
   post_likes: number,
   comment_count: string
 }
@@ -145,6 +145,29 @@ export interface Comment {
 }
 
 // New Groups Etc Inputs
+
+export type NewPostData = {
+  post_title: string,
+  post_description: string,
+  post_location: string | null,
+  post_img: File[] | null,
+  web_link: string | null,
+  web_title: string | null,
+}
+
+export type PostAPIData = {
+  post_title: string,
+  post_description: string,
+  post_location: string,
+  post_img: string | null,
+  web_link: string | null,
+  web_title: string | null,
+  author: number,
+  church_id: number | null,
+  school_id: number | null,
+  business_id: number | null,
+  group_id: number | null,
+}
 
 export type NewGroupData = {
   group_name: string,

@@ -118,8 +118,16 @@ const PostCard: React.FC<PostCardProps> = ({data, member}) => {
       <div className="md:col-span-3 p-4">
         <h2 className="font-bold text-lg mb-4">{data.post_title}</h2>
         <p className="font-light">{data.post_description}</p>
-        {data.pdf_link ? 
-        <p className="text-sm">More info: <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href={data.pdf_link}>{data.pdf_title}</Link></p>
+        {data.web_link ? data.web_title ?
+        <p className="text-sm font-semibold mt-4">More info: <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href={data.web_link} target="_blank">
+           {data.web_title}
+          </Link>
+        </p>
+        :
+        <p className="text-sm font-semibold mt-4">More info: <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href={data.web_link} target="_blank">
+            {data.web_link}
+          </Link>
+        </p>
         :
         null
         }
