@@ -126,11 +126,40 @@ export type PostData = {
   web_title: string,
   author: number,
   church_id: number | null,
+  church_name: string | null,
   school_id: number | null,
+  school_name: string | null,
   business_id: number | null,
+  business_name: string | null,
   group_id: number | null,
+  group_name: string | null,
   post_likes: number,
-  comment_count: string
+  comment_count: string,
+  name: string
+}
+
+export type TimelinePosts = {
+  author: number,
+  author_name: string,
+  business_id: number | null,
+  business_name: string | null,
+  church_id: number | null,
+  church_name: string | null,
+  comment_count: string,
+  group_id: number | null,
+  group_name: string | null,
+  post_date: string,
+  post_description: string,
+  post_id: number,
+  post_img: string | null,
+  post_likes: number,
+  post_location: string | null,
+  post_title: string,
+  school_id: number | null, 
+  school_name: string | null, 
+  web_link: string | null,
+  web_title: string | null,
+  name: string | null, 
 }
 
 export interface Comment {

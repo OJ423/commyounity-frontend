@@ -5,13 +5,13 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PostCard from "@/components/PostCard";
 import { getUsersCommunityPosts } from "@/utils/apiCalls";
-import { PostData } from "@/utils/customTypes";
+import { PostData, TimelinePosts } from "@/utils/customTypes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Timeline() {
   const { user, selectedCommunity } = useAuth();
-  const [userPosts, setUserPosts] = useState<PostData[] | []>([]);
+  const [userPosts, setUserPosts] = useState<TimelinePosts[] | []>([]);
   const [filter, setFilter] = useState<string | null>(null);
   const [member, setMember] = useState<boolean>(true)
 
@@ -45,6 +45,8 @@ export default function Timeline() {
       fetchData()
     }
   },[user, selectedCommunity, filter])
+
+  console.log(userPosts)
 
   return (
     <>
@@ -88,7 +90,7 @@ export default function Timeline() {
         <>
         {userPosts.length > 0 ?
           <div className={"grid grid-cols-1 gap-8"}>
-            {userPosts.map((post: PostData) => (
+            {userPosts.map((post: TimelinePosts) => (
               <PostCard
                 key={post.post_id}
                 data={post}
