@@ -65,7 +65,6 @@ export async function registerUser(body: RegistrationInputs) {
       password: body.password,
     };
     const response = await instance.post("users/register", registerBody);
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);

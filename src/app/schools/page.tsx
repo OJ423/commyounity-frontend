@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import GenericCard from "@/components/GenericCard";
 import Header from "@/components/Header";
 import NewGroup from "@/components/NewGroup";
+import NewGroupIcon from "@/components/NewGroupIcon";
 import PersonalNav from "@/components/PersonalNav";
 import { useAuth } from "@/components/context/AuthContext";
 import { getCommunitySchools } from "@/utils/apiCalls";
@@ -51,9 +52,12 @@ export default function Schools() {
         <>
           {selectedCommunity ?
             <section id="#schools" className="max-w-screen-lg">
-              <h1 className="font-bold text-3xl mb-4">
-                Schools in {selectedCommunity.community_name}
-              </h1>
+              <div className="flex gap-4 justify-between items-center flex-wrap mb-4">
+                <h1 className="font-bold text-3xl mb-4">
+                  Churches in {selectedCommunity.community_name}
+                </h1>
+                <NewGroupIcon type="school" />
+              </div>
               <>
               {schoolData.length ?
                 <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}>
@@ -78,7 +82,7 @@ export default function Schools() {
                       height={200}
                       className="rounded shadow-xl"
                     />
-                    <h2 className="font-semibold text-2xl">There are no schools</h2>
+                    <h2 className="font-semibold text-2xl">There are no schools listed</h2>
                   </section>
                   :
                   <section className="flex flex-col gap-4 justify-center items-start">

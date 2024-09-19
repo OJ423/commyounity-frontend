@@ -26,6 +26,7 @@ import {
 } from "@/utils/dataTransformers";
 import CommunityButtonLogic from "@/components/CommunityButtonLogic";
 import PersonalNav from "@/components/PersonalNav";
+import NewGroup from "@/components/NewGroup";
 
 export default function CommunityPage() {
   const [communityData, setCommunityData] = useState<CommunityProfile | null>(
@@ -192,29 +193,11 @@ export default function CommunityPage() {
                     ) : user ? (
                       communityMember ? (
                         <section className="max-w-screen-lg">
-                          <p>
-                            Looks like there are no groups. Why not create one?
-                          </p>
-                          <div>
-                            <Link
-                              href="/groups/add"
-                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                            >
-                              <span>Add Group</span>
-                            </Link>
-                          </div>
+                          <NewGroup type="group" />
                         </section>
                       ) : (
                         <section className="max-w-screen-lg">
-                          <p>Join the community to add a group?</p>
-                          <div>
-                            <Link
-                              href="#"
-                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                            >
-                              <span>Join</span>
-                            </Link>
-                          </div>
+                          <p>Join the community to add a group.</p>
                         </section>
                       )
                     ) : (
@@ -265,31 +248,13 @@ export default function CommunityPage() {
                     ) : user ? (
                       communityMember ? (
                         <section className="max-w-screen-lg">
-                          <p>
-                            Looks like there are no businesses. Why not list
-                            yours?
-                          </p>
-                          <Link
-                            href="/businesses/add"
-                            className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                          >
-                            <span>Add Business</span>
-                          </Link>
+                          <NewGroup type="business" />
                         </section>
                       ) : (
                         <section className="max-w-screen-lg">
                           <p>
-                            Looks like there are no businesses. Why not register
-                            and list yours?
+                          Looks like there are no businesses. Add your business?
                           </p>
-                          <div>
-                            <Link
-                              href="#"
-                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                            >
-                              <span>Join</span>
-                            </Link>
-                          </div>
                         </section>
                       )
                     ) : (
@@ -343,16 +308,7 @@ export default function CommunityPage() {
                       ) : user ? (
                         communityMember ? (
                           <section className="max-w-screen-lg">
-                            <p>
-                              Looks like there are no schools. Create your
-                              school to communicate with parents and pupils?
-                            </p>
-                            <Link
-                              href="/schools/add"
-                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                            >
-                              <span>Add School</span>
-                            </Link>
+                            <NewGroup type="school" />
                           </section>
                         ) : (
                           <section className="max-w-screen-lg">
@@ -360,14 +316,6 @@ export default function CommunityPage() {
                               Join the community if you are a local school admin
                               looking to add your school.
                             </p>
-                            <div>
-                              <Link
-                                href="#"
-                                className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                              >
-                                <span>Join</span>
-                              </Link>
-                            </div>
                           </section>
                         )
                       ) : (
@@ -422,16 +370,7 @@ export default function CommunityPage() {
                     ) : user ? (
                       communityMember ? (
                         <section className="max-w-screen-lg">
-                          <p>
-                            Looks like there are no churches. Create your church
-                            to communicate with the community.
-                          </p>
-                          <Link
-                            href="/schools/add"
-                            className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                          >
-                            <span>Add Church</span>
-                          </Link>
+                          <NewGroup type="church" />
                         </section>
                       ) : (
                         <section className="max-w-screen-lg">
@@ -439,14 +378,6 @@ export default function CommunityPage() {
                             Join the community and add your church if you are a
                             local church admin.
                           </p>
-                          <div>
-                            <Link
-                              href="#"
-                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                            >
-                              <span>Join</span>
-                            </Link>
-                          </div>
                         </section>
                       )
                     ) : (

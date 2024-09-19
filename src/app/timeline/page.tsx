@@ -46,7 +46,7 @@ export default function Timeline() {
     }
   },[user, selectedCommunity, filter])
 
-  console.log(userPosts)
+
 
   return (
     <>
