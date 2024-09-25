@@ -302,6 +302,14 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
                 and comments will be deleted forever!
               </p>
               <div className="flex items-center gap-8">
+              {type === "school" ? (
+                  <Link
+                    className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out" 
+                    href={`/schools/${id}/parents`}
+                  >
+                    Parents
+                  </Link>
+                ) : null}
                 <button
                   onClick={handleEdit}
                   className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"

@@ -56,7 +56,7 @@ const JoinCommBtn: React.FC<JoinProps> = ({
     }
   }
 
-  async function setAdmins(user_id: number | undefined, communityId: number) {
+  async function setAdmins(user_id: number, communityId: number) {
     try {
       if (user) {
         const admins = await getUserAdmins(user_id, communityId, token);

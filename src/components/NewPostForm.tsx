@@ -76,10 +76,12 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       } else {
         imageUrl = "";
       }
+      const webLink = data.web_link?.startsWith('http') ? data.web_link : `https://${data.web_link}`
       const response = await addPost(
         type,
         id,
         data,
+        webLink,
         user?.user_id,
         imageUrl,
         token

@@ -174,7 +174,7 @@ export default function SchoolPage() {
           : null
           }
         </div>
-        <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="business" id={schoolData?.school_id} showForm={showForm} setShowForm={setShowForm} />
+        <MembershipButtonLogic member={member} setMember={setMember} owner={owner} setOwner={setOwner} type="school" id={schoolData?.school_id} showForm={showForm} setShowForm={setShowForm} />
       </div>
       <div className="flex flex-col gap-4 md:col-span-5">
         <div className="flex gap-4 items-center justify-between">

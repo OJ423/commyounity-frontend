@@ -440,13 +440,13 @@ export async function deleteEntity(type: string, id:number | undefined, user_id:
 
 // POST AND COMMENT CALLS
 
-export async function addPost(type:string, id: number | undefined, data: NewPostData | undefined, author: string | undefined, imageUrl:string, token: string | null) {
+export async function addPost(type:string, id: number | undefined, data: NewPostData | undefined, webLink: string, author: string | undefined, imageUrl:string, token: string | null) {
   let body:any = {
     post_title: data?.post_title,
     post_description: data?.post_description,
     post_location: data?.post_location,
     post_img: imageUrl,
-    web_link: data?.web_link,
+    web_link: webLink,
     web_title: data?.web_title,
     author: author
   }
@@ -560,5 +560,54 @@ export async function uploadFile(formData: any, token: string | null) {
   } catch (error: any) {
     console.error("Error uploading the file:", error);
     throw error;
+  }
+}
+
+
+// School Parent Management
+
+export async function getSchoolParents(token:string | null, schoolId: number) {
+  try {
+    const response = await instance.get(`/schools/parents/${schoolId}`,  {
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
+  }
+}
+
+interface AddParentBody {
+  user_email:string
+}
+
+export async function addNewParent(token:string | null, schoolId: number, body: AddParentBody) {
+  try {
+    const response = await instance.post(`/schools/${schoolId}/parent/add`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
+  }
+}
+
+export async function removeParent(token:string | null, schoolId: number, parentId: number) {
+  try {
+    const response = await instance.delete(`/schools/${schoolId}/parent/remove/${parentId}`,  {
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
   }
 }
