@@ -44,3 +44,12 @@ export const formatDate = (dateString: string): string => {
 
   return `${day} ${month} '${String(year).slice(-2)}`;
 }
+
+export const formatShortDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: '2-digit' });
+  const year = date.getFullYear();
+
+  return `${day} ${month} '${String(year).slice(-2)}`;
+}

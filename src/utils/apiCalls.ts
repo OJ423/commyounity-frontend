@@ -11,6 +11,8 @@ import {
   NewGroupData,
   NewPostData,
   NewSchoolData,
+  ParentAccessRequest,
+  ParentApproveReject,
   PostAPIData,
   RegistrationInputs,
   UserJoinInputs,
@@ -236,7 +238,7 @@ export async function getCommunityBusinesses(community_id: string | null) {
   }
 }
 
-export async function getCommunitySchools(community_id: string | null) {
+export async function getCommunitySchools(community_id: number | undefined) {
   if (community_id) {
     try {
       const response = await instance.get(
@@ -289,7 +291,7 @@ export async function getBusinessById(business_id: string | null) {
 }
 
 export async function getSchoolById(
-  school_id: string | null,
+  school_id: number | null,
   token: string | null
 ) {
   if (school_id) {
@@ -611,3 +613,51 @@ export async function removeParent(token:string | null, schoolId: number, parent
     throw error
   }
 }
+
+// Parent Access Requests
+
+export async function getParentAccessRequests(token:string | null, school_id: number, requestStatus: string) {
+  try {
+    const response = await instance.get(`/schools/requests/${school_id}`, {
+      params: {
+        status: requestStatus
+      },
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
+  }
+}
+
+export async function postParentAccessRequest(token:string | null, body: ParentAccessRequest) {
+  try {
+    const response = await instance.post(`/schools/access`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
+  }
+}
+
+export async function patchParentAccessRequest(token:string | null, school_id:number, body: ParentApproveReject) {
+  try {
+    const response = await instance.patch(`/schools/requests/status/${school_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`}, 
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching school parents:", error);
+    throw error
+  }
+}
+

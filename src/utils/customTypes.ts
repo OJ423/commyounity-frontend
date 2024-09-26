@@ -45,6 +45,16 @@ export type UserJoinInputs = {
   id: string;
 };
 
+export type ParentAccessRequest = {
+  school_id: string;
+  msg: string;
+};
+
+export type ParentApproveReject = {
+  parent_access_request_id: number;
+  status: string;
+};
+
 // API Responses
 export type JoinedCommunityResponse = {
   msg: string;
@@ -178,6 +188,17 @@ export interface Parent {
   user_id: number;
   username: string;
   user_email: string;
+}
+
+export interface ParentAccessData {
+  parent_access_request_id: number;
+  created_at: string;
+  school_id: number;
+  user_id: number;
+  msg: string;
+  status: string;
+  username: string;
+  user_email:string;
 }
 
 // New Groups Etc Inputs

@@ -68,7 +68,7 @@ export default function SchoolParents() {
     // Get school data
     const fetchSchoolData = async () => {
       try {
-        const data = await getSchoolById(schoolParam, localToken);
+        const data = await getSchoolById(+schoolParam, localToken);
         setSchool(data.school);
       } catch (error: any) {
         console.log(error);
@@ -105,6 +105,11 @@ export default function SchoolParents() {
     <>
       <Header />
       <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
+        <button
+          className="transition-all duration-500 font-bold text-indigo-500 hover:text-indigo-300 w-full text-left mb-8"
+          onClick={() => router.back()}>
+            {`<< Back`}
+        </button>
         {adminCheck ? (
           <>
             <h1 className="font-semibold text-2xl md:text-3xl w-full">

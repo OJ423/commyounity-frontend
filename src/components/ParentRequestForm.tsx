@@ -1,29 +1,24 @@
 "use client";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import { addNewParent } from "@/utils/apiCalls";
-import { useEffect, useState } from "react";
+import { postParentAccessRequest } from "@/utils/apiCalls";
+import { SetStateAction, useEffect, useState } from "react";
+import { ParentAccessRequest } from "@/utils/customTypes";
+import { useAuth } from "./context/AuthContext";
 
-interface ParentAddFormProps {
-  id: number;
+interface ParentRequestFormProps {
+  handleDisplayForm: () => void;
   invalidTokenResponse: () => void;
-  updateToken: (token: string) => void;
-  userToken: string | null;
+  school_id: string;
+  setRequestSubmitted: React.Dispatch<SetStateAction<boolean>>;
+  requestSubmitted:boolean;
 }
 
-interface AddParent {
-  user_email:string;
-}
-
-const ParentAddForm: React.FC<ParentAddFormProps> = ({
-  id,
-  invalidTokenResponse,
-  updateToken,
-  userToken,
-}) => {
+const ParentRequestForm:React.FC<ParentRequestFormProps> = ({handleDisplayForm, invalidTokenResponse, school_id, requestSubmitted, setRequestSubmitted}) => {
 
   const [apiErr, setApiErr] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+  const {token, setToken} = useAuth()
 
   const {
     register,
@@ -31,20 +26,19 @@ const ParentAddForm: React.FC<ParentAddFormProps> = ({
     reset,
     formState,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<AddParent>();
+  } = useForm<ParentAccessRequest>();
 
-  const onSubmit: SubmitHandler<AddParent> = async (data) => {
+  const onSubmit: SubmitHandler<ParentAccessRequest> = async (data) => {
     try {
       setApiErr(null)
-      const response = await addNewParent(userToken, id, data);
-      if (response.parent.length === 0) {
-        setApiErr("The email address you supplied is not in our database")
-      }
-      updateToken(response.token);
+      const response = await postParentAccessRequest(token, data);
+      setToken(response.token);
       setFormSubmitted(!formSubmitted);
+      setRequestSubmitted(!requestSubmitted);
+      handleDisplayForm();
     } catch (error: any) {
       console.error("There was an error:", error);
-      setApiErr(`There was an error creating the new post`);
+      setApiErr(`There was an error requesting access to the school. Please try again`);
       if (
         error.response.data.msg === "Authorization header missing" ||
         error.response.data.msg === "Invalid or expired token"
@@ -57,35 +51,36 @@ const ParentAddForm: React.FC<ParentAddFormProps> = ({
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({
-        user_email: "",
+        school_id, 
+        msg: "",
       });
     }
-  }, [formState, reset]);
+  }, [formState, reset, school_id]);
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <label
           className="text-xs uppercase text-gray-700 font-bold"
-          htmlFor="user_email"
+          htmlFor="msg"
         >
-          Parent Email:
+          Message:
         </label>
-        <input
+        <p className="text-xs text-gray-500">Please provide some details so the school can identify you.</p>
+        <textarea
           className="p-4 mb-4 rounded border-2 mt-2"
-          placeholder={`email address`}
-          {...register("user_email", {
-            required: `Requires a valid email address`,
-            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-          })}
-          id={`user_email`}
-          name={`user_email`}
+          placeholder={`Enter your message`}
+          {...register("msg")}
+          id={`msg`}
+          name={`msg`}
         />
-        {errors.user_email && (
-          <span className="mb-4 text-rose-600 text-xs font-bold">
-            Email address is required
-          </span>
-        )}
+        <input 
+          hidden
+          value={school_id}
+          {...register("school_id")}
+          id={`school_id`}
+          name={`school_id`}
+        />
         <input
           className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
           type="submit"
@@ -98,4 +93,5 @@ const ParentAddForm: React.FC<ParentAddFormProps> = ({
   );
 };
 
-export default ParentAddForm;
+export default ParentRequestForm
+

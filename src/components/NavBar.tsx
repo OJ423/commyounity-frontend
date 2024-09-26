@@ -42,7 +42,7 @@ export default function NavBar() {
               <path strokeLinecap="round" className={`${navOpen ? 'rotate-45 origin-left transition-all duration-500':'transition-all duration-500'}`} strokeLinejoin="round" d="M3.75 6.75h16.5" />
               <path strokeLinecap="round" className={`${navOpen ? '-rotate-45 origin-right transition-all duration-500':'transition-all duration-500'}`} strokeLinejoin="round" d="M3.75 6.75h16.5" />
               <path strokeLinecap="round" className={`${navOpen ? 'opacity-0 transition-all duration-500':'transition-all duration-500 opacity-100'}`}strokeLinejoin="round" d="M3.75 12h16.5" />
-              <path strokeLinecap="round" className={`${navOpen ? 'opacity-0 transition-all duration-500':'opactiy-100 transition-all duration-500'}`} strokeLinejoin="round" d="M3.75 17.25h16.5" />
+              <path strokeLinecap="round" className={`${navOpen ? 'opacity-0 transition-all duration-500':'opacity-100 transition-all duration-500'}`} strokeLinejoin="round" d="M3.75 17.25h16.5" />
             </svg>
           </button>
       </section>
