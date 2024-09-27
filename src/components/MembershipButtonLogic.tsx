@@ -60,7 +60,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes,
+      setUserPostLikes
     });
     router.push("/login");
   };

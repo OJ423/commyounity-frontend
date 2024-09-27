@@ -33,6 +33,7 @@ const ParentRequestForm:React.FC<ParentRequestFormProps> = ({handleDisplayForm, 
       setApiErr(null)
       const response = await postParentAccessRequest(token, data);
       setToken(response.token);
+      localStorage.setItem("token", response.token);
       setFormSubmitted(!formSubmitted);
       setRequestSubmitted(!requestSubmitted);
       handleDisplayForm();

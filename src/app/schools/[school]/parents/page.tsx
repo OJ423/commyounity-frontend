@@ -16,7 +16,6 @@ export default function SchoolParents() {
   const router = useRouter();
 
   const {
-    userAdmins,
     token,
     setToken,
     setUser,
@@ -39,7 +38,7 @@ export default function SchoolParents() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes,
+      setUserPostLikes
     });
     router.push("/login");
   };

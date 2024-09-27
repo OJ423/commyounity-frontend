@@ -28,7 +28,8 @@ export default function NavBar() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes})
+      setUserPostLikes
+    })
     router.push('/login')
   }
   

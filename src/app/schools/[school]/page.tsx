@@ -80,7 +80,7 @@ export default function SchoolPage() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes,
+      setUserPostLikes
     });
     router.push("/login");
   };

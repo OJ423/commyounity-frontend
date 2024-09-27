@@ -270,6 +270,11 @@ export type GenericFormData = {
   phone: string | null;
 };
 
+export type CommentInputs = {
+  comment_title:string;
+  comment_body:string;
+}
+
 // Patch Entities
 
 export type EditGroupData = {

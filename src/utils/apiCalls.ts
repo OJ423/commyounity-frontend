@@ -1,10 +1,10 @@
 import axios from "axios";
 import {
+  CommentInputs,
   EditBusinessData,
   EditChurchData,
   EditGroupData,
   EditSchoolData,
-  GroupData,
   LogInInputs,
   NewBusinessData,
   NewChurchData,
@@ -13,11 +13,8 @@ import {
   NewSchoolData,
   ParentAccessRequest,
   ParentApproveReject,
-  PostAPIData,
   RegistrationInputs,
-  UserJoinInputs,
 } from "./customTypes";
-import { headers } from "next/headers";
 
 const instance = axios.create({
   baseURL: "http://localhost:9090/api/",
@@ -139,6 +136,20 @@ export async function getUserAdmins(
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
+    throw error;
+  }
+}
+
+export async function getUserPostLikes(token: string) {
+  try {
+    const response = await instance.get("posts/user/likes", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error getting user post likes", error);
     throw error;
   }
 }
@@ -315,26 +326,28 @@ export async function addNewEntity(
   body: NewGroupData | NewChurchData | NewSchoolData | NewBusinessData | null,
   token: string | null,
   type: string,
-  user_id: number | null,
+  user_id: number | null
 ) {
-
-  let urlParam:string = "void";
-  if (type === "group") urlParam = "groups"
-  if (type === "church") urlParam = "churches"
-  if (type === "business") urlParam = "businesses"
-  if (type === "school") urlParam = "schools"
+  let urlParam: string = "void";
+  if (type === "group") urlParam = "groups";
+  if (type === "church") urlParam = "churches";
+  if (type === "business") urlParam = "businesses";
+  if (type === "school") urlParam = "schools";
 
   if (body) {
     try {
-      const response = await instance.post(`${urlParam}/${body.community_id}/${user_id}`, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }});
-      
-        return response.data
+      const response = await instance.post(
+        `${urlParam}/${body.community_id}/${user_id}`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      return response.data;
     } catch (error: any) {
-      
       console.error(`Error adding ${type}`, error);
       throw error;
     }
@@ -342,30 +355,37 @@ export async function addNewEntity(
 }
 
 export async function patchEntity(
-  body: EditGroupData | EditChurchData | EditSchoolData | EditBusinessData | null,
+  body:
+    | EditGroupData
+    | EditChurchData
+    | EditSchoolData
+    | EditBusinessData
+    | null,
   token: string | null,
   type: string,
   entity_id: number | undefined,
-  user_id: number | null,
+  user_id: number | null
 ) {
-
-  let urlParam:string = "void";
-  if (type === "group") urlParam = "groups"
-  if (type === "church") urlParam = "churches"
-  if (type === "business") urlParam = "businesses"
-  if (type === "school") urlParam = "schools"
+  let urlParam: string = "void";
+  if (type === "group") urlParam = "groups";
+  if (type === "church") urlParam = "churches";
+  if (type === "business") urlParam = "businesses";
+  if (type === "school") urlParam = "schools";
 
   if (body) {
     try {
-      const response = await instance.patch(`${urlParam}/edit/${entity_id}/${user_id}`, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }});
-      
-        return response.data
+      const response = await instance.patch(
+        `${urlParam}/edit/${entity_id}/${user_id}`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      return response.data;
     } catch (error: any) {
-      
       console.error(`Error adding ${type}`, error);
       throw error;
     }
@@ -377,100 +397,112 @@ export async function patchEntityImg(
   token: string | null,
   type: string,
   entity_id: number | undefined,
-  user_id: number | null,
+  user_id: number | null
 ) {
-
-  let urlParam:string = "void";
+  let urlParam: string = "void";
   let body;
   if (type === "group") {
-    urlParam = "groups"
-    body = {group_img: imgUrl}
+    urlParam = "groups";
+    body = { group_img: imgUrl };
   }
   if (type === "church") {
-    urlParam = "churches"
-    body = {church_img: imgUrl}
+    urlParam = "churches";
+    body = { church_img: imgUrl };
   }
   if (type === "business") {
-    urlParam = "businesses"
-    body = {business_img: imgUrl}
+    urlParam = "businesses";
+    body = { business_img: imgUrl };
   }
   if (type === "school") {
-    urlParam = "schools"
-    body = {school_img: imgUrl}
+    urlParam = "schools";
+    body = { school_img: imgUrl };
   }
 
   if (body) {
     try {
-      const response = await instance.patch(`${urlParam}/edit/${entity_id}/${user_id}`, body, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }});
-      
-        return response.data
+      const response = await instance.patch(
+        `${urlParam}/edit/${entity_id}/${user_id}`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      return response.data;
     } catch (error: any) {
-      
       console.error(`Error adding ${type}`, error);
       throw error;
     }
   }
 }
 
-
-export async function deleteEntity(type: string, id:number | undefined, user_id:string | undefined, token:string | null) {
-  let urlParam:string = "void";
-  if (type === "group") urlParam = "groups"
-  if (type === "church") urlParam = "churches"
-  if (type === "business") urlParam = "businesses"
-  if (type === "school") urlParam = "schools"
+export async function deleteEntity(
+  type: string,
+  id: number | undefined,
+  user_id: string | undefined,
+  token: string | null
+) {
+  let urlParam: string = "void";
+  if (type === "group") urlParam = "groups";
+  if (type === "church") urlParam = "churches";
+  if (type === "business") urlParam = "businesses";
+  if (type === "school") urlParam = "schools";
 
   try {
-    const response = await instance.delete(`${urlParam}/delete/${id}/${user_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }});
-      return response.data
-
+    const response = await instance.delete(
+      `${urlParam}/delete/${id}/${user_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
   } catch (error: any) {
-    
     console.error(`Error adding ${type}`, error);
     throw error;
   }
-
 }
-
 
 // POST AND COMMENT CALLS
 
-export async function addPost(type:string, id: number | undefined, data: NewPostData | undefined, webLink: string, author: string | undefined, imageUrl:string, token: string | null) {
-  let body:any = {
+export async function addPost(
+  type: string,
+  id: number | undefined,
+  data: NewPostData | undefined,
+  webLink: string,
+  author: string | undefined,
+  imageUrl: string,
+  token: string | null
+) {
+  let body: any = {
     post_title: data?.post_title,
     post_description: data?.post_description,
     post_location: data?.post_location,
     post_img: imageUrl,
     web_link: webLink,
     web_title: data?.web_title,
-    author: author
-  }
-  if (type === "group") body.group_id = id
-  if (type === "church") body.church_id = id
-  if (type === "school") body.school_id = id
-  if (type === "business") body.business_id = id
+    author: author,
+  };
+  if (type === "group") body.group_id = id;
+  if (type === "church") body.church_id = id;
+  if (type === "school") body.school_id = id;
+  if (type === "business") body.business_id = id;
 
   try {
-    const response = await instance.post('posts/', body, {
+    const response = await instance.post("posts/", body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
-    return response.data
-    
-  } catch(error:any) {
-    console.log(error)
-    throw error
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    throw error;
   }
-
 }
 
 export async function likePost(
@@ -485,8 +517,7 @@ export async function likePost(
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
       return response.data.postLikes;
     } catch (error: any) {
       console.error("Error log in:", error);
@@ -526,6 +557,24 @@ export async function getPostComments(post_id: number) {
   }
 }
 
+export async function postNewComment(
+  token: string | null,
+  post_id: number,
+  body: CommentInputs
+) {
+  try {
+    const response = await instance.post(`posts/${post_id}/comment/new`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error posting comment", error);
+    throw error;
+  }
+}
+
 export async function getUsersCommunityPosts(
   user_id: number,
   community_id: number,
@@ -540,7 +589,6 @@ export async function getUsersCommunityPosts(
         },
       }
     );
-    console.log(response.data)
     return response.data;
   } catch (error: any) {
     console.error("Error log in:", error);
@@ -565,99 +613,127 @@ export async function uploadFile(formData: any, token: string | null) {
   }
 }
 
-
 // School Parent Management
 
-export async function getSchoolParents(token:string | null, schoolId: number) {
+export async function getSchoolParents(token: string | null, schoolId: number) {
   try {
-    const response = await instance.get(`/schools/parents/${schoolId}`,  {
+    const response = await instance.get(`schools/parents/${schoolId}`, {
       headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
 
 interface AddParentBody {
-  user_email:string
+  user_email: string;
 }
 
-export async function addNewParent(token:string | null, schoolId: number, body: AddParentBody) {
+export async function addNewParent(
+  token: string | null,
+  schoolId: number,
+  body: AddParentBody
+) {
   try {
-    const response = await instance.post(`/schools/${schoolId}/parent/add`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+    const response = await instance.post(
+      `schools/${schoolId}/parent/add`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
 
-export async function removeParent(token:string | null, schoolId: number, parentId: number) {
+export async function removeParent(
+  token: string | null,
+  schoolId: number,
+  parentId: number
+) {
   try {
-    const response = await instance.delete(`/schools/${schoolId}/parent/remove/${parentId}`,  {
-      headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+    const response = await instance.delete(
+      `schools/${schoolId}/parent/remove/${parentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
 
 // Parent Access Requests
 
-export async function getParentAccessRequests(token:string | null, school_id: number, requestStatus: string) {
+export async function getParentAccessRequests(
+  token: string | null,
+  school_id: number,
+  requestStatus: string
+) {
   try {
-    const response = await instance.get(`/schools/requests/${school_id}`, {
+    const response = await instance.get(`schools/requests/${school_id}`, {
       params: {
-        status: requestStatus
+        status: requestStatus,
       },
       headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
 
-export async function postParentAccessRequest(token:string | null, body: ParentAccessRequest) {
+export async function postParentAccessRequest(
+  token: string | null,
+  body: ParentAccessRequest
+) {
   try {
-    const response = await instance.post(`/schools/access`, body, {
+    const response = await instance.post(`schools/access`, body, {
       headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
 
-export async function patchParentAccessRequest(token:string | null, school_id:number, body: ParentApproveReject) {
+export async function patchParentAccessRequest(
+  token: string | null,
+  school_id: number,
+  body: ParentApproveReject
+) {
   try {
-    const response = await instance.patch(`/schools/requests/status/${school_id}`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`}, 
-    })
-    return response.data
-  }
-  catch (error:any) {
+    const response = await instance.patch(
+      `schools/requests/status/${school_id}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching school parents:", error);
-    throw error
+    throw error;
   }
 }
-

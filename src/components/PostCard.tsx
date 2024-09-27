@@ -11,6 +11,7 @@ import { useAuth } from "./context/AuthContext";
 import { dislikePost, likePost } from "@/utils/apiCalls";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/dataTransformers";
+import CommentNewForm from "./CommentNewForm";
 
 type PostCardProps = {
   data: PostData | TimelinePosts;
@@ -19,6 +20,7 @@ type PostCardProps = {
 
 const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
   const [viewComments, setViewComments] = useState<boolean>(false);
+  const [displayAddComment, setDisplayAddComment] = useState<boolean>(false);
   const [postLikes, setPostLikes] = useState<number>(data.post_likes);
   const {
     user,
@@ -44,7 +46,9 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
   }
 
   function handleAddComment() {
-    alert("This is a place holder to add a comment");
+    if (member) {
+      setDisplayAddComment(!displayAddComment);
+    }
   }
 
   async function handlePostLike() {
@@ -99,13 +103,11 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
     localStorage.removeItem("communities");
     localStorage.removeItem("selectedCommunity");
     localStorage.removeItem("userMemberships");
-    localStorage.removeItem("userPostLikes");
     setToken(null);
     setUser(null);
     setCommunities([]);
     setSelectedCommunity(null);
     setUserMemberships(null);
-    setUserPostLikes([]);
     router.push("/login");
   };
 
@@ -165,33 +167,33 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
             )
           ) : null}
         </div>
-          <div className="p-3 bg-indigo-200 rounded-b md:col-span-5 flex gap-5 items-center justify-between">
-            <div className="flex gap-4 items-center">
-              <div>
-                {data.group_id ? (
-                  <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
-                    Group
-                  </p>
-                ) : data.business_id ? (
-                  <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
-                    Business
-                  </p>
-                ) : data.school_id ? (
-                  <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
-                    School
-                  </p>
-                ) : data.church_id ? (
-                  <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
-                    Church
-                  </p>
-                ) : null}
-              </div>
-              <p className="text-xs font-semibold">Posted: {formattedDate}</p>
+        <div className="p-3 bg-indigo-200 rounded-b md:col-span-5 flex gap-5 items-center justify-between">
+          <div className="flex gap-4 items-center">
+            <div>
+              {data.group_id ? (
+                <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
+                  Group
+                </p>
+              ) : data.business_id ? (
+                <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
+                  Business
+                </p>
+              ) : data.school_id ? (
+                <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
+                  School
+                </p>
+              ) : data.church_id ? (
+                <p className="text-xs font-bold p-2 bg-indigo-500 text-white rounded-xl">
+                  Church
+                </p>
+              ) : null}
+            </div>
+            <p className="text-xs font-semibold">Posted: {formattedDate}</p>
           </div>
           <div className="flex gap-4">
             {userPostLikeCheck ? (
               <div
-                onClick={handlePostDislike}
+                onClick={() => user ? handlePostDislike() : null}
                 className="flex items-center text-rose-600 gap-1 transition-all duration-200"
               >
                 <IoHeartOutline size={24} />
@@ -205,7 +207,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
               </div>
             ) : (
               <div
-                onClick={handlePostLike}
+                onClick={() => user ? handlePostLike() : null}
                 className="flex items-center text-rose-600 gap-1 hover:scale-110 transition-all duration-200"
               >
                 <IoHeartOutline size={24} />
@@ -213,7 +215,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
               </div>
             )}
             <div
-              onClick={handleShowComments}
+              onClick={() => user ? handleShowComments() : null}
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
               <IoChatboxOutline size={24} />
@@ -222,7 +224,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
               </p>
             </div>
             <div
-              onClick={handleAddComment}
+              onClick={() => user ? member ? handleAddComment() : null : null}
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
               <BsFillReplyFill size={24} />
@@ -230,8 +232,22 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
           </div>
         </div>
         <section className={`w-full bottom-0 bg-white md:col-span-5 rounded-b`}>
+          {displayAddComment ? (
+            <CommentNewForm
+              post_id={data.post_id}
+              comment_ref={null}
+              setDisplayAddComment={setDisplayAddComment}
+              displayAddComment={displayAddComment}
+              setViewComments={setViewComments}
+              invalidTokenResponse={invalidTokenResponse}
+            />
+          ) : null}
           {viewComments ? (
-            <CommentList viewComments={viewComments} post_id={data.post_id} />
+            <CommentList
+              viewComments={viewComments}
+              post_id={data.post_id}
+              invalidTokenResponse={invalidTokenResponse}
+            />
           ) : null}
         </section>
       </section>

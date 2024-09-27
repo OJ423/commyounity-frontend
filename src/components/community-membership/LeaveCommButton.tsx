@@ -43,7 +43,8 @@ const router = useRouter()
           setSelectedCommunity,
           setUserMemberships,
           setUserAdmins,
-          setUserPostLikes})
+          setUserPostLikes,
+        })
         router.push('/login')
       }
       console.log(error.response.data.msg)

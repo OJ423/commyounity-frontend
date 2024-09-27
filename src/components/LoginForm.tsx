@@ -5,10 +5,10 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "./context/AuthContext";
 import { LogInInputs } from "@/utils/customTypes";
-import { logUserIn } from "@/utils/apiCalls";
+import { getUserPostLikes, logUserIn } from "@/utils/apiCalls";
 
 export default function LoginForm() {
-  const { setToken, setUser, setCommunities } = useAuth();
+  const { setToken, setUser, setCommunities, setUserPostLikes } = useAuth();
   const [loginErr, setLoginErr] = useState<string | null>(null);
   const [loggingIn, setLoggingIn] = useState<boolean>(false)
   const router = useRouter();
@@ -40,6 +40,10 @@ export default function LoginForm() {
       localStorage.setItem("token", userData.token);
       localStorage.setItem("user", JSON.stringify(userContextData));
       localStorage.setItem("communities", JSON.stringify(userData.communities));
+      const postLikeData = await getUserPostLikes(userData.token)
+      setUserPostLikes(postLikeData.userPostLikes)
+      localStorage.setItem("userPostLikes", JSON.stringify(postLikeData.userPostLikes))
+
       router.push("/communities");
     } catch (error: any) {
       setLoggingIn(false)

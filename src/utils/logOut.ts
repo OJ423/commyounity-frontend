@@ -7,7 +7,7 @@ interface Context {
   setSelectedCommunity: (community: any | null) => void;
   setUserMemberships: (memberships: any | null) => void;
   setUserAdmins: (admins: any | null) => void;
-  setUserPostLikes: (postLikes: any[]) => void;
+  setUserPostLikes: (postLikes: any | null) => void;
 }
 
 
@@ -33,5 +33,8 @@ export const LogUserOut = ({
   setSelectedCommunity(null);
   setUserMemberships(null);
   setUserAdmins(null);
-  setUserPostLikes([]);
+  setUserPostLikes(null)
+
+  const router = useRouter()
+  router.push('/login')
 };

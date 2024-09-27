@@ -8,7 +8,6 @@ export default function StopUsingCommunity() {
     setSelectedCommunity,
     setUserMemberships,
     setUserAdmins,
-    setUserPostLikes,
   } = useAuth();
 
   function handleStopUsingCommunity() {
@@ -16,11 +15,9 @@ export default function StopUsingCommunity() {
     localStorage.removeItem("selectedCommunity");
     localStorage.removeItem("userMemberships");
     localStorage.removeItem("userAdmins");
-    localStorage.removeItem("userPostLikes");
     setSelectedCommunity(null);
     setUserMemberships(null);
     setUserAdmins(null);
-    setUserPostLikes([]);
   }
 
   return (

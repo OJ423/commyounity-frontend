@@ -32,7 +32,7 @@ const SwitchCommunityButton:React.FC<SwitchProps> = ({community_id, community_na
     }
   }
 
-  async function setAdmins(user_id: number | undefined, communityId:number) {
+  async function setAdmins(user_id: number | null, communityId:number) {
     try{
       if (user) {
         const admins = await getUserAdmins(user_id, communityId, token);
@@ -73,7 +73,8 @@ const SwitchCommunityButton:React.FC<SwitchProps> = ({community_id, community_na
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes})
+      setUserPostLikes
+      })
     router.push('/login')
   }
 
