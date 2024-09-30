@@ -26,7 +26,7 @@ export default function BusinessPage() {
   const [postData, setPostData] = useState<PostData[] | [] >([])
   const [fetchPosts, setFetchPosts] = useState<boolean>(false)
   const [member, setMember] = useState<boolean>(true)
-  const {userMemberships} = useAuth()
+  const {userMemberships, token} = useAuth()
   const [owner, setOwner] = useState<boolean>(false)
   
   
@@ -57,7 +57,7 @@ export default function BusinessPage() {
       }
     }
     fetchData()
-  }, [userMemberships, params, fetchPosts])
+  }, [userMemberships, params, fetchPosts, token])
 
   return(
   <>
@@ -131,6 +131,7 @@ export default function BusinessPage() {
                 key={post.post_id}
                 data={post}
                 member={member}
+                owner={owner}
               />
             ))}
           </div>

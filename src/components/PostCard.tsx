@@ -3,7 +3,7 @@
 import { PostData, TimelinePosts } from "@/utils/customTypes";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoHeartOutline, IoChatboxOutline } from "react-icons/io5";
 import { BsFillReplyFill } from "react-icons/bs";
 import CommentList from "./CommentList";
@@ -16,12 +16,16 @@ import CommentNewForm from "./CommentNewForm";
 type PostCardProps = {
   data: PostData | TimelinePosts;
   member: boolean;
+  owner: boolean;
 };
 
-const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
+const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
+  
   const [viewComments, setViewComments] = useState<boolean>(false);
   const [displayAddComment, setDisplayAddComment] = useState<boolean>(false);
   const [postLikes, setPostLikes] = useState<number>(data.post_likes);
+  const [userLike, setUserLike] = useState<boolean>(false)
+
   const {
     user,
     setUser,
@@ -35,9 +39,14 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
   } = useAuth();
   const router = useRouter();
 
-  const userPostLikeCheck: boolean = userPostLikes.some(
-    (post) => post.post_id === +data.post_id
-  );
+  useEffect(() => {
+    if(userPostLikes) {
+      const userPostLikeCheck: boolean = userPostLikes.some(
+        (post) => post.post_id === +data.post_id
+      );
+      setUserLike(userPostLikeCheck)
+    }
+  }, [userPostLikes, data.post_id])
 
   function handleShowComments() {
     if (+data.comment_count && member) {
@@ -95,6 +104,10 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
       }
       console.log("something has gone wrong.");
     }
+  }
+
+  const handleDeletePost = async () => {
+
   }
 
   const invalidTokenResponse = (): void => {
@@ -189,9 +202,18 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
               ) : null}
             </div>
             <p className="text-xs font-semibold">Posted: {formattedDate}</p>
+            {owner ?
+            <button
+              onClick={handleDeletePost}
+              className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
+            >
+              Delete
+            </button>
+            : null
+            }
           </div>
           <div className="flex gap-4">
-            {userPostLikeCheck ? (
+            {userLike ? (
               <div
                 onClick={() => user ? handlePostDislike() : null}
                 className="flex items-center text-rose-600 gap-1 transition-all duration-200"
@@ -247,6 +269,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member }) => {
               viewComments={viewComments}
               post_id={data.post_id}
               invalidTokenResponse={invalidTokenResponse}
+              owner={owner}
             />
           ) : null}
         </section>

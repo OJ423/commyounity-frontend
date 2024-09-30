@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useAuth } from "./context/AuthContext";
-import { ChurchJoinResponse, GroupJoinResponse } from "@/utils/customTypes";
 import {
   deleteEntity,
   getUserAdmins,
@@ -66,14 +65,12 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   };
 
   async function setMemberships(
-    user_id: number | undefined,
-    communityId: number,
+    communityId: string,
     token: string | null
   ) {
     try {
       if (user) {
         const memberships = await getUserMemberships(
-          user_id,
           communityId,
           token
         );
@@ -92,13 +89,12 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   }
 
   async function setAdmins(
-    user_id: number | null,
-    communityId: number | undefined,
+    communityId: string,
     token: string | null
   ) {
     try {
       if (user) {
-        const admins = await getUserAdmins(user_id, communityId, token);
+        const admins = await getUserAdmins(communityId, token);
         setUserAdmins(admins);
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
@@ -162,9 +158,9 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
           type,
           token
         );
+        deleteCall()
         await setMemberships(
-          +user.user_id,
-          selectedCommunity?.community_id,
+          String(selectedCommunity?.community_id),
           token
         );
         setMember(false);
@@ -203,8 +199,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     try {
       const deleteRequest = await deleteEntity(type, id, user?.user_id, token);
       if (user && id && token) {
-        setMemberships(+user.user_id, id, token);
-        setAdmins(+user.user_id, id, token);
+        setMemberships(String(id), token);
+        setAdmins(String(id), token);
         router.push(`/${routeToPush}`);
       }
     } catch (error: any) {
@@ -261,7 +257,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       }
       setOwner(isOwner);
     }
-  }, [userMemberships, userAdmins, pathname, setMember, setOwner]);
+  }, [userMemberships, userAdmins, pathname, setMember, setOwner, token]);
 
   return (
     <>

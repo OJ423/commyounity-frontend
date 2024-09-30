@@ -17,7 +17,7 @@ export default function Footer() {
           <h2 className="font-bold text-2xl mb-4">Comm-you-nity</h2>
           <p className="font-light">Connecting all that is good in the community without using your data.</p>
         </div>
-        <div className="grid grid-cols-3 gap-4 flex-wrap">
+        <div className="flex items-center justify-center gap-4 flex-wrap">
           <Link href='/communities'>
             <div className="flex flex-col gap-4 items-center hover:opacity-50 cursor-pointer transition duration-500">
               <IoHomeOutline size={25} />

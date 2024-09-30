@@ -32,8 +32,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
     try {
       if (user) {
         const memberships = await getUserMemberships(
-          +user?.user_id,
-          selectedCommunity?.community_id,
+          String(selectedCommunity?.community_id),
           token
         );
         setUserMemberships(memberships);
@@ -53,7 +52,7 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
   async function setAdmins() {
     try {
       if (user) {
-        const admins = await getUserAdmins(+user.user_id, selectedCommunity?.community_id, token);
+        const admins = await getUserAdmins(String(selectedCommunity?.community_id), token);
         setUserAdmins(admins);
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }

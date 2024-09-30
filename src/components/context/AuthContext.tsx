@@ -9,7 +9,7 @@ interface User {
   user_bio: string;
   user_avatar: string;
   date_joined: string;
-  email: string;
+  user_email: string;
   status: string;
 }
 

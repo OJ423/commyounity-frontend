@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
 import { getUserAdmins, getUserMemberships, joinUser } from "@/utils/apiCalls";
 import { LogUserOut } from "@/utils/logOut";
@@ -32,18 +31,18 @@ const JoinCommBtn: React.FC<JoinProps> = ({
   const router = useRouter();
 
   async function setMemberships(
-    user_id: number | undefined,
-    communityId: number
+    communityId: string
   ) {
     try {
       if (user) {
         const memberships = await getUserMemberships(
-          user_id,
           communityId,
           token
         );
         setUserMemberships(memberships);
         localStorage.setItem("userMemberships", JSON.stringify(memberships));
+        setToken(memberships.token)
+        localStorage.setItem("token", memberships.token)
       }
     } catch (error: any) {
       if (
@@ -56,10 +55,10 @@ const JoinCommBtn: React.FC<JoinProps> = ({
     }
   }
 
-  async function setAdmins(user_id: number, communityId: number) {
+  async function setAdmins(communityId: string) {
     try {
       if (user) {
-        const admins = await getUserAdmins(user_id, communityId, token);
+        const admins = await getUserAdmins(communityId, token);
         setUserAdmins(admins);
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
@@ -98,9 +97,11 @@ const JoinCommBtn: React.FC<JoinProps> = ({
         );
         setSelectedCommunity(fetchData.community);
         setCommunityMember(true);
-        setMemberships(+user?.user_id, +community_id);
-        setAdmins(+user?.user_id, +community_id);
+        setMemberships(community_id);
+        setAdmins(community_id);
         setCommunities([...communities, fetchData.community]);
+        setToken(fetchData.token)
+        localStorage.setItem("token", fetchData.token)
         localStorage.setItem("communities", JSON.stringify(communities));
         localStorage.setItem(
           "selectedCommunity",
@@ -129,13 +130,12 @@ const JoinCommBtn: React.FC<JoinProps> = ({
   }
 
   return (
-    <Link
-      href=""
+    <button
       onClick={handleJoin}
       className="text-xs border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
     >
       <span>Join</span>
-    </Link>
+    </button>
   );
 };
 

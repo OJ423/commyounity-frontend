@@ -183,7 +183,7 @@ export default function CommunityPage() {
                         {groupData.map((group: CardData) => (
                           <>
                             <GenericCard
-                              key={group.id}
+                              key={group.id+group.name}
                               data={group}
                               urlParams={"/groups/"}
                             />
@@ -239,7 +239,7 @@ export default function CommunityPage() {
                       <>
                         {businessData.map((business: CardData) => (
                           <GenericCard
-                            key={business.id}
+                            key={business.id+business.name}
                             data={business}
                             urlParams={"/businesses/"}
                           />
@@ -299,7 +299,7 @@ export default function CommunityPage() {
                         <>
                           {schoolData.map((school: CardData) => (
                             <GenericCard
-                              key={school.id}
+                              key={school.id+school.name}
                               data={school}
                               urlParams={"/schools/"}
                             />
@@ -361,7 +361,7 @@ export default function CommunityPage() {
                       <>
                         {churchData.map((church: CardData) => (
                           <GenericCard
-                            key={church.id}
+                            key={church.id+church.name}
                             data={church}
                             urlParams={"/churches/"}
                           />

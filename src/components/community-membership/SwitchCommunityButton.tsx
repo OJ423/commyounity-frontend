@@ -14,34 +14,35 @@ interface SwitchProps {
 
 const SwitchCommunityButton:React.FC<SwitchProps> = ({community_id, community_name, communityMember}) => {
   const { user, token, setSelectedCommunity, setUserMemberships, setUserAdmins, setUserPostLikes, setUser, setToken, setCommunities } = useAuth()
-
   const router = useRouter()
 
-  async function setMemberships(user_id: number | undefined, communityId:number) {
+  async function setMemberships(communityId:string) {
     try{
-      if (user) {
-        const memberships = await getUserMemberships(user_id, communityId, token);
+      if (user && token) {
+        const memberships = await getUserMemberships(communityId, token);
         setUserMemberships(memberships);
         localStorage.setItem('userMemberships', JSON.stringify(memberships));
       }
     } catch(error:any) {
       if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
-        invalidTokenResponse()
+        // invalidTokenResponse()
       }
       console.log(error.response.data.msg)
     }
   }
 
-  async function setAdmins(user_id: number | null, communityId:number) {
+  async function setAdmins(communityId:string) {
     try{
-      if (user) {
-        const admins = await getUserAdmins(user_id, communityId, token);
+      if (user && token) {
+        const admins = await getUserAdmins(communityId, token);
         setUserAdmins(admins);
         localStorage.setItem('userAdmins', JSON.stringify(admins));
+        setToken(admins.token)
+        localStorage.setItem("token", admins.token)
       }
     } catch(error:any) {
       if (error.response.data.msg === 'Authorization header missing' || error.response.data.msg === 'Invalid or expired token') {
-        invalidTokenResponse()
+        // invalidTokenResponse()
       }
       console.log(error.response.data.msg)
     }
@@ -54,8 +55,8 @@ const SwitchCommunityButton:React.FC<SwitchProps> = ({community_id, community_na
         const chosenCommunity = {community_id: +community_id, community_name }
         setSelectedCommunity(chosenCommunity)
         if(user) {
-          setMemberships(+user?.user_id, +community_id);
-          setAdmins(+user?.user_id, +community_id)
+          setMemberships(community_id);
+          setAdmins(community_id)
         }
         localStorage.setItem('selectedCommunity', JSON.stringify(chosenCommunity));
         const transformedCommName = community_name.replace(/ /g,"-").toLowerCase();

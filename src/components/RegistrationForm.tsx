@@ -54,7 +54,7 @@ export default function RegistrationForm() {
           name="username"
           id="username"
         />
-        {errors.email && (
+        {errors.username && (
           <span className="mb-4 text-rose-600 text-xs font-bold">
             Username needs to be 4 characters or more
           </span>
@@ -62,14 +62,14 @@ export default function RegistrationForm() {
         <input
           className="p-4 mb-4 rounded"
           placeholder="Email Address"
-          {...register("email", {
+          {...register("user_email", {
             required: "Email is required",
             pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
           })}
-          name="email"
-          id="email"
+          name="user_email"
+          id="user_email"
         />
-        {errors.email && (
+        {errors.user_email && (
           <span className="mb-4 text-rose-600 text-xs font-bold">
             Email is required
           </span>

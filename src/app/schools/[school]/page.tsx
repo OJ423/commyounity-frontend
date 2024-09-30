@@ -354,6 +354,7 @@ export default function SchoolPage() {
                             key={post.post_id}
                             data={post}
                             member={member}
+                            owner={owner}
                           />
                         ))}
                       </div>

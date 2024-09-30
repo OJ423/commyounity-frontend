@@ -60,7 +60,7 @@ export async function registerUser(body: RegistrationInputs) {
   try {
     const registerBody = {
       username: body.username,
-      email: body.email,
+      email: body.user_email,
       password: body.password,
     };
     const response = await instance.post("users/register", registerBody);
@@ -99,15 +99,32 @@ export async function patchUser(
   }
 }
 
-// GET USER MEMBERSHIPS, ADMIN PROFILES AND POSTS
-
-export async function getUserMemberships(
-  user_id: number | undefined,
-  community_id: number | undefined,
+export async function deleteUser(
+  user_id: string | undefined,
   token: string | null
 ) {
   try {
-    const response = await instance.get(`users/${user_id}/${community_id}`, {
+    const response = await instance.delete(`users/delete/${user_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("An error has occurred: ", error);
+    throw error;
+  }
+}
+
+
+// GET USER MEMBERSHIPS, ADMIN PROFILES AND POSTS
+
+export async function getUserMemberships(
+  community_id: string | undefined,
+  token: string | null
+) {
+  try {
+    const response = await instance.get(`users/memberships/${community_id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -120,13 +137,12 @@ export async function getUserMemberships(
 }
 
 export async function getUserAdmins(
-  user_id: number | null,
-  community_id: number | undefined,
+  community_id: string,
   token: string | null
 ) {
   try {
     const response = await instance.get(
-      `users/manage/${user_id}/${community_id}`,
+      `users/manage/${community_id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -142,7 +158,7 @@ export async function getUserAdmins(
 
 export async function getUserPostLikes(token: string) {
   try {
-    const response = await instance.get("posts/user/likes", {
+    const response = await instance.get("posts/user/likes/posts", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -547,9 +563,13 @@ export async function dislikePost(
   }
 }
 
-export async function getPostComments(post_id: number) {
+export async function getPostComments(token: string | null, post_id: number) {
   try {
-    const response = await instance.get(`posts/${post_id}`);
+    const response = await instance.get(`posts/${post_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data;
   } catch (error: any) {
     console.error("Error log in:", error);
@@ -575,18 +595,38 @@ export async function postNewComment(
   }
 }
 
+export async function deleteComment(
+  token: string | null,
+  comment_id: number,
+) {
+  try {
+    const response = await instance.delete(`posts/comment/delete/${comment_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error deleting comment", error);
+    throw error;
+  }
+}
+
 export async function getUsersCommunityPosts(
-  user_id: number,
+  token: string |  null,
   community_id: number,
   filter: string | null
 ) {
   try {
     const response = await instance.get(
-      `posts/user/${user_id}/${community_id}`,
+      `posts/user/${community_id}`,
       {
         params: {
           filter: filter,
         },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
     );
     return response.data;

@@ -10,18 +10,21 @@ interface CommentListProps {
   viewComments: boolean,
   post_id:number,
   invalidTokenResponse: () => void;
+  owner:boolean;
 }
-const CommentList: React.FC<CommentListProps> = ({viewComments, post_id, invalidTokenResponse}) => {
+const CommentList: React.FC<CommentListProps> = ({viewComments, post_id, invalidTokenResponse, owner}) => {
   const [comments, setComments] = useState<Comment[] | []>([])
   const [post, setPost] = useState<PostData[] | []>([])
-  const {token} = useAuth()
+  const {token, setToken} = useAuth()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getPostComments(post_id)
+        const data = await getPostComments(token, post_id)
         setComments(data.comments)
         setPost(data.post)
+        setToken(data.token)
+        localStorage.setItem("token", data.token)
       } catch(error:any) {
         console.log(error)
       }
@@ -32,7 +35,7 @@ const CommentList: React.FC<CommentListProps> = ({viewComments, post_id, invalid
   return (
     <div className={`transition-all duration-500 ease-in bg-white w-full flex flex-col items-start justify-start p-4 rounded-b`}>
       {comments.map((comment: Comment) => (
-            <CommentCard key={comment.comment_id} comments={comments} comment={comment} post={post} invalidTokenResponse={invalidTokenResponse} />
+            <CommentCard key={comment.comment_id} comments={comments} comment={comment} post={post} invalidTokenResponse={invalidTokenResponse} owner={owner} />
         ))}
     </div>
   )

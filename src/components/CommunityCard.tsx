@@ -23,6 +23,7 @@ type ListProps = {
 const CommunityCard: React.FC<ListProps> = ({ community }) => {
   const { communities, selectedCommunity } = useAuth();
   const [communityMember, setCommunityMember] = useState<boolean>();
+  const [communityLinkName, setCommunityLinkName] = useState<string>(community.community_name)
 
   useEffect(() => {
     if (communities) {
@@ -33,7 +34,8 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
         setCommunityMember(true);
       }
     }
-  }, [communities, community.community_id]);
+    setCommunityLinkName(community.community_name.replace(/ /g,"-").toLowerCase())
+  }, [communities, community]);
 
   return (
     <section className="rounded bg-gray-200 shadow-lg">
@@ -58,7 +60,7 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
         <div className="flex items-center gap-2">
           <Link
             href={{
-              pathname: `/communities/${community.community_name}`,
+              pathname: `/communities/${communityLinkName}`,
               query: { community: community.community_id },
             }}
             className="border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"

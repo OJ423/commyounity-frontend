@@ -22,7 +22,8 @@ export default function NavBar() {
   }
 
   function handleLogOut():void {
-    LogUserOut({setToken,
+    LogUserOut({
+      setToken,
       setUser,
       setCommunities,
       setSelectedCommunity,

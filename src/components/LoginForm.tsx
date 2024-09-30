@@ -31,7 +31,7 @@ export default function LoginForm() {
         user_bio: userData.user.user_bio,
         user_avatar: userData.user.user_avatar,
         date_joined: userData.user.date_joined,
-        email: userData.user.user_email,
+        user_email: userData.user.user_email,
         status: userData.user.status,
       }
       setUser(userContextData);

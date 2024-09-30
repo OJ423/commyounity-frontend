@@ -131,6 +131,7 @@ export default function ChurchPage() {
                 key={post.post_id}
                 data={post}
                 member={member}
+                owner={owner}
               />
             ))}
           </div>

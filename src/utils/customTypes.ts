@@ -35,7 +35,7 @@ export type LogInInputs = {
 
 export type RegistrationInputs = {
   username: string;
-  email: string;
+  user_email: string;
   password: string;
   confirmPassword: string;
 };
@@ -55,6 +55,12 @@ export type ParentApproveReject = {
   status: string;
 };
 
+export type ProfileEdit = {
+  username: string;
+  user_bio: string;
+  user_email: string;
+}
+
 // API Responses
 export type JoinedCommunityResponse = {
   msg: string;
@@ -62,6 +68,7 @@ export type JoinedCommunityResponse = {
     community_id: number;
     community_name: string;
   };
+  token: string;
 };
 
 export type GroupData = {

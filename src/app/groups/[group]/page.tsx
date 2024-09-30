@@ -113,6 +113,7 @@ export default function GroupPage() {
                 key={post.post_id}
                 data={post}
                 member={member}
+                owner={owner}
               />
             ))}
           </div>

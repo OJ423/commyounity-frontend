@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 
 interface Context {
   setToken: (token: string | null) => void;
@@ -34,7 +33,4 @@ export const LogUserOut = ({
   setUserMemberships(null);
   setUserAdmins(null);
   setUserPostLikes(null)
-
-  const router = useRouter()
-  router.push('/login')
 };
