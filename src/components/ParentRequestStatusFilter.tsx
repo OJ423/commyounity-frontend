@@ -5,7 +5,6 @@ interface StatusFilterProps {
 const ParentRequestStatusFilter: React.FC<StatusFilterProps> = ({setRequestStatus}) => {
   
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) :void => {
-    console.log(event.target.value)
     setRequestStatus(event.target.value);
   }
   

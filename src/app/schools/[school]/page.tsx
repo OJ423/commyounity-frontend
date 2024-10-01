@@ -125,7 +125,6 @@ export default function SchoolPage() {
             );
             for (let i = 0; i < transformedData.length; i++) {
               if (+transformedData[i].id === +params.school) {
-                console.log(transformedData[i]);
                 setNonParentView(transformedData[i]);
               }
             }
