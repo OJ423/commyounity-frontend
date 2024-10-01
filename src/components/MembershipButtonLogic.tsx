@@ -20,6 +20,7 @@ type ButtonProps = {
   id: number | undefined;
   showForm: boolean;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleShowUserAdmins: () => void;
 };
 
 const MembershipButtonLogic: React.FC<ButtonProps> = ({
@@ -31,7 +32,9 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   id,
   showForm,
   setShowForm,
+  handleShowUserAdmins
 }) => {
+
   const {
     user,
     setUser,
@@ -308,21 +311,29 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
                 ) : null}
                 <button
                   onClick={handleEdit}
-                  className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                  className="text-xs w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
                 >
                   Edit
                 </button>
+
+                <button
+                  onClick={handleShowUserAdmins}
+                  className="text-xs w-max border-solid border-4 border-black p-2 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                >
+                  Manage Admins
+                </button>
+
                 {confirmDelete ? (
                   <div className="flex gap-4 items-center">
                     <button
                       onClick={handleDelete}
-                      className="w-max border-solid border-4 border-rose-400 text-rose-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-400 hover:border-rose-400 hover:text-white transition-all duration-500 ease-out"
+                      className="text-xs w-max border-solid border-4 border-rose-400 text-rose-400 p-2 inline-block rounded-xl uppercase font-semibold hover:bg-rose-400 hover:border-rose-400 hover:text-white transition-all duration-500 ease-out"
                     >
                       Confirm?
                     </button>
                     <button
                       onClick={handleDeleteCheck}
-                      className="w-max border-solid border-4 border-gray-400 text-gray-400 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-gray-400 hover:border-gray-400 hover:text-white transition-all duration-500 ease-out"
+                      className="text-xs w-max border-solid border-4 border-gray-400 text-gray-400 p-2 inline-block rounded-xl uppercase font-semibold hover:bg-gray-400 hover:border-gray-400 hover:text-white transition-all duration-500 ease-out"
                     >
                       Cancel
                     </button>
@@ -330,7 +341,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
                 ) : (
                   <button
                     onClick={handleDeleteCheck}
-                    className="w-max border-solid border-4 border-rose-600 text-rose-600 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out"
+                    className="text-sm w-max border-solid border-4 border-rose-600 text-rose-600 p-2 inline-block rounded-xl uppercase font-semibold hover:bg-rose-600 hover:border-rose-600 hover:text-white transition-all duration-500 ease-out"
                   >
                     Delete
                   </button>

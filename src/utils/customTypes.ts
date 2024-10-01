@@ -208,6 +208,32 @@ export interface ParentAccessData {
   user_email:string;
 }
 
+export interface UserAdminBase {
+  user_id: number,
+  username: string,
+  user_email: string,
+}
+
+export interface BusinessAdmin extends UserAdminBase {
+  business_junction_id: number;
+}
+
+export interface ChurchAdmin extends UserAdminBase {
+  church_owner_junction_id: number;
+}
+
+export interface GroupAdmin extends UserAdminBase {
+  group_admin_id: number;
+}
+
+export interface SchoolAdmin extends UserAdminBase {
+  school_owner_junction_id: number;
+}
+
+export interface CommunityAdmin extends UserAdminBase {
+  community_owner_junction_id: number;
+}
+
 // New Groups Etc Inputs
 
 export type NewPostData = {

@@ -1,5 +1,6 @@
 "use client";
 
+import AdminUserList from "@/components/AdminUserList";
 import EditGroupForm from "@/components/EditGroupForm";
 import EditHeaderImage from "@/components/EditHeaderImage";
 import Footer from "@/components/Footer";
@@ -46,7 +47,7 @@ export default function SchoolPage() {
   const [owner, setOwner] = useState<boolean>(false);
   const [showRequests, setShowRequests] = useState<boolean>(false);
   const [requestStatus, setRequestStatus] = useState<string>("Pending");
-  const [requestSubmitted, setRequestSubmitted] = useState<boolean>(false)
+  const [requestSubmitted, setRequestSubmitted] = useState<boolean>(false);
   const {
     selectedCommunity,
     userMemberships,
@@ -60,6 +61,12 @@ export default function SchoolPage() {
     setUserPostLikes,
   } = useAuth();
 
+  const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
+  const handleShowAdminUsers = () => {
+    setShowRequests(false)
+    setShowAdminUsers(!showAdminUsers);
+  };
+
   const [showForm, setShowForm] = useState<boolean>(false);
 
   const router = useRouter();
@@ -69,6 +76,7 @@ export default function SchoolPage() {
   };
 
   const handleShowRequests = () => {
+    setShowAdminUsers(false)
     setShowRequests(!showRequests);
   };
 
@@ -80,7 +88,7 @@ export default function SchoolPage() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes
+      setUserPostLikes,
     });
     router.push("/login");
   };
@@ -196,16 +204,19 @@ export default function SchoolPage() {
                   />
                 )}
                 <p>{nonParentView?.bio}</p>
-                {requestSubmitted ?
-                <p className="text-green-500">Your request has been sent to the school. You will receive an email when they response to your request.</p>
-                :
-                <button
-                onClick={handleDisplayForm}
-                className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                >
-                  <span>Request Parent Access</span>
-                </button>
-                }
+                {requestSubmitted ? (
+                  <p className="text-green-500">
+                    Your request has been sent to the school. You will receive
+                    an email when they response to your request.
+                  </p>
+                ) : (
+                  <button
+                    onClick={handleDisplayForm}
+                    className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                  >
+                    <span>Request Parent Access</span>
+                  </button>
+                )}
               </div>
               <div className="flex flex-col gap-4 md:col-span-5">
                 <h2 className="font-semibold text-lg">
@@ -225,7 +236,13 @@ export default function SchoolPage() {
             handleDisplayForm={handleDisplayForm}
           >
             <h2 className="font-bold text-xl">Edit your school</h2>
-            <ParentRequestForm handleDisplayForm={handleDisplayForm} invalidTokenResponse={invalidTokenResponse} school_id={params.school} requestSubmitted={requestSubmitted} setRequestSubmitted={setRequestSubmitted} />
+            <ParentRequestForm
+              handleDisplayForm={handleDisplayForm}
+              invalidTokenResponse={invalidTokenResponse}
+              school_id={params.school}
+              requestSubmitted={requestSubmitted}
+              setRequestSubmitted={setRequestSubmitted}
+            />
           </FormDrawer>
         </>
       ) : (
@@ -321,6 +338,7 @@ export default function SchoolPage() {
                 id={schoolData?.school_id}
                 showForm={showForm}
                 setShowForm={setShowForm}
+                handleShowUserAdmins={handleShowAdminUsers}
               />
             </div>
             <div className="flex flex-col gap-4 md:col-span-5">
@@ -331,7 +349,15 @@ export default function SchoolPage() {
                   invalidTokenResponse={invalidTokenResponse}
                   handleShowRequests={handleShowRequests}
                 />
-              ) : (
+              ) : showAdminUsers ?
+              <AdminUserList
+                type="school"
+                entityId={schoolData?.school_id}
+                entityName={schoolData?.school_name}
+                owner={owner}
+                handleShowUserAdmins={handleShowAdminUsers}
+              />
+              : (
                 <>
                   <div className="flex gap-4 items-center justify-between">
                     <h2 className="font-semibold text-lg">

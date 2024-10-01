@@ -116,6 +116,70 @@ export async function deleteUser(
   }
 }
 
+// Admin Users for Entities
+
+export async function getEntityAdmins(type: string, entityId: number | undefined, token: string | null) {
+  try {
+    const response = await instance.get(`users/admin/${type}/${entityId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching Admin Users:", error);
+    throw error;
+  }
+}
+
+
+export async function addNewAdmin(token: string | null, id: number | undefined, type: string, user_email: string ) {
+  try {
+    const routeUrl = type === "group" 
+    ? `groups/owners/new/${id}` : type === "school"
+    ? `schools/owners/new/${id}` : type === "church"
+    ? `churches/owners/new/${id}` : type === "business"
+    ? `businesses/owners/new/${id}` : type === "community"
+    ? `communities/owners/new/${id}` : null;
+
+    const body = {user_email}
+    
+    const response = await instance.post(`${routeUrl}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  }
+  catch(error:any) {
+    console.error("Error adding new admin", error)
+    throw error;
+  }
+}
+
+export async function removeAdmin(token: string | null, id: number | undefined, type: string, removedUserId: number ) {
+  try {
+    const routeUrl = type === "group" 
+    ? `groups/owners/remove/${id}/${removedUserId}` : type === "school"
+    ? `schools/owners/remove/${id}/${removedUserId}` : type === "church"
+    ? `churches/owners/remove/${id}/${removedUserId}` : type === "business"
+    ? `businesses/owners/remove/${id}/${removedUserId}` : type === "community"
+    ? `communities/owners/remove/${id}/${removedUserId}` : null;
+    
+    const response = await instance.delete(`${routeUrl}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  }
+  catch(error:any) {
+    console.error("Error adding new admin", error)
+    throw error;
+  }
+}
+
 
 // GET USER MEMBERSHIPS, ADMIN PROFILES AND POSTS
 
