@@ -98,9 +98,7 @@ export default function GroupPage() {
       <div className="flex flex-col gap-4 md:col-span-5">
         <div className="flex gap-4 items-center justify-between">
           <h2 className="font-semibold text-lg">{groupData?.group_name} Posts</h2>
-          { member ? 
-            <NewPostIcon type={"group"} id={groupData?.group_id} fetchPosts={fetchPosts} setFetchPosts={setFetchPosts} />
-          : owner ?
+          { member || owner ? 
             <NewPostIcon type={"group"} id={groupData?.group_id} fetchPosts={fetchPosts} setFetchPosts={setFetchPosts} />
           : null
           }

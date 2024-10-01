@@ -78,7 +78,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         <section className="flex flex-col gap-2 pb-4 mb-4 border-b border-gray-200 w-full">
           <h3 className="font-semibold">{comment.comment_title}</h3>
           <p className="text-sm">{comment.comment_body}</p>
-          {member ? (
+          {member || owner ? (
             <div className="flex justify-between items-center gap-2 mt-2 pt-2 border-t border-indigo-100">
               <div className="flex gap-2">
                 <button
@@ -88,7 +88,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   <span>Reply</span>
                 </button>
                 {user ? (
-                  +user.user_id === comment.author ? (
+                  +user.user_id === comment.author || owner ? (
                     <>
                       <button
                         onClick={() => handleDeleteComment(null)}
@@ -97,13 +97,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
                         <span>Delete</span>
                       </button>
                     </>
-                  ) : owner ? (
-                    <button
-                      onClick={() => handleDeleteComment(null)}
-                      className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
-                    >
-                      <span>Delete</span>
-                    </button>
                   ) : null
                 ) : null}
               </div>

@@ -26,7 +26,13 @@ const CommentList: React.FC<CommentListProps> = ({viewComments, post_id, invalid
         setToken(data.token)
         localStorage.setItem("token", data.token)
       } catch(error:any) {
-        console.log(error)
+        console.error("There was an error:", error);
+      if (
+        error.response.data.msg === "Authorization header missing" ||
+        error.response.data.msg === "Invalid or expired token"
+      ) {
+        invalidTokenResponse();
+      }
       }
     }
     fetchData()

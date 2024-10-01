@@ -488,7 +488,7 @@ export async function addPost(
   type: string,
   id: number | undefined,
   data: NewPostData | undefined,
-  webLink: string,
+  webLink: string | null,
   author: string | undefined,
   imageUrl: string,
   token: string | null
@@ -518,6 +518,21 @@ export async function addPost(
   } catch (error: any) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function deletePost(token: string | null, post_id: number) {
+  try {
+    const response = await instance.delete(`posts/delete/${post_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  }
+  catch(error:any) {
+    console.log("Error deleting post:", error)
+    throw error
   }
 }
 

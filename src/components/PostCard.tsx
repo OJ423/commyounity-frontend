@@ -8,10 +8,11 @@ import { IoHeartOutline, IoChatboxOutline } from "react-icons/io5";
 import { BsFillReplyFill } from "react-icons/bs";
 import CommentList from "./CommentList";
 import { useAuth } from "./context/AuthContext";
-import { dislikePost, likePost } from "@/utils/apiCalls";
+import { deletePost, dislikePost, likePost } from "@/utils/apiCalls";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/dataTransformers";
 import CommentNewForm from "./CommentNewForm";
+import { LogUserOut } from "@/utils/logOut";
 
 type PostCardProps = {
   data: PostData | TimelinePosts;
@@ -20,11 +21,11 @@ type PostCardProps = {
 };
 
 const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
-  
   const [viewComments, setViewComments] = useState<boolean>(false);
   const [displayAddComment, setDisplayAddComment] = useState<boolean>(false);
   const [postLikes, setPostLikes] = useState<number>(data.post_likes);
-  const [userLike, setUserLike] = useState<boolean>(false)
+  const [userLike, setUserLike] = useState<boolean>(false);
+  const [deleteCheck, setDeleteCheck] = useState<boolean>(false);
 
   const {
     user,
@@ -36,17 +37,18 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     setCommunities,
     setSelectedCommunity,
     setUserMemberships,
+    setUserAdmins,
   } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if(userPostLikes) {
+    if (userPostLikes) {
       const userPostLikeCheck: boolean = userPostLikes.some(
         (post) => post.post_id === +data.post_id
       );
-      setUserLike(userPostLikeCheck)
+      setUserLike(userPostLikeCheck);
     }
-  }, [userPostLikes, data.post_id])
+  }, [userPostLikes, data.post_id]);
 
   function handleShowComments() {
     if (+data.comment_count && member) {
@@ -106,25 +108,39 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     }
   }
 
-  const handleDeletePost = async () => {
-
-  }
-
-  const invalidTokenResponse = (): void => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("communities");
-    localStorage.removeItem("selectedCommunity");
-    localStorage.removeItem("userMemberships");
-    setToken(null);
-    setUser(null);
-    setCommunities([]);
-    setSelectedCommunity(null);
-    setUserMemberships(null);
-    router.push("/login");
+  const deletePostCheck = () => {
+    setDeleteCheck(!deleteCheck);
   };
 
-  const formattedDate = formatDate(data.post_date);
+  const handleDeletePost = async () => {
+    try {
+      const deleteRequest = await deletePost(token, data.post_id);
+      setDeleteCheck(!deleteCheck)
+      setToken(deleteRequest.token);
+      localStorage.setItem("token", deleteRequest.token);
+    } catch (error: any) {
+      if (
+        error.response.data.msg === "Authorization header missing" ||
+        error.response.data.msg === "Invalid or expired token"
+      ) {
+        invalidTokenResponse();
+      }
+      console.log("something has gone wrong.");
+    }
+  };
+
+  const invalidTokenResponse = (): void => {
+    LogUserOut({
+      setToken,
+      setUser,
+      setCommunities,
+      setSelectedCommunity,
+      setUserMemberships,
+      setUserAdmins,
+      setUserPostLikes,
+    });
+    router.push("/login");
+  };
 
   return (
     <>
@@ -201,21 +217,39 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
                 </p>
               ) : null}
             </div>
-            <p className="text-xs font-semibold">Posted: {formattedDate}</p>
-            {owner ?
-            <button
-              onClick={handleDeletePost}
-              className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
-            >
-              Delete
-            </button>
-            : null
-            }
+            <p className="text-xs font-semibold">
+              Posted: {formatDate(data.post_date)}
+            </p>
+            {owner ? (
+              deleteCheck ? (
+                <>
+                  <button
+                    onClick={handleDeletePost}
+                    className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={deletePostCheck}
+                    className="text-xs border-solid border-4 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={deletePostCheck}
+                  className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
+                >
+                  Delete
+                </button>
+              )
+            ) : null}
           </div>
           <div className="flex gap-4">
             {userLike ? (
               <div
-                onClick={() => user ? handlePostDislike() : null}
+                onClick={() => (user ? handlePostDislike() : null)}
                 className="flex items-center text-rose-600 gap-1 transition-all duration-200"
               >
                 <IoHeartOutline size={24} />
@@ -229,7 +263,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               </div>
             ) : (
               <div
-                onClick={() => user ? handlePostLike() : null}
+                onClick={() => (user ? handlePostLike() : null)}
                 className="flex items-center text-rose-600 gap-1 hover:scale-110 transition-all duration-200"
               >
                 <IoHeartOutline size={24} />
@@ -237,7 +271,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               </div>
             )}
             <div
-              onClick={() => user ? handleShowComments() : null}
+              onClick={() => (user ? handleShowComments() : null)}
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
               <IoChatboxOutline size={24} />
@@ -246,7 +280,9 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               </p>
             </div>
             <div
-              onClick={() => user ? member ? handleAddComment() : null : null}
+              onClick={() =>
+                user ? (member ? handleAddComment() : null) : null
+              }
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
               <BsFillReplyFill size={24} />

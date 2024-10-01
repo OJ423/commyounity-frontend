@@ -76,7 +76,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       } else {
         imageUrl = "";
       }
-      const webLink = data.web_link?.startsWith('http') ? data.web_link : `https://${data.web_link}`
+      const webLink = data.web_link?.startsWith('http') ? data.web_link : !data.web_link ? null : `https://${data.web_link}`
       const response = await addPost(
         type,
         id,
@@ -110,6 +110,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         post_description: "",
         post_img: null,
         post_location: "",
+        web_link: "",
+        web_title: ""
       });
     }
   }, [formState, reset]);
@@ -135,7 +137,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         />
         {errors.post_title && (
           <span className="mb-4 text-rose-600 text-xs font-bold">
-            Post title is require
+            Post title is required and needs to be at least 5 characters.
           </span>
         )}
 
@@ -159,7 +161,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         />
         {errors.post_description && (
           <span className="mb-4 text-rose-600 text-xs font-bold">
-            The post description needs to be 10 or more characters
+            The post description needs to be 10 or more characters and less than 500.
           </span>
         )}
 

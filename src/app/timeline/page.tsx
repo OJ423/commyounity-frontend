@@ -3,6 +3,7 @@
 import { useAuth } from "@/components/context/AuthContext";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import PersonalNav from "@/components/PersonalNav";
 import PostCard from "@/components/PostCard";
 import { getUsersCommunityPosts } from "@/utils/apiCalls";
 import { TimelinePosts } from "@/utils/customTypes";
@@ -194,6 +195,7 @@ export default function Timeline() {
             </Link>
           </section>
         )}
+      <PersonalNav />
       </main>
       <Footer />
     </>
