@@ -61,6 +61,10 @@ export type ProfileEdit = {
   user_email: string;
 }
 
+export type CommunityImg = {
+  community_img: string;
+}
+
 // API Responses
 export type JoinedCommunityResponse = {
   msg: string;
@@ -232,6 +236,12 @@ export interface SchoolAdmin extends UserAdminBase {
 
 export interface CommunityAdmin extends UserAdminBase {
   community_owner_junction_id: number;
+}
+
+export interface Members {
+  username: string;
+  user_bio: string;
+  user_id: number;
 }
 
 // New Groups Etc Inputs

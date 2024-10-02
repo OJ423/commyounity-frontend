@@ -29,6 +29,7 @@ export default function ProfilePagesNav() {
     setUserAdmins,
     setUserMemberships,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
   const [adminExists, setAdminExists] = useState<boolean>(false);
   const [membershipsExist, setMembershipsExist] = useState<boolean>(false);
@@ -44,6 +45,7 @@ export default function ProfilePagesNav() {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push('/login');
   }

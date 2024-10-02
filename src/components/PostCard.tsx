@@ -38,6 +38,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     setSelectedCommunity,
     setUserMemberships,
     setUserAdmins,
+    setAdminCommunities
   } = useAuth();
   const router = useRouter();
 
@@ -138,6 +139,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

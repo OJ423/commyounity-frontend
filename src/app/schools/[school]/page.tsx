@@ -59,6 +59,7 @@ export default function SchoolPage() {
     setUserAdmins,
     setUserMemberships,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
@@ -89,6 +90,7 @@ export default function SchoolPage() {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

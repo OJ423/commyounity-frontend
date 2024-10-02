@@ -41,6 +41,7 @@ const AdminUserList: React.FC<AdminUserListProps> = ({ type, entityId, entityNam
     setUser,
     setUserMemberships,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const router = useRouter();
@@ -66,6 +67,7 @@ const AdminUserList: React.FC<AdminUserListProps> = ({ type, entityId, entityNam
             setUser,
             setUserMemberships,
             setUserPostLikes,
+            setAdminCommunities
           });
           router.push("/login");
         }

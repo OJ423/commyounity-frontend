@@ -24,6 +24,7 @@ export default function SchoolParents() {
     setUserPostLikes,
     setUserAdmins,
     setUserMemberships,
+    setAdminCommunities
   } = useAuth();
 
   const [adminCheck, setAdminCheck] = useState<boolean>(false);
@@ -38,7 +39,8 @@ export default function SchoolParents() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes
+      setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

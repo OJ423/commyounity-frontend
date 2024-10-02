@@ -25,7 +25,8 @@ const JoinCommBtn: React.FC<JoinProps> = ({
     setUser,
     setToken,
     setCommunities,
-    setUserPostLikes
+    setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const router = useRouter();
@@ -82,6 +83,7 @@ const JoinCommBtn: React.FC<JoinProps> = ({
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

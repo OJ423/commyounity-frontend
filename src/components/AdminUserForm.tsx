@@ -28,6 +28,7 @@ const AdminUserNew: React.FC<AdminUserNewProps> = ({ type, entityId }) => {
     setUser,
     setUserMemberships,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const {
@@ -68,6 +69,7 @@ const AdminUserNew: React.FC<AdminUserNewProps> = ({ type, entityId }) => {
           setUser,
           setUserMemberships,
           setUserPostLikes,
+          setAdminCommunities
         });
       }
     }

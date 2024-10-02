@@ -1,6 +1,8 @@
 import axios from "axios";
 import {
   CommentInputs,
+  Community,
+  CommunityImg,
   EditBusinessData,
   EditChurchData,
   EditGroupData,
@@ -15,6 +17,7 @@ import {
   ParentApproveReject,
   RegistrationInputs,
 } from "./customTypes";
+import { headers } from "next/headers";
 
 const instance = axios.create({
   baseURL: "http://localhost:9090/api/",
@@ -41,6 +44,40 @@ export async function getCommunityById(community_id: string | null) {
       console.error("Error logging in:", error);
       throw error;
     }
+  }
+}
+
+export async function patchCommunity(
+  community_id: number,
+  user_id: number | undefined,
+  token: string | null,
+  body: Community | CommunityImg
+) {
+  try {
+    const response = await instance.patch(`communities/edit/${community_id}/${user_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error patching community:", error);
+    throw error;
+  }
+}
+
+export async function getCommunityMembers(token: string | null, community_id: number) {
+  try {
+    const response = await instance.get(`communities/members/${community_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data
+  }
+  catch(error:any) {
+    console.error("Error getting community members", error)
+    throw error
   }
 }
 
@@ -118,68 +155,89 @@ export async function deleteUser(
 
 // Admin Users for Entities
 
-export async function getEntityAdmins(type: string, entityId: number | undefined, token: string | null) {
+export async function getEntityAdmins(
+  type: string,
+  entityId: number | undefined,
+  token: string | null
+) {
   try {
     const response = await instance.get(`users/admin/${type}/${entityId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  }
-  catch (error:any) {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching Admin Users:", error);
     throw error;
   }
 }
 
-
-export async function addNewAdmin(token: string | null, id: number | undefined, type: string, user_email: string ) {
+export async function addNewAdmin(
+  token: string | null,
+  id: number | undefined,
+  type: string,
+  user_email: string
+) {
   try {
-    const routeUrl = type === "group" 
-    ? `groups/owners/new/${id}` : type === "school"
-    ? `schools/owners/new/${id}` : type === "church"
-    ? `churches/owners/new/${id}` : type === "business"
-    ? `businesses/owners/new/${id}` : type === "community"
-    ? `communities/owners/new/${id}` : null;
+    const routeUrl =
+      type === "group"
+        ? `groups/owners/new/${id}`
+        : type === "school"
+        ? `schools/owners/new/${id}`
+        : type === "church"
+        ? `churches/owners/new/${id}`
+        : type === "business"
+        ? `businesses/owners/new/${id}`
+        : type === "community"
+        ? `communities/owners/new/${id}`
+        : null;
 
-    const body = {user_email}
-    
+    const body = { user_email };
+
     const response = await instance.post(`${routeUrl}`, body, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  }
-  catch(error:any) {
-    console.error("Error adding new admin", error)
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error adding new admin", error);
     throw error;
   }
 }
 
-export async function removeAdmin(token: string | null, id: number | undefined, type: string, removedUserId: number ) {
+export async function removeAdmin(
+  token: string | null,
+  id: number | undefined,
+  type: string,
+  removedUserId: number
+) {
   try {
-    const routeUrl = type === "group" 
-    ? `groups/owners/remove/${id}/${removedUserId}` : type === "school"
-    ? `schools/owners/remove/${id}/${removedUserId}` : type === "church"
-    ? `churches/owners/remove/${id}/${removedUserId}` : type === "business"
-    ? `businesses/owners/remove/${id}/${removedUserId}` : type === "community"
-    ? `communities/owners/remove/${id}/${removedUserId}` : null;
-    
+    const routeUrl =
+      type === "group"
+        ? `groups/owners/remove/${id}/${removedUserId}`
+        : type === "school"
+        ? `schools/owners/remove/${id}/${removedUserId}`
+        : type === "church"
+        ? `churches/owners/remove/${id}/${removedUserId}`
+        : type === "business"
+        ? `businesses/owners/remove/${id}/${removedUserId}`
+        : type === "community"
+        ? `communities/owners/remove/${id}/${removedUserId}`
+        : null;
+
     const response = await instance.delete(`${routeUrl}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  }
-  catch(error:any) {
-    console.error("Error adding new admin", error)
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error adding new admin", error);
     throw error;
   }
 }
-
 
 // GET USER MEMBERSHIPS, ADMIN PROFILES AND POSTS
 
@@ -205,14 +263,11 @@ export async function getUserAdmins(
   token: string | null
 ) {
   try {
-    const response = await instance.get(
-      `users/manage/${community_id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await instance.get(`users/manage/${community_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
@@ -589,14 +644,13 @@ export async function deletePost(token: string | null, post_id: number) {
   try {
     const response = await instance.delete(`posts/delete/${post_id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  }
-  catch(error:any) {
-    console.log("Error deleting post:", error)
-    throw error
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.log("Error deleting post:", error);
+    throw error;
   }
 }
 
@@ -646,8 +700,8 @@ export async function getPostComments(token: string | null, post_id: number) {
   try {
     const response = await instance.get(`posts/${post_id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error: any) {
@@ -674,16 +728,16 @@ export async function postNewComment(
   }
 }
 
-export async function deleteComment(
-  token: string | null,
-  comment_id: number,
-) {
+export async function deleteComment(token: string | null, comment_id: number) {
   try {
-    const response = await instance.delete(`posts/comment/delete/${comment_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await instance.delete(
+      `posts/comment/delete/${comment_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error deleting comment", error);
@@ -692,22 +746,19 @@ export async function deleteComment(
 }
 
 export async function getUsersCommunityPosts(
-  token: string |  null,
+  token: string | null,
   community_id: number,
   filter: string | null
 ) {
   try {
-    const response = await instance.get(
-      `posts/user/${community_id}`,
-      {
-        params: {
-          filter: filter,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    const response = await instance.get(`posts/user/${community_id}`, {
+      params: {
+        filter: filter,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error: any) {
     console.error("Error log in:", error);

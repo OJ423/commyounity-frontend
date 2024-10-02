@@ -7,6 +7,7 @@ interface Context {
   setUserMemberships: (memberships: any | null) => void;
   setUserAdmins: (admins: any | null) => void;
   setUserPostLikes: (postLikes: any | null) => void;
+  setAdminCommunities: (adminCommunities: any | null) => void;
 }
 
 
@@ -18,6 +19,7 @@ export const LogUserOut = ({
   setUserMemberships,
   setUserAdmins,
   setUserPostLikes,
+  setAdminCommunities
 }: Context): void => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
@@ -26,11 +28,13 @@ export const LogUserOut = ({
   localStorage.removeItem('userMemberships');
   localStorage.removeItem('userAdmins');
   localStorage.removeItem('userPostLikes');
+  localStorage.removeItem('adminCommunities')
   setToken(null);
   setUser(null);
   setCommunities([]);
   setSelectedCommunity(null);
   setUserMemberships(null);
   setUserAdmins(null);
-  setUserPostLikes(null)
+  setUserPostLikes(null);
+  setAdminCommunities([])
 };

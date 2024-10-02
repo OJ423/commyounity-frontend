@@ -7,7 +7,7 @@ import { getCommunityById } from "@/utils/apiCalls";
 import { CommunityProfile, CardData } from "@/utils/customTypes";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   IoPeopleOutline,
@@ -27,6 +27,13 @@ import {
 import CommunityButtonLogic from "@/components/CommunityButtonLogic";
 import PersonalNav from "@/components/PersonalNav";
 import NewGroup from "@/components/NewGroup";
+import CommunityOwnerLogic from "@/components/CommunityOwnerLogic";
+import FormDrawer from "@/components/FormDrawer";
+import CommunityEditForm from "@/components/CommunityEditForm";
+import { LogUserOut } from "@/utils/logOut";
+import CommunityImgUpdate from "@/components/CommunityImgUpdate";
+import { TbPhotoEdit } from "react-icons/tb";
+import CommunityUserManagement from "@/components/CommunityUserManagement";
 
 export default function CommunityPage() {
   const [communityData, setCommunityData] = useState<CommunityProfile | null>(
@@ -38,12 +45,42 @@ export default function CommunityPage() {
   const [businessData, setBusinessData] = useState<CardData[] | []>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [communityMember, setCommunityMember] = useState<boolean>(false);
+  const [owner, setOwner] = useState<boolean>(false);
 
-  const { user, communities, selectedCommunity } = useAuth();
+  const {
+    user,
+    token,
+    communities,
+    selectedCommunity,
+    adminCommunities,
+    setAdminCommunities,
+    setCommunities,
+    setSelectedCommunity,
+    setToken,
+    setUser,
+    setUserAdmins,
+    setUserMemberships,
+    setUserPostLikes,
+  } = useAuth();
+
+  // Edit Community
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [editType, setEditType] = useState<string>("edit");
+  const handleShowForm = (value: string) => {
+    setEditType(value);
+    setShowForm(!showForm);
+  };
+
+  // User Management
+  const [showUserManagement, setShowUserManagement] = useState<boolean>(false)
+  const handleShowUserManagement = () => {
+    setShowUserManagement(!showUserManagement)
+  }
 
   // Params for data fetch
   const searchParams = useSearchParams();
   const community_id = searchParams.get("community");
+
   // Type guard for rendered checks
   const isDefined = (value: any): value is string =>
     value !== null && value !== undefined;
@@ -51,7 +88,29 @@ export default function CommunityPage() {
     isDefined(community_id) &&
     selectedCommunity?.community_id === +community_id;
 
+  // Expired Token
+  const router = useRouter();
+  const invalidTokenResponse = (): void => {
+    LogUserOut({
+      setToken,
+      setUser,
+      setCommunities,
+      setSelectedCommunity,
+      setUserMemberships,
+      setUserAdmins,
+      setUserPostLikes,
+      setAdminCommunities,
+    });
+    router.push("/login");
+  };
+
   useEffect(() => {
+    if (community_id) {
+      const ownerCheck = adminCommunities.some(
+        (community) => +community.community_id === +community_id
+      );
+      setOwner(ownerCheck);
+    }
     const fetchData = async () => {
       try {
         const data = await getCommunityById(community_id);
@@ -86,7 +145,7 @@ export default function CommunityPage() {
       }
     };
     fetchData();
-  }, [community_id]);
+  }, [community_id, adminCommunities, communities, token]);
 
   return (
     <>
@@ -96,20 +155,52 @@ export default function CommunityPage() {
           <p className="mt-[-120px] font-bold">Loading</p>
         </main>
       ) : (
-        <main className="flex min-h-screen flex-col items-center px-4">
+        <main className="flex min-h-screen flex-col items-center p-4">
           {communityData ? (
+            owner && showUserManagement ?
+            <CommunityUserManagement
+              community={communityData}
+              owner={owner}
+              handleShowUserManagement={handleShowUserManagement} 
+              invalidTokenResponse={invalidTokenResponse}
+            />
+            :
             <>
-              <section className="max-w-screen-lg rounded drop-shadow-xl bg-gray-200 my-10 md:my-20 grid grid-rows-2 grid-col-1 sm:grid-flow-col pb-8 sm:pb-0 gap-8 items-center">
-                <div className="row-span-3 col-span-4">
-                  <Image
-                    src={communityData.community_img}
-                    width={200}
-                    height={200}
-                    quality={60}
-                    priority
-                    alt={`${communityData.community_name} community image`}
-                    className="w-full h-40 sm:h-96 object-cover rounded mb-4 sm:mb-0 drop-shadow-xl"
-                  />
+              <section
+                className={`${
+                  owner ? "mt-10 mb-4 md:mt-10 md:mb-0" : "my-10 md:my-20"
+                } max-w-screen-lg rounded drop-shadow-xl bg-gray-200 grid grid-rows-2 grid-col-1 sm:grid-flow-col pb-8 sm:pb-0 gap-8 items-center`}
+              >
+                <div className="row-span-3 col-span-4 relative">
+                  {communityData.community_img ? (
+                    <Image
+                      src={communityData.community_img}
+                      width={500}
+                      height={500}
+                      quality={60}
+                      priority
+                      alt={`${communityData.community_name} community image`}
+                      className="w-full h-40 sm:h-96 object-cover rounded mb-4 sm:mb-0 drop-shadow-xl"
+                    />
+                  ) : (
+                    <Image
+                      src="/community-img-placeholder.jpg"
+                      width={500}
+                      height={500}
+                      quality={60}
+                      priority
+                      alt={`${communityData.community_name} community image`}
+                      className="w-full h-40 sm:h-96 object-cover rounded mb-4 sm:mb-0 drop-shadow-xl"
+                    />
+                  )}
+                  {owner ? (
+                    <button
+                      onClick={() => handleShowForm("image")}
+                      className="bottom-2 left-2 absolute text-xs bg-indigo-100 w-max p-1 inline-block rounded-xl text-indigo-500 hover:bg-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                    >
+                      <TbPhotoEdit size={24} />
+                    </button>
+                  ) : null}
                 </div>
                 <div className="row-span-2 col-span-4 px-4 sm:px-8">
                   <h1 className="font-bold text-3xl mb-4">
@@ -158,6 +249,41 @@ export default function CommunityPage() {
                 </div>
               </section>
 
+              {owner ? (
+                <>
+                  <section className="max-w-screen-lg flex flex-col mx-auto gap-4 my-8 p-4 bg-indigo-100 rounded-lg">
+                    <CommunityOwnerLogic
+                      handleDisplayForm={handleShowForm}
+                      owner={owner}
+                      community={communityData}
+                      handleShowUserManagement={handleShowUserManagement}
+                    />
+                  </section>
+                  <FormDrawer
+                    setShowForm={setShowForm}
+                    showForm={showForm}
+                    handleDisplayForm={handleShowForm}
+                  >
+                    {editType === "image" ? (
+                      <CommunityImgUpdate
+                        community={communityData}
+                        owner={owner}
+                        handleDisplayForm={handleShowForm}
+                        invalidTokenResponse={invalidTokenResponse}
+                      />
+                    ) : (
+                      <CommunityEditForm
+                        community={communityData}
+                        owner={owner}
+                        user_id={Number(user?.user_id)}
+                        handleDisplayForm={handleShowForm}
+                        invalidTokenResponse={invalidTokenResponse}
+                      />
+                    )}
+                  </FormDrawer>
+                </>
+              ) : null}
+
               <div>
                 <section id="#groups" className="max-w-screen-lg">
                   <div className="flex justify-between items-center mb-4 pb-4 border-b-2">
@@ -183,7 +309,7 @@ export default function CommunityPage() {
                         {groupData.map((group: CardData) => (
                           <>
                             <GenericCard
-                              key={group.id+group.name}
+                              key={group.id + group.name}
                               data={group}
                               urlParams={"/groups/"}
                             />
@@ -239,7 +365,7 @@ export default function CommunityPage() {
                       <>
                         {businessData.map((business: CardData) => (
                           <GenericCard
-                            key={business.id+business.name}
+                            key={business.id + business.name}
                             data={business}
                             urlParams={"/businesses/"}
                           />
@@ -253,7 +379,8 @@ export default function CommunityPage() {
                       ) : (
                         <section className="max-w-screen-lg">
                           <p>
-                          Looks like there are no businesses. Add your business?
+                            Looks like there are no businesses. Add your
+                            business?
                           </p>
                         </section>
                       )
@@ -299,7 +426,7 @@ export default function CommunityPage() {
                         <>
                           {schoolData.map((school: CardData) => (
                             <GenericCard
-                              key={school.id+school.name}
+                              key={school.id + school.name}
                               data={school}
                               urlParams={"/schools/"}
                             />
@@ -361,7 +488,7 @@ export default function CommunityPage() {
                       <>
                         {churchData.map((church: CardData) => (
                           <GenericCard
-                            key={church.id+church.name}
+                            key={church.id + church.name}
                             data={church}
                             urlParams={"/churches/"}
                           />

@@ -1,10 +1,9 @@
 "use client"
 
-import Link from "next/link";
 import { TbPhotoEdit } from "react-icons/tb";
 import { useAuth } from "./context/AuthContext";
 import { useState } from "react";
-import { patchUser, uploadFile } from "@/utils/apiCalls";
+import { patchUser } from "@/utils/apiCalls";
 import { handleUpload } from "@/utils/blobFuncs";
 import FormDrawer from "./FormDrawer";
 
@@ -34,7 +33,7 @@ export default function UploadAvatar() {
         user_bio: userData.user.user_bio,
         user_avatar: userData.user.user_avatar,
         date_joined: userData.user.date_joined,
-        email: userData.user.user_email,
+        user_email: userData.user.user_email,
         status: userData.user.status,
       }
       setUser(userContextData);
@@ -49,13 +48,12 @@ export default function UploadAvatar() {
 
   return (
     <>
-      <Link
-        href=""
+      <button
         onClick={handleDisplayForm}
         className="bottom-2 left-2 absolute text-xs w-max py-2 px-3 inline-block rounded-xl text-indigo-500 hover:bg-indigo-500 hover:text-white transition-all duration-500 ease-out"
       >
         <TbPhotoEdit size={24}/>
-      </Link>
+      </button>
       <FormDrawer setShowForm={setShowForm} showForm={showForm} handleDisplayForm={handleDisplayForm} >
         <h2 className="font-bold text-2xl">Upload an Avatar</h2>
         <p>Choose a file from your device.</p>

@@ -8,7 +8,7 @@ import { LogInInputs } from "@/utils/customTypes";
 import { getUserPostLikes, logUserIn } from "@/utils/apiCalls";
 
 export default function LoginForm() {
-  const { setToken, setUser, setCommunities, setUserPostLikes } = useAuth();
+  const { setToken, setUser, setCommunities, setAdminCommunities, setUserPostLikes } = useAuth();
   const [loginErr, setLoginErr] = useState<string | null>(null);
   const [loggingIn, setLoggingIn] = useState<boolean>(false)
   const router = useRouter();
@@ -37,9 +37,11 @@ export default function LoginForm() {
       setUser(userContextData);
       setToken(userData.token);
       setCommunities(userData.communities);
+      setAdminCommunities(userData.adminCommunities)
       localStorage.setItem("token", userData.token);
       localStorage.setItem("user", JSON.stringify(userContextData));
       localStorage.setItem("communities", JSON.stringify(userData.communities));
+      localStorage.setItem("adminCommunities", JSON.stringify(userData.adminCommunities))
       const postLikeData = await getUserPostLikes(userData.token)
       setUserPostLikes(postLikeData.userPostLikes)
       localStorage.setItem("userPostLikes", JSON.stringify(postLikeData.userPostLikes))

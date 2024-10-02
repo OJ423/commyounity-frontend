@@ -4,7 +4,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "./context/AuthContext";
 import { GenericFormData } from "@/utils/customTypes";
 import { handleUpload } from "@/utils/blobFuncs";
-import { addNewEntity, getUserAdmins, getUserMemberships } from "@/utils/apiCalls";
+import {
+  addNewEntity,
+  getUserAdmins,
+  getUserMemberships,
+} from "@/utils/apiCalls";
 import { LogUserOut } from "@/utils/logOut";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,10 +18,22 @@ interface NewGroupFormProps {
 }
 
 const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
-  const { user, setUser, token, setToken, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships,  setUserAdmins, setUserPostLikes } = useAuth();
+  const {
+    user,
+    setUser,
+    token,
+    setToken,
+    setCommunities,
+    selectedCommunity,
+    setSelectedCommunity,
+    setUserMemberships,
+    setUserAdmins,
+    setUserPostLikes,
+    setAdminCommunities,
+  } = useAuth();
 
-  const [ newEntityErr, setNewEntityErr ] = useState<string | null>(null)
-  const [ formSubmitted, setFormSubmitted ] = useState<boolean>(false)
+  const [newEntityErr, setNewEntityErr] = useState<string | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -26,7 +42,6 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<GenericFormData>();
-
 
   async function setMemberships() {
     try {
@@ -52,7 +67,10 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
   async function setAdmins() {
     try {
       if (user) {
-        const admins = await getUserAdmins(String(selectedCommunity?.community_id), token);
+        const admins = await getUserAdmins(
+          String(selectedCommunity?.community_id),
+          token
+        );
         setUserAdmins(admins);
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
@@ -76,29 +94,26 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities,
     });
     router.push("/login");
   };
 
   const submitLogic = async (data: GenericFormData) => {
     try {
-      let imageUrl:string;
+      let imageUrl: string;
       if (data.img) {
-          imageUrl = await handleUpload(
-          data.img[0],
-          token,
-          "no existing image"
-        );
+        imageUrl = await handleUpload(data.img[0], token, "no existing image");
+      } else {
+        imageUrl = "";
       }
-      else { imageUrl = "" }
 
       let validatedWebsite: string | null = null;
       if (data.website) {
         if (data.website.startsWith("http")) {
-          validatedWebsite = data.website
-        }
-        else {
-          validatedWebsite = `https://${data.website}`
+          validatedWebsite = data.website;
+        } else {
+          validatedWebsite = `https://${data.website}`;
         }
       }
 
@@ -108,12 +123,12 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           group_bio: data.bio,
           group_img: imageUrl,
           community_id: +selectedCommunity?.community_id,
-        }
+        };
 
         const newGroup = await addNewEntity(body, token, type, +user?.user_id);
-        await setMemberships()
-        await setAdmins()
-        return newGroup.newGroup
+        await setMemberships();
+        await setAdmins();
+        return newGroup.newGroup;
       }
       if (type === "church" && selectedCommunity && user) {
         const body = {
@@ -125,9 +140,9 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           community_id: +selectedCommunity?.community_id,
         };
         const newChurch = await addNewEntity(body, token, type, +user?.user_id);
-        await setMemberships()
-        await setAdmins()
-        return newChurch.newChurch
+        await setMemberships();
+        await setAdmins();
+        return newChurch.newChurch;
       }
       if (type === "business" && selectedCommunity && user) {
         const body = {
@@ -138,10 +153,15 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           business_website: validatedWebsite,
           community_id: +selectedCommunity?.community_id,
         };
-        const newBusiness = await addNewEntity(body, token, type, +user?.user_id);
-        await setMemberships()
-        await setAdmins()
-        return newBusiness.newBusiness
+        const newBusiness = await addNewEntity(
+          body,
+          token,
+          type,
+          +user?.user_id
+        );
+        await setMemberships();
+        await setAdmins();
+        return newBusiness.newBusiness;
       }
 
       if (type === "school" && selectedCommunity && user) {
@@ -155,169 +175,168 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           community_id: +selectedCommunity?.community_id,
         };
         const newSchool = await addNewEntity(body, token, type, +user?.user_id);
-        await setMemberships()
-        await setAdmins()
-        return newSchool.newSchool
+        await setMemberships();
+        await setAdmins();
+        return newSchool.newSchool;
       }
-      
     } catch (error: any) {
-      console.log('There was an error', error)
-      throw error
+      console.log("There was an error", error);
+      throw error;
     }
-  }
+  };
 
   const onSubmit: SubmitHandler<GenericFormData> = async (data) => {
     try {
-      const newEntity = await submitLogic(data)
-      if(type === "group") router.push(`/groups/${newEntity.group_id}`)
-      if(type === "church") router.push(`/churches/${newEntity.church_id}`)
-      if(type === "business") router.push(`/businesses/${newEntity.business_id}`)
-      if(type === "school") router.push(`/schools/${newEntity.school_id}`)
-      setFormSubmitted(true)
-    }  
-     catch(error:any) {
-      console.error("There was an error:", error)
-      setNewEntityErr(`There was an error creating the new ${type}` )
+      const newEntity = await submitLogic(data);
+      if (type === "group") router.push(`/groups/${newEntity.group_id}`);
+      if (type === "church") router.push(`/churches/${newEntity.church_id}`);
+      if (type === "business")
+        router.push(`/businesses/${newEntity.business_id}`);
+      if (type === "school") router.push(`/schools/${newEntity.school_id}`);
+      setFormSubmitted(true);
+    } catch (error: any) {
+      console.error("There was an error:", error);
+      setNewEntityErr(`There was an error creating the new ${type}`);
     }
   };
-  
+
   return (
     <>
-    {formSubmitted ?
-     <div className="flex flex-col justified-center gap-8">
-      <h2 className="font-bold text-2xl">Thanks for submitting a new {type}</h2>
-      <p>You will be directed to your new {type} in a sec.</p>
-    </div>
-     :
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <label
-        className="text-xs uppercase text-gray-700 font-bold"
-        htmlFor="title"
-        >
-        {type} name:
-      </label>
-      <input
-        className="p-4 mb-4 rounded border-2 mt-2"
-        placeholder={`${type} name`}
-        {...register("title", {
-          required: `${type} name is required`,
-          minLength: 5,
-        })}
-        id={`title`}
-        name={`title`}
-        />
-      {errors.title && (
-        <span className="mb-4 text-rose-600 text-xs font-bold">
-          {type} name is require
-        </span>
-      )}
-
-      <label
-        className="text-xs uppercase text-gray-700 font-bold"
-        htmlFor="bio"
-        >
-        {type} bio (Max 250 characters):
-      </label>
-      <textarea
-        className="p-4 mb-4 rounded border-2 mt-2"
-        placeholder={`Give your ${type} a bio to explain to users what it's about`}
-        {...register("bio", {
-          required: "Bio required",
-          minLength: 10,
-          maxLength: 250
-        })}
-        id="bio"
-        name="bio"
-        rows={4}
-      />
-      {errors.bio && (
-        <span className="mb-4 text-rose-600 text-xs font-bold">
-          The {type} bio needs to be 10 or more characters
-        </span>
-      )}
-
-      {type === "business" || type === "school" || type === "church" ? (
-        <>
+      {formSubmitted ? (
+        <div className="flex flex-col justified-center gap-8">
+          <h2 className="font-bold text-2xl">
+            Thanks for submitting a new {type}
+          </h2>
+          <p>You will be directed to your new {type} in a sec.</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
           <label
             className="text-xs uppercase text-gray-700 font-bold"
-            htmlFor="website"
-            >
-            {type} website:
+            htmlFor="title"
+          >
+            {type} name:
           </label>
           <input
             className="p-4 mb-4 rounded border-2 mt-2"
-            placeholder={`Let people know your website`}
-            {...register("website")}
-            id="website"
-            name="website"
-            />
-
-          <label
-            className="text-xs uppercase text-gray-700 font-bold"
-            htmlFor="email"
-            >
-            {type} email:
-          </label>
-          <input
-            className="p-4 mb-4 rounded border-2 mt-2"
-            placeholder={`Your ${type} email`}
-            {...register("email", {
-              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            placeholder={`${type} name`}
+            {...register("title", {
+              required: `${type} name is required`,
+              minLength: 5,
             })}
-            id="email"
-            name="email"
-            />
-          {errors.email && (
+            id={`title`}
+            name={`title`}
+          />
+          {errors.title && (
             <span className="mb-4 text-rose-600 text-xs font-bold">
-              Please use a valid email address
+              {type} name is require
             </span>
           )}
-        </>
-      ) : null}
 
-      {type === "school" ? (
-        <>
           <label
             className="text-xs uppercase text-gray-700 font-bold"
-            htmlFor="phone"
+            htmlFor="bio"
           >
-            {type} phone number:
+            {type} bio (Max 250 characters):
+          </label>
+          <textarea
+            className="p-4 mb-4 rounded border-2 mt-2"
+            placeholder={`Give your ${type} a bio to explain to users what it's about`}
+            {...register("bio", {
+              required: "Bio required",
+              minLength: 10,
+              maxLength: 250,
+            })}
+            id="bio"
+            name="bio"
+            rows={4}
+          />
+          {errors.bio && (
+            <span className="mb-4 text-rose-600 text-xs font-bold">
+              The {type} bio needs to be 10 or more characters
+            </span>
+          )}
+
+          {type === "business" || type === "school" || type === "church" ? (
+            <>
+              <label
+                className="text-xs uppercase text-gray-700 font-bold"
+                htmlFor="website"
+              >
+                {type} website:
+              </label>
+              <input
+                className="p-4 mb-4 rounded border-2 mt-2"
+                placeholder={`Let people know your website`}
+                {...register("website")}
+                id="website"
+                name="website"
+              />
+
+              <label
+                className="text-xs uppercase text-gray-700 font-bold"
+                htmlFor="email"
+              >
+                {type} email:
+              </label>
+              <input
+                className="p-4 mb-4 rounded border-2 mt-2"
+                placeholder={`Your ${type} email`}
+                {...register("email", {
+                  pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                })}
+                id="email"
+                name="email"
+              />
+              {errors.email && (
+                <span className="mb-4 text-rose-600 text-xs font-bold">
+                  Please use a valid email address
+                </span>
+              )}
+            </>
+          ) : null}
+
+          {type === "school" ? (
+            <>
+              <label
+                className="text-xs uppercase text-gray-700 font-bold"
+                htmlFor="phone"
+              >
+                {type} phone number:
+              </label>
+              <input
+                className="p-4 mb-4 rounded border-2 mt-2"
+                placeholder={`Your ${type} phone`}
+                {...register("phone")}
+                id="phone"
+                name="phone"
+              />
+            </>
+          ) : null}
+
+          <label
+            className="text-xs uppercase text-gray-700 font-bold"
+            htmlFor="img"
+          >
+            Upload {type} image:
           </label>
           <input
-            className="p-4 mb-4 rounded border-2 mt-2"
-            placeholder={`Your ${type} phone`}
-            {...register("phone")}
-            id="phone"
-            name="phone"
+            className="p-4 mb-4 rounded border-2 mt-2 file:px-4 file:py-2 file:transition-all file:duration-500 file:me-4 file:cursor-pointer"
+            {...register("img")}
+            id="img"
+            name="img"
+            type="file"
           />
-        </>
-      ) : null}
 
-      <label
-        className="text-xs uppercase text-gray-700 font-bold"
-        htmlFor="img"
-        >
-        Upload {type} image:
-      </label>
-      <input
-        className="p-4 mb-4 rounded border-2 mt-2 file:px-4 file:py-2 file:transition-all file:duration-500 file:me-4 file:cursor-pointer"
-        {...register("img")}
-        id="img"
-        name="img"
-        type="file"
-        />
-
-      <input
-        className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
-        type="submit"
-        />
-      {newEntityErr ?
-      <p className="text-rose-600 font-bold">{newEntityErr}</p>
-      : null
-      }
-    </form>
-     
-    }
+          <input
+            className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
+            type="submit"
+          />
+          {newEntityErr ? (
+            <p className="text-rose-600 font-bold">{newEntityErr}</p>
+          ) : null}
+        </form>
+      )}
     </>
   );
 };

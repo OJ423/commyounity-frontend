@@ -36,6 +36,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     setUserMemberships,
     setUserAdmins,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const [newPostErr, setNewPostErr] = useState<string | null>(null);
@@ -60,6 +61,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

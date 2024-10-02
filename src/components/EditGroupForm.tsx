@@ -25,7 +25,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
 }) => {
   const { user, setUser, token, setToken, setCommunities,
     selectedCommunity, setSelectedCommunity, setUserMemberships,
-    setUserAdmins, setUserPostLikes } = useAuth();
+    setUserAdmins, setUserPostLikes, setAdminCommunities } = useAuth();
 
   const [newEntityErr, setNewEntityErr] = useState<string | null>(null);
 
@@ -127,6 +127,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };

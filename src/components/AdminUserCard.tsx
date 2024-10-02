@@ -23,14 +23,17 @@ export interface AdminUserCardProps {
 
 const AdminUserCard: React.FC<AdminUserCardProps> = ({ adminUser, entityId, type }) => {
   
-  const {token,
+  const {
+    token,
     setToken,
     setUserAdmins,
     setCommunities,
     setSelectedCommunity,
     setUser,
     setUserMemberships,
-    setUserPostLikes,} = useAuth()
+    setUserPostLikes,
+    setAdminCommunities
+  } = useAuth()
 
     const router = useRouter();
 
@@ -54,6 +57,7 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({ adminUser, entityId, type
             setUser,
             setUserMemberships,
             setUserPostLikes,
+            setAdminCommunities
           });
           router.push("/login");
         }

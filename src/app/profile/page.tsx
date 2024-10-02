@@ -25,11 +25,11 @@ export default function Profile() {
     setUserMemberships,
     setUserAdmins,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const [showForm, setShowForm] = useState<boolean>(false);
   const [deleteCheck, setDeleteCheck] = useState<boolean>(false);
-  const [apiErr, setApiErr] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -52,6 +52,7 @@ export default function Profile() {
         setUserMemberships,
         setUserAdmins,
         setUserPostLikes,
+        setAdminCommunities
       });
       router.push("/");
     } catch (error: any) {
@@ -64,6 +65,7 @@ export default function Profile() {
           setUserMemberships,
           setUserAdmins,
           setUserPostLikes,
+          setAdminCommunities
         });
       router.push("/login");
     }

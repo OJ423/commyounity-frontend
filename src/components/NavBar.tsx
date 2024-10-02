@@ -14,7 +14,7 @@ import { LogUserOut } from "@/utils/logOut";
 
 export default function NavBar() {
   const [navOpen, setNavOpen] = useState<boolean>(false);
-  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships, setUserAdmins, setUserPostLikes } = useAuth();
+  const { user, setToken, setUser, setCommunities, selectedCommunity, setSelectedCommunity, setUserMemberships, setUserAdmins, setUserPostLikes, setAdminCommunities } = useAuth();
   const pathname = usePathname()
   const router = useRouter()
   function handleMenuOpen():void {
@@ -29,7 +29,8 @@ export default function NavBar() {
       setSelectedCommunity,
       setUserMemberships,
       setUserAdmins,
-      setUserPostLikes
+      setUserPostLikes,
+      setAdminCommunities
     })
     router.push('/login')
   }

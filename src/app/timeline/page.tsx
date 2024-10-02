@@ -25,7 +25,9 @@ export default function Timeline() {
     setUserAdmins,
     setUserMemberships,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
+  
   const [userPosts, setUserPosts] = useState<TimelinePosts[] | []>([]);
   const [filter, setFilter] = useState<string | null>(null);
   const [member, setMember] = useState<boolean>(true);
@@ -86,6 +88,7 @@ export default function Timeline() {
               setUserAdmins,
               setUserMemberships,
               setUserPostLikes,
+              setAdminCommunities
             });
             router.push("/login");
           }

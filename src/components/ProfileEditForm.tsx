@@ -27,6 +27,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
     setUserMemberships,
     setUserAdmins,
     setUserPostLikes,
+    setAdminCommunities
   } = useAuth();
 
   const router = useRouter();
@@ -64,6 +65,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
+      setAdminCommunities
     });
     router.push("/login");
   };
