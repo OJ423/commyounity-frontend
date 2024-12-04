@@ -12,7 +12,7 @@ const FormDrawer:React.FC<FormDrawerProps> = ({ children, setShowForm, showForm,
   
   return (
     <>
-    <section className={`${!showForm ? "translate-x-[100%]" : "translate-x-0"} w-full sm:w-fit sm:max-w-sm transition-all duration-500 h-full top-0 right-0 fixed ease-in ease-out bg-white shadow-2xl z-20`}>
+    <section className={`${!showForm ? "translate-x-[100%]" : "translate-x-0 shadow-2xl"} w-full sm:w-fit sm:max-w-sm transition-all duration-500 h-full top-0 right-0 fixed ease-in ease-out bg-white z-20`}>
       <div className="flex flex-col gap-8 overflow-y-scroll sm:overflow-y-auto h-full py-16 px-8 sm:py-8">
         {children}
       </div>

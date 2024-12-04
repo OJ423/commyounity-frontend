@@ -65,6 +65,16 @@ export type CommunityImg = {
   community_img: string;
 }
 
+export interface BlockUser {
+  username: string;
+  reason: string;
+}
+
+export interface PostAdminById {
+  community_id: number;
+  user_id: number;
+}
+
 // API Responses
 export type JoinedCommunityResponse = {
   msg: string;
@@ -241,8 +251,32 @@ export interface CommunityAdmin extends UserAdminBase {
 export interface Members {
   username: string;
   user_bio: string;
+  user_avatar:string;
   user_id: number;
 }
+
+export interface AdminsLists {
+  username: string;
+  user_avatar:string;
+  date_joined:string;
+  community_owner_junction_id:number;
+  community_id:number;
+  user_id: number;
+}
+
+export interface BlockedUser {
+  username: string;
+  user_avatar: string;
+  date_joined: string;
+  blocked_user_id: number;
+  user_id: number;
+  community_id: number;
+  reason: string;
+  created_at: string;
+}
+
+
+ 
 
 // New Groups Etc Inputs
 

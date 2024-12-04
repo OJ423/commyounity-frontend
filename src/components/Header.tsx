@@ -24,7 +24,7 @@ export default function Header() {
         </Link>
         <div className='flex gap-2 md:gap-4 items-center'>
           {selectedCommunity ?
-          <p className='text-xs font-semibold text-center'> {selectedCommunity.community_name}</p>
+          <p className='text-xs font-light text-center'> {selectedCommunity.community_name}</p>
           :
           null  
           }

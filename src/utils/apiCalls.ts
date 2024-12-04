@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  BlockUser,
   CommentInputs,
   Community,
   CommunityImg,
@@ -15,6 +16,7 @@ import {
   NewSchoolData,
   ParentAccessRequest,
   ParentApproveReject,
+  PostAdminById,
   RegistrationInputs,
 } from "./customTypes";
 import { headers } from "next/headers";
@@ -77,6 +79,111 @@ export async function getCommunityMembers(token: string | null, community_id: nu
   }
   catch(error:any) {
     console.error("Error getting community members", error)
+    throw error
+  }
+}
+
+export async function blockUser(community_id: number, token: string | null, body: BlockUser) {
+  try{
+    const response = await instance.post(`communities/members/block/${community_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  }
+  catch(error:any) {
+    console.error("Error blocking user", error)
+    throw error
+  }
+}
+
+export async function unblockUser(community_id: number, blockedUserId: number, token: string | null) {
+  try{
+    const response = await instance.delete(`communities/members/unblock/${community_id}/${blockedUserId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  }
+  catch(error:any) {
+    console.error("Error blocking user", error)
+    throw error
+  }
+}
+
+export async function getBlockedUsers(community_id: number, token: string | null) {
+  try {
+    const response = await instance.get(`communities/members/blocked/${community_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data
+  }
+  catch (error:any) {
+    console.error("Error fetching blocked users:", error);
+    throw error;
+  }
+}
+
+export async function getCommunityAdmins(community_id: number, token: string | null) {
+  try {
+    const response = await instance.get(`communities/owners/${community_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data
+  }
+  catch(error:any) {
+    console.error("Error getting community admins:", error)
+    throw error;
+  }
+}
+
+export async function postCommunityAdmin(community_id:number, token: string | null, body:any) {
+  try {
+    const response = await instance.post(`communities/owners/new/${community_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data;
+  }
+  catch(error:any) {
+    console.error("Error adding administrator", error);
+    throw error;
+  }
+}
+
+export async function postCommunityAdminById(token: string | null, body:PostAdminById) {
+  try {
+    const response = await instance.post(`communities/owners/new/byuserid`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data;
+  }
+  catch(error:any) {
+    console.error("Error adding administrator", error);
+    throw error;
+  }
+}
+
+export async function removeCommunityAdmin(token: string | null, community_id: number, user_id: number) {
+  try {
+    const response = await instance.delete(`communities/owners/remove/${community_id}/${user_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data
+  }
+  catch(error:any) {
+    console.error("Error removing admin:", error)
     throw error
   }
 }
