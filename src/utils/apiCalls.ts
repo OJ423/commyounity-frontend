@@ -856,10 +856,11 @@ export async function deleteComment(token: string | null, comment_id: number) {
 export async function getUsersCommunityPosts(
   token: string | null,
   community_id: number,
+  limit: number,
   filter: string | null
 ) {
   try {
-    const response = await instance.get(`posts/user/${community_id}`, {
+    const response = await instance.get(`posts/user/${community_id}?limit=${limit}`, {
       params: {
         filter: filter,
       },

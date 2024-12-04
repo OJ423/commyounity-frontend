@@ -25,10 +25,11 @@ export default function Timeline() {
     setUserAdmins,
     setUserMemberships,
     setUserPostLikes,
-    setAdminCommunities
+    setAdminCommunities,
   } = useAuth();
-  
+
   const [userPosts, setUserPosts] = useState<TimelinePosts[] | []>([]);
+  const [postLimit, setPostLimit] = useState<number>(10);
   const [filter, setFilter] = useState<string | null>(null);
   const [member, setMember] = useState<boolean>(true);
   const [apiErr, setApiErr] = useState<string | null>(null);
@@ -51,15 +52,29 @@ export default function Timeline() {
     setFilter(null);
   }
 
+  function handleLoadMorePosts() {
+    setPostLimit((currentLimit) => currentLimit + 10);
+  }
+
   const checkAdmin = (post: TimelinePosts) => {
     if (!userAdmins) return false;
-    const schoolAdmin = userAdmins?.schools.some((school) => school.school_id === post.school_id)
-    const churchAdmin = userAdmins?.churches.some((church) => church.church_id === post.church_id)
-    const groupAdmin = userAdmins?.groups.some((group) => group.group_id === post.group_id)
-    const businessAdmin = userAdmins?.businesses.some((business) =>  business.business_id === post.business_id)
-    if (schoolAdmin || churchAdmin || groupAdmin || businessAdmin ) return true;
-    else {return false}
-  }
+    const schoolAdmin = userAdmins?.schools.some(
+      (school) => school.school_id === post.school_id
+    );
+    const churchAdmin = userAdmins?.churches.some(
+      (church) => church.church_id === post.church_id
+    );
+    const groupAdmin = userAdmins?.groups.some(
+      (group) => group.group_id === post.group_id
+    );
+    const businessAdmin = userAdmins?.businesses.some(
+      (business) => business.business_id === post.business_id
+    );
+    if (schoolAdmin || churchAdmin || groupAdmin || businessAdmin) return true;
+    else {
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (user && selectedCommunity) {
@@ -68,6 +83,7 @@ export default function Timeline() {
           const data = await getUsersCommunityPosts(
             token,
             selectedCommunity.community_id,
+            postLimit,
             filter
           );
           setUserPosts(data.posts);
@@ -88,7 +104,7 @@ export default function Timeline() {
               setUserAdmins,
               setUserMemberships,
               setUserPostLikes,
-              setAdminCommunities
+              setAdminCommunities,
             });
             router.push("/login");
           }
@@ -96,9 +112,7 @@ export default function Timeline() {
       };
       fetchData();
     }
-  }, [user, selectedCommunity, filter, token]);
-
-  console.log(userPosts)
+  }, [user, selectedCommunity, postLimit, filter, token]);
 
   return (
     <>
@@ -162,18 +176,29 @@ export default function Timeline() {
                   <div className="flex flex-col gap-4 md:col-span-5">
                     <>
                       {userPosts.length > 0 ? (
-                        <div className={"grid grid-cols-1 gap-8"}>
-                          {userPosts.map((post: TimelinePosts) => { 
-                            const ownerCheck = checkAdmin(post)
-                            return (
-                            <PostCard
-                              key={post.post_id}
-                              data={post}
-                              member={member}
-                              owner={ownerCheck}
-                            />
-                          )})}
-                        </div>
+                        <>
+                          <div className={"grid grid-cols-1 gap-8"}>
+                            {userPosts.map((post: TimelinePosts) => {
+                              const ownerCheck = checkAdmin(post);
+                              return (
+                                <PostCard
+                                  key={post.post_id}
+                                  data={post}
+                                  member={member}
+                                  owner={ownerCheck}
+                                />
+                              );
+                            })}
+                          </div>
+                          {postLimit > userPosts.length ? null : (
+                            <button
+                              onClick={handleLoadMorePosts}
+                              className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl mt-8 uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out w-max mx-auto"
+                            >
+                              Load More
+                            </button>
+                          )}
+                        </>
                       ) : (
                         <p>{`There are no posts :(`}</p>
                       )}
@@ -200,7 +225,7 @@ export default function Timeline() {
             </Link>
           </section>
         )}
-      <PersonalNav />
+        <PersonalNav />
       </main>
       <Footer />
     </>
