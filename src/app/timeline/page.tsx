@@ -98,6 +98,8 @@ export default function Timeline() {
     }
   }, [user, selectedCommunity, filter, token]);
 
+  console.log(userPosts)
+
   return (
     <>
       <Header />

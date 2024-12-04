@@ -152,6 +152,7 @@ export type PostData = {
   post_description: string;
   post_location: string;
   post_img: string;
+  post_video_url: string | null;
   web_link: string;
   web_title: string;
   author: number;
@@ -182,6 +183,7 @@ export type TimelinePosts = {
   post_description: string;
   post_id: number;
   post_img: string | null;
+  post_video_url: string | null;
   post_likes: number;
   post_location: string | null;
   post_title: string;
@@ -285,6 +287,7 @@ export type NewPostData = {
   post_description: string;
   post_location: string | null;
   post_img: File[] | null;
+  post_video_url: string | null;
   web_link: string | null;
   web_title: string | null;
 };

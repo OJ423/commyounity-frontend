@@ -111,6 +111,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         post_title: "",
         post_description: "",
         post_img: null,
+        post_video_url: null,
         post_location: "",
         web_link: "",
         web_title: ""
@@ -207,6 +208,19 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
           {...register("web_title")}
           id="web_title"
           name="web_title"
+        />
+        <label
+          className="text-xs uppercase text-gray-700 font-bold"
+          htmlFor="post_video_url"
+        >
+          Link to Video (paste YouTube or Vimeo link):
+        </label>
+        <input
+          className="p-4 mb-4 rounded border-2 mt-2"
+          placeholder={`Copy and paste a video share link`}
+          {...register("post_video_url")}
+          id="post_video_url"
+          name="post_video_url"
         />
 
         <label

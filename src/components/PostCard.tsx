@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/dataTransformers";
 import CommentNewForm from "./CommentNewForm";
 import { LogUserOut } from "@/utils/logOut";
+import ReactPlayer from 'react-player'
 
 type PostCardProps = {
   data: PostData | TimelinePosts;
@@ -147,7 +148,14 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   return (
     <>
       <section className="grid grid-cols-1 md:grid-cols-5 items-center rounded shadow-xl transition-500 duration-200 ease-in ease-out cursor-pointer relative">
-        {data.post_img ? (
+        {data.post_video_url ?
+        <ReactPlayer
+          url={data.post_video_url}
+          controls={true}
+          className="col-span-1 md:col-span-5 bg-indigo-500 rounded-xl mx-auto"
+        />
+        : 
+        data.post_img ? (
           <div className="md:col-span-2 w-full h-40 max-h-60 md:h-full rounded-t md:rounded-tl overflow-hidden">
             <Image
               src={data.post_img}
@@ -172,6 +180,9 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
           </span>
           <h2 className="font-bold text-xl mb-4">{data.post_title}</h2>
           <p className="font-light">{data.post_description}</p>
+          {data.post_location ?
+          <p className="font-medium text-sm mt-4 text-indigo-500">Location: {data.post_location}`</p>
+          : null}
           {data.web_link ? (
             data.web_title ? (
               <p className="text-sm font-semibold mt-4">

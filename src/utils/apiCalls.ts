@@ -724,6 +724,7 @@ export async function addPost(
     post_description: data?.post_description,
     post_location: data?.post_location,
     post_img: imageUrl,
+    post_video_url: data?.post_video_url,
     web_link: webLink,
     web_title: data?.web_title,
     author: author,
