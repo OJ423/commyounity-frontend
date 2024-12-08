@@ -18,6 +18,7 @@ export default function Groups() {
   const { selectedCommunity, communities } = useAuth();
   const [groupData, setGroupData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false)
+  const [owner, setOwner] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Groups() {
           String(selectedCommunity?.community_id)
         );
         const communityExists = communities.some(
-          (community) => community.community_id === +selectedCommunity.community_id
+          (community) => community.community_id === selectedCommunity.community_id
         );
         if (communityExists) {
           setCommunityMember(true)
@@ -66,6 +67,8 @@ export default function Groups() {
                       key={group.id}
                       data={group}
                       urlParams={"/groups/"}
+                      owner={owner}
+                      communityMember={communityMember}
                     />
                   ))}
                 </div>

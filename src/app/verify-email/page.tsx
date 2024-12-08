@@ -26,7 +26,7 @@ export default function VerifyPage() {
             user_bio: data.user.user_bio,
             user_avatar: data.user.user_avatar,
             date_joined: data.user.date_joined,
-            email: data.user.user_email,
+            user_email: data.user.user_email,
             status: data.user.status,
           }
           setValidated(true)

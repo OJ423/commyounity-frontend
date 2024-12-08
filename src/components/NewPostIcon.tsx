@@ -10,7 +10,7 @@ import NewPostForm from "./NewPostForm";
 
 interface NewPostProps {
   type: string;
-  id: number | undefined;
+  id: string | undefined;
   fetchPosts: boolean;
   setFetchPosts:React.Dispatch<React.SetStateAction<boolean>>
 }

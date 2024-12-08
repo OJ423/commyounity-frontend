@@ -98,7 +98,7 @@ export async function blockUser(community_id: string, token: string | null, body
   }
 }
 
-export async function unblockUser(community_id: string, blockedUserId: number, token: string | null) {
+export async function unblockUser(community_id: string, blockedUserId: string, token: string | null) {
   try{
     const response = await instance.delete(`communities/members/unblock/${community_id}/${blockedUserId}`, {
       headers: {
@@ -264,7 +264,7 @@ export async function deleteUser(
 
 export async function getEntityAdmins(
   type: string,
-  entityId: number | undefined,
+  entityId: string | undefined,
   token: string | null
 ) {
   try {
@@ -282,7 +282,7 @@ export async function getEntityAdmins(
 
 export async function addNewAdmin(
   token: string | null,
-  id: number | undefined,
+  id: string | undefined,
   type: string,
   user_email: string
 ) {
@@ -316,9 +316,9 @@ export async function addNewAdmin(
 
 export async function removeAdmin(
   token: string | null,
-  id: number | undefined,
+  id: string,
   type: string,
-  removedUserId: number
+  removedUserId: string
 ) {
   try {
     const routeUrl =
@@ -682,7 +682,7 @@ export async function patchEntityImg(
 
 export async function deleteEntity(
   type: string,
-  id: number | undefined,
+  id: string | undefined,
   user_id: string | undefined,
   token: string | null
 ) {
@@ -712,7 +712,7 @@ export async function deleteEntity(
 
 export async function addPost(
   type: string,
-  id: number | undefined,
+  id: string | undefined,
   data: NewPostData | undefined,
   webLink: string | null,
   author: string | undefined,
@@ -937,8 +937,8 @@ export async function addNewParent(
 
 export async function removeParent(
   token: string | null,
-  schoolId: number,
-  parentId: number
+  schoolId: string,
+  parentId: string
 ) {
   try {
     const response = await instance.delete(

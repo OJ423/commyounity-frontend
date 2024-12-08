@@ -15,7 +15,7 @@ import AdminUserNew from "./AdminUserForm";
 
 interface AdminUserListProps {
   type: string;
-  entityId: number | undefined;
+  entityId: string | undefined;
   entityName: string | undefined;
   owner: boolean;
   handleShowUserAdmins: () => void;

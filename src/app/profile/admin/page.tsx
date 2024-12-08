@@ -20,6 +20,8 @@ export default function Admin() {
   const [schoolAdmins, setSchoolAdmins] = useState<CardData[] | []>([]);
   const [churchAdmins, setChurchAdmins] = useState<CardData[] | []>([]);
   const [businessAdmins, setBusinessAdmins] = useState<CardData[] | []>([]);
+  const owner = true;
+  const communityMember = true;
 
   useEffect(() => {
     if (userAdmins) {
@@ -76,6 +78,8 @@ export default function Admin() {
                         key={business.id}
                         data={business}
                         urlParams={"/businesses/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>
@@ -94,6 +98,8 @@ export default function Admin() {
                         key={group.id}
                         data={group}
                         urlParams={"/groups/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>
@@ -114,6 +120,8 @@ export default function Admin() {
                         key={group.id}
                         data={group}
                         urlParams={"/schools/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>
@@ -132,6 +140,8 @@ export default function Admin() {
                         key={group.id}
                         data={group}
                         urlParams={"/churches/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>

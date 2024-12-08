@@ -31,14 +31,14 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [apiErr, setApiErr] = useState<string | null>(null);
 
-  const handleDeleteComment = async (id: number | null) => {
+  const handleDeleteComment = async (id: string | null) => {
     try {
       let commentId;
       if (id) commentId = id;
       else {
         commentId = comment.comment_id;
       }
-      if (user && +user.user_id === comment.author) {
+      if (user && user.user_id === comment.author) {
         const data = await deleteComment(token, commentId);
         setToken(data.token);
         localStorage.setItem("token", data.token)
@@ -88,7 +88,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   <span>Reply</span>
                 </button>
                 {user ? (
-                  +user.user_id === comment.author || owner ? (
+                  user.user_id === comment.author || owner ? (
                     <>
                       <button
                         onClick={() => handleDeleteComment(null)}
@@ -172,7 +172,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 <p className="font-semibold">{c.comment_title}</p>
                 <p>{c.comment_body}</p>
                 {user ? (
-                  +user?.user_id === c.author ? (
+                  user?.user_id === c.author ? (
                     <button
                       onClick={() => handleDeleteComment(c.comment_id)}
                       className="mt-4 font-bold text-indigo-500 transition-all duration-500 hover:text-indigo-200"

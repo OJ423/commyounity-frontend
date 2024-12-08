@@ -8,7 +8,7 @@ import { LogUserOut } from "@/utils/logOut";
 
 interface AdminUserNewProps {
   type: string;
-  entityId: number | undefined;
+  entityId: string | undefined;
 }
 
 interface AddAdmin {

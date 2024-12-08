@@ -9,7 +9,7 @@ import { handleUpload } from "@/utils/blobFuncs";
 import FormDrawer from "./FormDrawer";
 
 interface EditHeaderImageProps {
-  id: number | undefined;
+  id: string | undefined;
   type: string;
 }
 
@@ -69,7 +69,7 @@ const EditHeaderImage:React.FC<EditHeaderImageProps> = ({id, type}) => {
     if (user) {
       try {
         const imageUrl:string = await handleUpload(file, token, user?.user_avatar) 
-        const updatedData = await patchEntityImg( imageUrl, token, type, id, +user?.user_id )
+        const updatedData = await patchEntityImg( imageUrl, token, type, id, user?.user_id )
         await updateContext(imageUrl)
         setShowForm(!showForm);
         setFile(null)

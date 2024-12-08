@@ -155,7 +155,7 @@ export type PostData = {
   post_video_url: string | null;
   web_link: string;
   web_title: string;
-  author: number;
+  author: string;
   church_id: string | null;
   church_name: string | null;
   school_id: string | null;
@@ -198,11 +198,11 @@ export interface Comment {
   comment_id: string;
   comment_title: string;
   comment_body: string;
-  author: number;
+  author: string;
   author_name: string;
   user_avatar: string;
   post_id: string;
-  comment_ref: number | null;
+  comment_ref: string | null;
 }
 
 export interface Parent {
@@ -299,7 +299,7 @@ export type PostAPIData = {
   post_img: string | null;
   web_link: string | null;
   web_title: string | null;
-  author: number;
+  author: string;
   church_id: string | null;
   school_id: string | null;
   business_id: string | null;

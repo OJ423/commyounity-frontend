@@ -17,7 +17,7 @@ type ButtonProps = {
   owner: boolean;
   setOwner: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
-  id: number | undefined;
+  id: string | undefined;
   showForm: boolean;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
   handleShowUserAdmins: () => void;

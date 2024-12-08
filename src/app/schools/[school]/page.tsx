@@ -102,7 +102,7 @@ export default function SchoolPage() {
     const localToken = localStorage.getItem("token");
     const fetchData = async () => {
       try {
-        const data = await getSchoolById(+params.school, localToken);
+        const data = await getSchoolById(params.school, localToken);
         setSchoolData(data.school);
         setPostData(data.posts);
         if (userMemberships) {
@@ -143,7 +143,7 @@ export default function SchoolPage() {
         try {
           const data = await getParentAccessRequests(
             localToken,
-            +params.school,
+            params.school,
             requestStatus
           );
           setParentRequestData(data.parentAccessRequests);

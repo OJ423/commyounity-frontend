@@ -6,7 +6,7 @@ import { CommentInputs } from "@/utils/customTypes";
 
 interface CommentNewFormProps {
   post_id: string;
-  comment_ref: number | null;
+  comment_ref: string | null;
   setDisplayAddComment: React.Dispatch<SetStateAction<boolean>>;
   displayAddComment: boolean;
   setViewComments: React.Dispatch<SetStateAction<boolean>>;

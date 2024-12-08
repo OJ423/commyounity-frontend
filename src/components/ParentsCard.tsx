@@ -6,7 +6,7 @@ interface ParentCardProps {
   invalidTokenResponse: () => void;
   updateToken: (token:string) => void;
   userToken: string | null;
-  schoolId: number;
+  schoolId: string;
 }
 
 

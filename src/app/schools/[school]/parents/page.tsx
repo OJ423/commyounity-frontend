@@ -69,7 +69,7 @@ export default function SchoolParents() {
     // Get school data
     const fetchSchoolData = async () => {
       try {
-        const data = await getSchoolById(+schoolParam, localToken);
+        const data = await getSchoolById(schoolParam, localToken);
         setSchool(data.school);
       } catch (error: any) {
         console.log(error);

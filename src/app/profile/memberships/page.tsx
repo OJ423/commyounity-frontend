@@ -22,6 +22,8 @@ export default function Memberships() {
   const [churchMemberships, setChurchMemberships] = useState<CardData[] | []>(
     []
   );
+  const owner = false;
+  const communityMember = true;
 
   useEffect(() => {
     if (userMemberships) {
@@ -76,6 +78,8 @@ export default function Memberships() {
                         key={group.id}
                         data={group}
                         urlParams={"/groups/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>
@@ -96,6 +100,8 @@ export default function Memberships() {
                         key={group.id}
                         data={group}
                         urlParams={"/schools/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>
@@ -116,6 +122,8 @@ export default function Memberships() {
                         key={group.id}
                         data={group}
                         urlParams={"/churches/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>

@@ -122,10 +122,10 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           group_name: data.title,
           group_bio: data.bio,
           group_img: imageUrl,
-          community_id: +selectedCommunity?.community_id,
+          community_id: selectedCommunity?.community_id,
         };
 
-        const newGroup = await addNewEntity(body, token, type, +user?.user_id);
+        const newGroup = await addNewEntity(body, token, type, user?.user_id);
         await setMemberships();
         await setAdmins();
         return newGroup.newGroup;
@@ -137,9 +137,9 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           church_img: imageUrl,
           church_email: data.email,
           church_website: validatedWebsite,
-          community_id: +selectedCommunity?.community_id,
+          community_id: selectedCommunity?.community_id,
         };
-        const newChurch = await addNewEntity(body, token, type, +user?.user_id);
+        const newChurch = await addNewEntity(body, token, type, user?.user_id);
         await setMemberships();
         await setAdmins();
         return newChurch.newChurch;
@@ -151,13 +151,13 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           business_img: imageUrl,
           business_email: data.email,
           business_website: validatedWebsite,
-          community_id: +selectedCommunity?.community_id,
+          community_id: selectedCommunity?.community_id,
         };
         const newBusiness = await addNewEntity(
           body,
           token,
           type,
-          +user?.user_id
+          user?.user_id
         );
         await setMemberships();
         await setAdmins();
@@ -172,9 +172,9 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
           school_email: data.email,
           school_website: validatedWebsite,
           school_phone: data.phone,
-          community_id: +selectedCommunity?.community_id,
+          community_id: selectedCommunity?.community_id,
         };
-        const newSchool = await addNewEntity(body, token, type, +user?.user_id);
+        const newSchool = await addNewEntity(body, token, type, user?.user_id);
         await setMemberships();
         await setAdmins();
         return newSchool.newSchool;

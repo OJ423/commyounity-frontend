@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 interface NewPostFormProps {
   type: string;
-  id: number | undefined;
+  id: string | undefined;
   fetchPosts: boolean;
   setFetchPosts: React.Dispatch<React.SetStateAction<boolean>>;
   showForm: boolean;

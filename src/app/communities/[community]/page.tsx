@@ -312,6 +312,8 @@ export default function CommunityPage() {
                               key={group.id + group.name}
                               data={group}
                               urlParams={"/groups/"}
+                              communityMember={communityMember}
+                              owner={owner}
                             />
                           </>
                         ))}
@@ -368,6 +370,8 @@ export default function CommunityPage() {
                             key={business.id + business.name}
                             data={business}
                             urlParams={"/businesses/"}
+                            communityMember={communityMember}
+                            owner={owner}
                           />
                         ))}
                       </>
@@ -429,6 +433,8 @@ export default function CommunityPage() {
                               key={school.id + school.name}
                               data={school}
                               urlParams={"/schools/"}
+                              communityMember={communityMember}
+                              owner={owner}
                             />
                           ))}
                         </>
@@ -491,6 +497,8 @@ export default function CommunityPage() {
                             key={church.id + church.name}
                             data={church}
                             urlParams={"/churches/"}
+                            communityMember={communityMember}
+                            owner={owner}
                           />
                         ))}
                       </>

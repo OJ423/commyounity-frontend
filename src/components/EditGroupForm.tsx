@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 interface EditGroupFormProps {
   type: string;
-  entityID: number | undefined;
+  entityID: string | undefined;
   propData: BusinessData | ChurchData | GroupData | SchoolData | undefined;
   showForm: boolean;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -145,7 +145,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
           token,
           type,
           entityID,
-          +user?.user_id
+          user?.user_id
         );
         return group.group;
       }
@@ -161,7 +161,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
           token,
           type,
           entityID,
-          +user?.user_id
+          user?.user_id
         );
         return church.church;
       }
@@ -177,7 +177,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
           token,
           type,
           entityID,
-          +user?.user_id
+          user?.user_id
         );
         return business.business;
       }
@@ -195,7 +195,7 @@ const EditGroupForm: React.FC<EditGroupFormProps> = ({
           token,
           type,
           entityID,
-          +user?.user_id
+          user?.user_id
         );
         return school.school;
       }

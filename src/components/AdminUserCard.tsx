@@ -17,7 +17,7 @@ export interface AdminUserCardProps {
     | ChurchAdmin
     | SchoolAdmin
     | CommunityAdmin;
-  entityId: number | undefined;
+  entityId: string;
   type: string;
 }
 

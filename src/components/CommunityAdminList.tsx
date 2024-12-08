@@ -24,7 +24,7 @@ const CommunityAdminList: React.FC<CommunityAdminListProps> = ({community, owner
           {admins.length ?
           <>
           {admins.map((admin) => (
-            admin.user_id === Number(user?.user_id) ?
+            admin.user_id === user?.user_id ?
             null
             :
             <CommunityAdminCard

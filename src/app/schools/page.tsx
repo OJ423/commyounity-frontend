@@ -19,6 +19,7 @@ export default function Schools() {
   const [schoolData, setSchoolData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const owner = false;
 
   useEffect(() => {
     if (!selectedCommunity) {
@@ -29,7 +30,7 @@ export default function Schools() {
         const data = await getCommunitySchools(selectedCommunity?.community_id);
         const communityExists = communities.some(
           (community) =>
-            community.community_id === +selectedCommunity.community_id
+            community.community_id === selectedCommunity.community_id
         );
         if (communityExists) {
           setCommunityMember(true);
@@ -69,6 +70,8 @@ export default function Schools() {
                         key={school.id}
                         data={school}
                         urlParams={"/schools/"}
+                        owner={owner}
+                        communityMember={communityMember}
                       />
                     ))}
                   </div>

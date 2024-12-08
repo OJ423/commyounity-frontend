@@ -48,7 +48,6 @@ export default function Header() {
                 className='rounded-full object-cover w-full h-full'
               />
               }
-
             </Link>
             : null
             }
