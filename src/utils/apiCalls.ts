@@ -50,8 +50,8 @@ export async function getCommunityById(community_id: string | null) {
 }
 
 export async function patchCommunity(
-  community_id: number,
-  user_id: number | undefined,
+  community_id: string,
+  user_id: string | undefined,
   token: string | null,
   body: Community | CommunityImg
 ) {
@@ -68,7 +68,7 @@ export async function patchCommunity(
   }
 }
 
-export async function getCommunityMembers(token: string | null, community_id: number) {
+export async function getCommunityMembers(token: string | null, community_id: string) {
   try {
     const response = await instance.get(`communities/members/${community_id}`, {
       headers: {
@@ -83,7 +83,7 @@ export async function getCommunityMembers(token: string | null, community_id: nu
   }
 }
 
-export async function blockUser(community_id: number, token: string | null, body: BlockUser) {
+export async function blockUser(community_id: string, token: string | null, body: BlockUser) {
   try{
     const response = await instance.post(`communities/members/block/${community_id}`, body, {
       headers: {
@@ -98,7 +98,7 @@ export async function blockUser(community_id: number, token: string | null, body
   }
 }
 
-export async function unblockUser(community_id: number, blockedUserId: number, token: string | null) {
+export async function unblockUser(community_id: string, blockedUserId: number, token: string | null) {
   try{
     const response = await instance.delete(`communities/members/unblock/${community_id}/${blockedUserId}`, {
       headers: {
@@ -113,7 +113,7 @@ export async function unblockUser(community_id: number, blockedUserId: number, t
   }
 }
 
-export async function getBlockedUsers(community_id: number, token: string | null) {
+export async function getBlockedUsers(community_id: string, token: string | null) {
   try {
     const response = await instance.get(`communities/members/blocked/${community_id}`, {
       headers: {
@@ -128,7 +128,7 @@ export async function getBlockedUsers(community_id: number, token: string | null
   }
 }
 
-export async function getCommunityAdmins(community_id: number, token: string | null) {
+export async function getCommunityAdmins(community_id: string, token: string | null) {
   try {
     const response = await instance.get(`communities/owners/${community_id}`, {
       headers: {
@@ -143,7 +143,7 @@ export async function getCommunityAdmins(community_id: number, token: string | n
   }
 }
 
-export async function postCommunityAdmin(community_id:number, token: string | null, body:any) {
+export async function postCommunityAdmin(community_id:string, token: string | null, body:any) {
   try {
     const response = await instance.post(`communities/owners/new/${community_id}`, body, {
       headers: {
@@ -173,7 +173,7 @@ export async function postCommunityAdminById(token: string | null, body:PostAdmi
   }
 }
 
-export async function removeCommunityAdmin(token: string | null, community_id: number, user_id: number) {
+export async function removeCommunityAdmin(token: string | null, community_id: string, user_id: string) {
   try {
     const response = await instance.delete(`communities/owners/remove/${community_id}/${user_id}`, {
       headers: {
@@ -491,7 +491,7 @@ export async function getCommunityBusinesses(community_id: string | null) {
   }
 }
 
-export async function getCommunitySchools(community_id: number | undefined) {
+export async function getCommunitySchools(community_id: string | undefined) {
   if (community_id) {
     try {
       const response = await instance.get(
@@ -544,7 +544,7 @@ export async function getBusinessById(business_id: string | null) {
 }
 
 export async function getSchoolById(
-  school_id: number | null,
+  school_id: string | null,
   token: string | null
 ) {
   if (school_id) {
@@ -568,7 +568,7 @@ export async function addNewEntity(
   body: NewGroupData | NewChurchData | NewSchoolData | NewBusinessData | null,
   token: string | null,
   type: string,
-  user_id: number | null
+  user_id: string | null
 ) {
   let urlParam: string = "void";
   if (type === "group") urlParam = "groups";
@@ -605,8 +605,8 @@ export async function patchEntity(
     | null,
   token: string | null,
   type: string,
-  entity_id: number | undefined,
-  user_id: number | null
+  entity_id: string | undefined,
+  user_id: string | null
 ) {
   let urlParam: string = "void";
   if (type === "group") urlParam = "groups";
@@ -638,8 +638,8 @@ export async function patchEntityImg(
   imgUrl: string,
   token: string | null,
   type: string,
-  entity_id: number | undefined,
-  user_id: number | null
+  entity_id: string | undefined,
+  user_id: string | null
 ) {
   let urlParam: string = "void";
   let body;
@@ -748,7 +748,7 @@ export async function addPost(
   }
 }
 
-export async function deletePost(token: string | null, post_id: number) {
+export async function deletePost(token: string | null, post_id: string) {
   try {
     const response = await instance.delete(`posts/delete/${post_id}`, {
       headers: {
@@ -763,8 +763,8 @@ export async function deletePost(token: string | null, post_id: number) {
 }
 
 export async function likePost(
-  user_id: number | undefined,
-  post_id: number | null,
+  user_id: string | undefined,
+  post_id: string | null,
   token: string | null
 ) {
   if (user_id) {
@@ -784,8 +784,8 @@ export async function likePost(
 }
 
 export async function dislikePost(
-  user_id: number | undefined,
-  post_id: number | null,
+  user_id: string | undefined,
+  post_id: string | null,
   token: string | null
 ) {
   if (user_id) {
@@ -804,7 +804,7 @@ export async function dislikePost(
   }
 }
 
-export async function getPostComments(token: string | null, post_id: number) {
+export async function getPostComments(token: string | null, post_id: string) {
   try {
     const response = await instance.get(`posts/${post_id}`, {
       headers: {
@@ -820,7 +820,7 @@ export async function getPostComments(token: string | null, post_id: number) {
 
 export async function postNewComment(
   token: string | null,
-  post_id: number,
+  post_id: string,
   body: CommentInputs
 ) {
   try {
@@ -836,7 +836,7 @@ export async function postNewComment(
   }
 }
 
-export async function deleteComment(token: string | null, comment_id: number) {
+export async function deleteComment(token: string | null, comment_id: string) {
   try {
     const response = await instance.delete(
       `posts/comment/delete/${comment_id}`,
@@ -855,11 +855,12 @@ export async function deleteComment(token: string | null, comment_id: number) {
 
 export async function getUsersCommunityPosts(
   token: string | null,
-  community_id: number,
+  community_id: string,
   limit: number,
   filter: string | null
 ) {
   try {
+    console.log(community_id)
     const response = await instance.get(`posts/user/${community_id}?limit=${limit}`, {
       params: {
         filter: filter,
@@ -959,7 +960,7 @@ export async function removeParent(
 
 export async function getParentAccessRequests(
   token: string | null,
-  school_id: number,
+  school_id: string,
   requestStatus: string
 ) {
   try {
@@ -997,7 +998,7 @@ export async function postParentAccessRequest(
 
 export async function patchParentAccessRequest(
   token: string | null,
-  school_id: number,
+  school_id: string,
   body: ParentApproveReject
 ) {
   try {

@@ -86,7 +86,7 @@ export default function CommunityPage() {
     value !== null && value !== undefined;
   const isSelected =
     isDefined(community_id) &&
-    selectedCommunity?.community_id === +community_id;
+    selectedCommunity?.community_id === community_id;
 
   // Expired Token
   const router = useRouter();
@@ -107,7 +107,7 @@ export default function CommunityPage() {
   useEffect(() => {
     if (community_id) {
       const ownerCheck = adminCommunities.some(
-        (community) => +community.community_id === +community_id
+        (community) => community.community_id === community_id
       );
       setOwner(ownerCheck);
     }
@@ -116,7 +116,7 @@ export default function CommunityPage() {
         const data = await getCommunityById(community_id);
         if (community_id) {
           const communityExists = communities.some(
-            (community) => community.community_id === +community_id
+            (community) => community.community_id === community_id
           );
           if (communityExists) {
             setCommunityMember(true);

@@ -14,17 +14,17 @@ interface User {
 }
 
 interface Community {
-  community_id: number,
+  community_id: string,
   community_name: string,
 }
 
 interface AdminCommunity {
-  community_id: number,
+  community_id: string,
   community_name: string,
 }
 
 interface UserMemberships {
-  user_id: number,
+  user_id: string,
   username: string,
   userMemberships: {
     businesses: BusinessMembership[];
@@ -42,9 +42,9 @@ interface UserAdmins {
 }
 
 interface UserPostLikes {
-  user_post_likes_id: number,
-  user_id: number,
-  post_id: number
+  user_post_likes_id: string,
+  user_id: string,
+  post_id: string
 }
 
 interface AuthContextProps {

@@ -8,7 +8,7 @@ import { useAuth } from "./context/AuthContext"
 
 interface CommentListProps {
   viewComments: boolean,
-  post_id:number,
+  post_id:string,
   invalidTokenResponse: () => void;
   owner:boolean;
 }

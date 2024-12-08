@@ -5,7 +5,7 @@ import { useAuth } from "./context/AuthContext";
 import { CommentInputs } from "@/utils/customTypes";
 
 interface CommentNewFormProps {
-  post_id: number;
+  post_id: string;
   comment_ref: number | null;
   setDisplayAddComment: React.Dispatch<SetStateAction<boolean>>;
   displayAddComment: boolean;

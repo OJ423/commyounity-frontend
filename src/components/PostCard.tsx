@@ -46,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   useEffect(() => {
     if (userPostLikes) {
       const userPostLikeCheck: boolean = userPostLikes.some(
-        (post) => post.post_id === +data.post_id
+        (post) => post.post_id === data.post_id
       );
       setUserLike(userPostLikeCheck);
     }
@@ -68,7 +68,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     try {
       if (user) {
         const usersLikedPosts = await likePost(
-          +user?.user_id,
+          user?.user_id,
           data.post_id,
           token
         );
@@ -91,7 +91,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     try {
       if (user) {
         const usersLikedPosts = await dislikePost(
-          +user?.user_id,
+          user?.user_id,
           data.post_id,
           token
         );

@@ -74,7 +74,7 @@ const SwitchCommunityButton: React.FC<SwitchProps> = ({
   async function handleSwitchCommunity() {
     try {
       if (community_id && communityMember) {
-        const chosenCommunity = { community_id: +community_id, community_name };
+        const chosenCommunity = { community_id: community_id, community_name };
         setSelectedCommunity(chosenCommunity);
         if (user) {
           setMemberships(community_id);
