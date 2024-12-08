@@ -27,7 +27,7 @@ export default function ChurchPage() {
   const [fetchPosts, setFetchPosts] = useState<boolean>(false);
   const [member, setMember] = useState<boolean>(false);
   const [owner, setOwner] = useState<boolean>(false);
-  const { userMemberships } = useAuth();
+  const { userMemberships, setToken } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
   const handleShowAdminUsers = () => {
@@ -43,11 +43,13 @@ export default function ChurchPage() {
     if (!params) {
       return;
     }
+    const localToken = localStorage.getItem("token")
     const fetchData = async () => {
       try {
-        const data = await getChurchById(params.church);
+        const data = await getChurchById(params.church, localToken);
         setChurchData(data.church);
         setPostData(data.posts);
+        setToken(data.token);
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.churches.some(
             (c) => c.church_id === data.church.church_id
@@ -61,7 +63,7 @@ export default function ChurchPage() {
       }
     };
     fetchData();
-  }, [userMemberships, params, fetchPosts]);
+  }, [userMemberships, params, fetchPosts, setToken]);
 
   return (
     <>

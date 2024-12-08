@@ -63,6 +63,7 @@ export default function SchoolPage() {
   } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
+  
   const handleShowAdminUsers = () => {
     setShowRequests(false)
     setShowAdminUsers(!showAdminUsers);
@@ -105,6 +106,7 @@ export default function SchoolPage() {
         const data = await getSchoolById(params.school, localToken);
         setSchoolData(data.school);
         setPostData(data.posts);
+        setToken(data.token);
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.schools.some(
             (b) => b.school_id === data.school.school_id

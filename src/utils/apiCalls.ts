@@ -507,10 +507,14 @@ export async function getCommunitySchools(community_id: string | undefined) {
 
 // GET GROUP ETC PROFILES
 
-export async function getGroupById(group_id: string | null) {
+export async function getGroupById(group_id: string | null, token:string | null) {
   if (group_id) {
     try {
-      const response = await instance.get(`groups/${group_id}`);
+      const response = await instance.get(`groups/${group_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error loggin in:", error);
@@ -519,10 +523,14 @@ export async function getGroupById(group_id: string | null) {
   }
 }
 
-export async function getChurchById(church_id: string | null) {
+export async function getChurchById(church_id: string | null, token: string | null) {
   if (church_id) {
     try {
-      const response = await instance.get(`churches/${church_id}`);
+      const response = await instance.get(`churches/${church_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error loggin in:", error);
@@ -531,10 +539,14 @@ export async function getChurchById(church_id: string | null) {
   }
 }
 
-export async function getBusinessById(business_id: string | null) {
+export async function getBusinessById(business_id: string | null, token:string | null) {
   if (business_id) {
     try {
-      const response = await instance.get(`businesses/${business_id}`);
+      const response = await instance.get(`businesses/${business_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error loggin in:", error);

@@ -26,7 +26,7 @@ export default function BusinessPage() {
   const [postData, setPostData] = useState<PostData[] | []>([]);
   const [fetchPosts, setFetchPosts] = useState<boolean>(false);
   const [member, setMember] = useState<boolean>(true);
-  const { userMemberships, token } = useAuth();
+  const { userMemberships, token, setToken } = useAuth();
   const [owner, setOwner] = useState<boolean>(false);
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
@@ -43,11 +43,13 @@ export default function BusinessPage() {
     if (!params) {
       return;
     }
+    const localToken = localStorage.getItem("token")
     const fetchData = async () => {
       try {
-        const data = await getBusinessById(params.business);
+        const data = await getBusinessById(params.business, localToken);
         setBusinessData(data.business);
         setPostData(data.posts);
+        setToken(data.token);
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.businesses.some(
             (b) => b.business_id === data.business.business_id
@@ -61,7 +63,7 @@ export default function BusinessPage() {
       }
     };
     fetchData();
-  }, [userMemberships, params, fetchPosts, token]);
+  }, [userMemberships, params, fetchPosts, token, setToken]);
 
   return (
     <>

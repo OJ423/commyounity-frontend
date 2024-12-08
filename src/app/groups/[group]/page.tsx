@@ -26,7 +26,7 @@ export default function GroupPage() {
   const [member, setMember] = useState<boolean>(false);
   const [owner, setOwner] = useState<boolean>(false);
 
-  const { userMemberships } = useAuth();
+  const { userMemberships, setToken } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
 
@@ -44,11 +44,13 @@ export default function GroupPage() {
     if (!params) {
       return;
     }
+    const localToken = localStorage.getItem("token")
     const fetchData = async () => {
       try {
-        const data = await getGroupById(params.group);
+        const data = await getGroupById(params.group, localToken);
         setGroupData(data.group);
         setPostData(data.posts);
+        setToken(data.token)
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.groups.some(
             (g) => g.group_id === data.group.group_id
@@ -62,7 +64,7 @@ export default function GroupPage() {
       }
     };
     fetchData();
-  }, [userMemberships, params, fetchPosts]);
+  }, [userMemberships, params, fetchPosts, setToken]);
 
   return (
     <>
