@@ -3,6 +3,7 @@
 import AdminUserList from "@/components/AdminUserList";
 import EditGroupForm from "@/components/EditGroupForm";
 import EditHeaderImage from "@/components/EditHeaderImage";
+import ExpiredTokenMessage from "@/components/ExpiredTokenMessage";
 import Footer from "@/components/Footer";
 import FormDrawer from "@/components/FormDrawer";
 import Header from "@/components/Header";
@@ -25,6 +26,7 @@ export default function GroupPage() {
   const [fetchPosts, setFetchPosts] = useState<boolean>(false);
   const [member, setMember] = useState<boolean>(false);
   const [owner, setOwner] = useState<boolean>(false);
+  const [authErr, setAuthErr] = useState<boolean>(false);
 
   const { userMemberships, setToken } = useAuth();
 
@@ -44,13 +46,13 @@ export default function GroupPage() {
     if (!params) {
       return;
     }
-    const localToken = localStorage.getItem("token")
+    const localToken = localStorage.getItem("token");
     const fetchData = async () => {
       try {
         const data = await getGroupById(params.group, localToken);
         setGroupData(data.group);
         setPostData(data.posts);
-        setToken(data.token)
+        setToken(data.token);
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.groups.some(
             (g) => g.group_id === data.group.group_id
@@ -60,7 +62,15 @@ export default function GroupPage() {
           }
         }
       } catch (error: any) {
-        console.log(error.message);
+        if (
+          error.response.data.msg === "Authorization header missing" ||
+          error.response.data.msg === "Invalid or expired token"
+        ) {
+          setAuthErr(true);
+        }
+        else {
+          console.log(error.message);
+        }
       }
     };
     fetchData();
@@ -70,114 +80,120 @@ export default function GroupPage() {
     <>
       <Header />
       <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
-        <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
-          <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
-            <h1 className="font-semibold text-xl md:text-2xl">
-              {groupData?.group_name}
-            </h1>
-            <div className="w-full h-60 relative">
-              {groupData?.group_img ? (
-                <Image
-                  src={groupData.group_img}
-                  width={200}
-                  height={100}
-                  quality={60}
-                  priority
-                  alt={`${groupData?.group_name} profile picture`}
-                  className="w-full h-60 object-cover rounded mb-4 shadow-xl"
-                />
-              ) : (
-                <Image
-                  src="/placeholder-image.webp"
-                  width={200}
-                  height={100}
-                  quality={60}
-                  priority
-                  alt={`${groupData?.group_name} profile picture`}
-                  className="w-full h-60 object-cover rounded mb-4 shadow-xl"
-                />
-              )}
-              <>
-                {owner ? (
-                  <EditHeaderImage type="group" id={groupData?.group_id} />
-                ) : null}
-              </>
-            </div>
-            <p>{groupData?.group_bio}</p>
-            <MembershipButtonLogic
-              member={member}
-              setMember={setMember}
-              owner={owner}
-              setOwner={setOwner}
-              type="group"
-              id={groupData?.group_id}
-              showForm={showForm}
-              setShowForm={setShowForm}
-              handleShowUserAdmins={handleShowAdminUsers}
-            />
-          </div>
-          <div className="flex flex-col gap-4 md:col-span-5">
-            {showAdminUsers ? (
-              <AdminUserList
-                type="group"
-                entityId={groupData?.group_id}
-                entityName={groupData?.group_name}
-                owner={owner}
-                handleShowUserAdmins={handleShowAdminUsers}
-              />
-            ) : (
-              <>
-                <div className="flex gap-4 items-center justify-between">
-                  <h2 className="font-semibold text-lg">
-                    {groupData?.group_name} Posts
-                  </h2>
-                  {member || owner ? (
-                    <NewPostIcon
-                      type={"group"}
-                      id={groupData?.group_id}
-                      fetchPosts={fetchPosts}
-                      setFetchPosts={setFetchPosts}
+        {authErr ? (
+          <ExpiredTokenMessage />
+        ) : (
+          <>
+            <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
+              <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
+                <h1 className="font-semibold text-xl md:text-2xl">
+                  {groupData?.group_name}
+                </h1>
+                <div className="w-full h-60 relative">
+                  {groupData?.group_img ? (
+                    <Image
+                      src={groupData.group_img}
+                      width={200}
+                      height={100}
+                      quality={60}
+                      priority
+                      alt={`${groupData?.group_name} profile picture`}
+                      className="w-full h-60 object-cover rounded mb-4 shadow-xl"
                     />
-                  ) : null}
-                </div>
-                <>
-                  {postData.length ? (
-                    <div className={"grid grid-cols-1 gap-8"}>
-                      {postData.map((post: PostData) => (
-                        <PostCard
-                          key={post.post_id}
-                          data={post}
-                          member={member}
-                          owner={owner}
-                        />
-                      ))}
-                    </div>
                   ) : (
-                    <>
-                      <p>This group hasn&apos;t posted yet.</p>
-                    </>
+                    <Image
+                      src="/placeholder-image.webp"
+                      width={200}
+                      height={100}
+                      quality={60}
+                      priority
+                      alt={`${groupData?.group_name} profile picture`}
+                      className="w-full h-60 object-cover rounded mb-4 shadow-xl"
+                    />
                   )}
-                </>
-              </>
-            )}
-          </div>
-        </section>
-        <FormDrawer
-          setShowForm={setShowForm}
-          showForm={showForm}
-          handleDisplayForm={handleDisplayForm}
-        >
-          <h2 className="font-bold text-xl">Edit your church</h2>
-          <EditGroupForm
-            type="group"
-            entityID={groupData?.group_id}
-            propData={groupData}
-            setShowForm={setShowForm}
-            showForm={showForm}
-          />
-        </FormDrawer>
+                  <>
+                    {owner ? (
+                      <EditHeaderImage type="group" id={groupData?.group_id} />
+                    ) : null}
+                  </>
+                </div>
+                <p>{groupData?.group_bio}</p>
+                <MembershipButtonLogic
+                  member={member}
+                  setMember={setMember}
+                  owner={owner}
+                  setOwner={setOwner}
+                  type="group"
+                  id={groupData?.group_id}
+                  showForm={showForm}
+                  setShowForm={setShowForm}
+                  handleShowUserAdmins={handleShowAdminUsers}
+                />
+              </div>
+              <div className="flex flex-col gap-4 md:col-span-5">
+                {showAdminUsers ? (
+                  <AdminUserList
+                    type="group"
+                    entityId={groupData?.group_id}
+                    entityName={groupData?.group_name}
+                    owner={owner}
+                    handleShowUserAdmins={handleShowAdminUsers}
+                  />
+                ) : (
+                  <>
+                    <div className="flex gap-4 items-center justify-between">
+                      <h2 className="font-semibold text-lg">
+                        {groupData?.group_name} Posts
+                      </h2>
+                      {member || owner ? (
+                        <NewPostIcon
+                          type={"group"}
+                          id={groupData?.group_id}
+                          fetchPosts={fetchPosts}
+                          setFetchPosts={setFetchPosts}
+                        />
+                      ) : null}
+                    </div>
+                    <>
+                      {postData.length ? (
+                        <div className={"grid grid-cols-1 gap-8"}>
+                          {postData.map((post: PostData) => (
+                            <PostCard
+                              key={post.post_id}
+                              data={post}
+                              member={member}
+                              owner={owner}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <>
+                          <p>This group hasn&apos;t posted yet.</p>
+                        </>
+                      )}
+                    </>
+                  </>
+                )}
+              </div>
+            </section>
+            <FormDrawer
+              setShowForm={setShowForm}
+              showForm={showForm}
+              handleDisplayForm={handleDisplayForm}
+            >
+              <h2 className="font-bold text-xl">Edit your church</h2>
+              <EditGroupForm
+                type="group"
+                entityID={groupData?.group_id}
+                propData={groupData}
+                setShowForm={setShowForm}
+                showForm={showForm}
+              />
+            </FormDrawer>
+            <PersonalNav />
+          </>
+        )}
       </main>
-      <PersonalNav />
       <Footer />
     </>
   );
