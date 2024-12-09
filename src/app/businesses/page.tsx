@@ -30,7 +30,7 @@ export default function Businesses() {
           String(selectedCommunity?.community_id)
         );
         const communityExists = communities.some(
-          (community) => community.community_id === +selectedCommunity.community_id
+          (community) => community.community_id === selectedCommunity.community_id
         );
         if (communityExists) {
           setCommunityMember(true)
@@ -66,6 +66,8 @@ export default function Businesses() {
                       key={business.id}
                       data={business}
                       urlParams={"/businesses/"}
+                      communityMember={communityMember}
+                      owner={false}
                     />
                   ))}
                 </div>

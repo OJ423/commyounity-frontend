@@ -7,6 +7,8 @@ import Image from "next/image";
 import CommentNewForm from "./CommentNewForm";
 import { LiaComments } from "react-icons/lia";
 import { deleteComment } from "@/utils/apiCalls";
+import { MdDelete } from "react-icons/md";
+import { BsFillReplyFill } from "react-icons/bs";
 
 interface CommentCardProps {
   comment: Comment;
@@ -41,7 +43,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       if (user && user.user_id === comment.author) {
         const data = await deleteComment(token, commentId);
         setToken(data.token);
-        localStorage.setItem("token", data.token)
+        localStorage.setItem("token", data.token);
       }
     } catch (error: any) {
       console.error("There was an error:", error);
@@ -75,29 +77,31 @@ const CommentCard: React.FC<CommentCardProps> = ({
   return (
     <>
       {!comment.comment_ref ? (
-        <section className="flex flex-col gap-2 pb-4 mb-4 border-b border-gray-200 w-full">
+        <section className="flex flex-col gap-2 pb-2 mb-4 border-b border-gray-200 w-full">
           <h3 className="font-semibold">{comment.comment_title}</h3>
           <p className="text-sm">{comment.comment_body}</p>
           {member || owner ? (
             <div className="flex justify-between items-center gap-2 mt-2 pt-2 border-t border-indigo-100">
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <button
-                  className="text-xs border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                  className="text-indigo-500 hover:scale-125 transition-all duration-500 ease-out"
                   onClick={() => setDisplayAddComment(!displayAddComment)}
                 >
-                  <span>Reply</span>
+                  <BsFillReplyFill size={24} aria-label="reply to comment" title="Reply to Comment" />
                 </button>
-                {user ? (
-                  user.user_id === comment.author || owner ? (
-                    <>
-                      <button
-                        onClick={() => handleDeleteComment(null)}
-                        className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
-                      >
-                        <span>Delete</span>
-                      </button>
-                    </>
-                  ) : null
+                {user?.user_id === comment.author || owner ? (
+                  <>
+                    <button
+                      onClick={() => handleDeleteComment(null)}
+                      className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
+                    >
+                      <MdDelete
+                        size={24}
+                        aria-label="Delete comment"
+                        title="Delete Comment"
+                      />
+                    </button>
+                  </>
                 ) : null}
               </div>
               <div className="flex gap-4 items-center">
@@ -118,23 +122,47 @@ const CommentCard: React.FC<CommentCardProps> = ({
               </div>
             </div>
           ) : (
-            <div className="flex justify-end items-center gap-4 mt-2 pt-2 border-t border-indigo-100">
-              {comment.user_avatar ? (
-                <div className="w-12 h-12">
-                  <Image
-                    src={comment.user_avatar}
-                    alt={comment.author_name}
-                    width={20}
-                    height={20}
-                    quality={60}
-                    className="rounded-full w-full h-full object-cover"
-                  />
+            <>
+              <div
+                className={`${
+                  user?.user_id === comment.author
+                    ? "justify-between"
+                    : "justify-end"
+                } flex items-center gap-4 mt-2 pt-2 border-t border-indigo-100`}
+              >
+                {user?.user_id === comment.author || owner ? (
+                  <>
+                    <button
+                      onClick={() => handleDeleteComment(null)}
+                      className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
+                    >
+                      <MdDelete
+                        size={24}
+                        aria-label="Delete comment"
+                        title="Delete Comment"
+                      />
+                    </button>
+                  </>
+                ) : null}
+                <div className="flex items-center gap-4">
+                  {comment.user_avatar ? (
+                    <div className="w-12 h-12">
+                      <Image
+                        src={comment.user_avatar}
+                        alt={comment.author_name}
+                        width={20}
+                        height={20}
+                        quality={60}
+                        className="rounded-full w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : null}
+                  <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
+                    {comment.author_name}
+                  </p>
                 </div>
-              ) : null}
-              <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
-                {comment.author_name}
-              </p>
-            </div>
+              </div>
+            </>
           )}
           {replyCommentCount ? (
             <button
@@ -148,7 +176,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </section>
       ) : null}
       {displayAddComment ? (
-        <section className="flex flex-col w-full border-box gap-2 pb-4 mb-4 border-b border-gray-200 w-4/5 ms-auto">
+        <section className="flex flex-col w-full border-box gap-2 pb-2 mb-2 border-b border-gray-200 w-4/5 ms-auto">
           <CommentNewForm
             post_id={comment.post_id}
             comment_ref={comment.comment_id}
@@ -162,7 +190,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </section>
       ) : null}
       {viewReplies ? (
-        <section className="flex flex-col max-w-[80%] p-4 border-box gap-8 pb-4 mb-8 border-b-4 border-indigo-500 ms-auto">
+        <section className="flex flex-col max-w-[80%] p-4 border-box gap-8 pb-2 mb-8 border-b-4 border-indigo-500 ms-auto">
           {replyComments.map((c) => (
             <section
               className="flex items-center justify-end gap-16 bg-gray-100 rounded-lg p-4"

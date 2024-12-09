@@ -70,7 +70,7 @@ export default function Admin() {
                   </h2>
                   <div
                     className={
-                      "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mb-8 pb-8 border-b border-gray-300"
+                      "grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-300"
                     }
                   >
                     {businessAdmins.map((business: CardData) => (
@@ -90,7 +90,7 @@ export default function Admin() {
                   <h2 className="text-lg font-semibold mb-8">Groups You Own</h2>
                   <div
                     className={
-                      "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mb-8 pb-8 border-b border-gray-300"
+                      "grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-300"
                     }
                   >
                     {groupAdmins.map((group: CardData) => (
@@ -112,7 +112,7 @@ export default function Admin() {
                   </h2>
                   <div
                     className={
-                      "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mb-8 pb-8 border-b border-gray-300"
+                      "grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-300"
                     }
                   >
                     {schoolAdmins.map((group: CardData) => (
@@ -132,7 +132,7 @@ export default function Admin() {
                   <h2 className="text-lg font-semibold mb-8">Your Churches</h2>
                   <div
                     className={
-                      "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 mb-8 pb-8 border-b border-gray-300"
+                      "grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-300"
                     }
                   >
                     {churchAdmins.map((group: CardData) => (

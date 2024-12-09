@@ -17,6 +17,7 @@ import {
   ParentAccessRequest,
   ParentApproveReject,
   PostAdminById,
+  PostData,
   RegistrationInputs,
 } from "./customTypes";
 import { headers } from "next/headers";
@@ -760,6 +761,20 @@ export async function addPost(
   }
 }
 
+export async function editPost(token: string | null, post_id: string, body: NewPostData) {
+  try {
+    const response = await instance.patch(`posts/edit/${post_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  } catch (error:any) {
+    console.log("Error editing post", error);
+    throw error;
+  }
+}
+
 export async function deletePost(token: string | null, post_id: string) {
   try {
     const response = await instance.delete(`posts/delete/${post_id}`, {
@@ -872,7 +887,6 @@ export async function getUsersCommunityPosts(
   filter: string | null
 ) {
   try {
-    console.log(community_id)
     const response = await instance.get(`posts/user/${community_id}?limit=${limit}`, {
       params: {
         filter: filter,

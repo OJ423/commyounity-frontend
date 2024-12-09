@@ -28,7 +28,7 @@ export default function ChurchPage() {
   const [fetchPosts, setFetchPosts] = useState<boolean>(false);
   const [member, setMember] = useState<boolean>(false);
   const [owner, setOwner] = useState<boolean>(false);
-  const { userMemberships, setToken } = useAuth();
+  const { userMemberships, setToken, token } = useAuth();
   const [authErr, setAuthErr] = useState<boolean>(false);
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
@@ -72,7 +72,7 @@ export default function ChurchPage() {
       }
     };
     fetchData();
-  }, [userMemberships, params, fetchPosts, setToken]);
+  }, [userMemberships, params, fetchPosts, setToken, token]);
 
   return (
     <>

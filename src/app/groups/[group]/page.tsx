@@ -28,7 +28,7 @@ export default function GroupPage() {
   const [owner, setOwner] = useState<boolean>(false);
   const [authErr, setAuthErr] = useState<boolean>(false);
 
-  const { userMemberships, setToken } = useAuth();
+  const { userMemberships, setToken, token } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
 
@@ -74,7 +74,7 @@ export default function GroupPage() {
       }
     };
     fetchData();
-  }, [userMemberships, params, fetchPosts, setToken]);
+  }, [userMemberships, params, fetchPosts, setToken, token]);
 
   return (
     <>

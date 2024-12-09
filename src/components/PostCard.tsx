@@ -13,7 +13,9 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/dataTransformers";
 import CommentNewForm from "./CommentNewForm";
 import { LogUserOut } from "@/utils/logOut";
-import ReactPlayer from 'react-player'
+import ReactPlayer from "react-player";
+import PostEditButton from "./PostEditButton";
+import { MdDelete } from "react-icons/md";
 
 type PostCardProps = {
   data: PostData | TimelinePosts;
@@ -27,7 +29,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   const [postLikes, setPostLikes] = useState<number>(data.post_likes);
   const [userLike, setUserLike] = useState<boolean>(false);
   const [deleteCheck, setDeleteCheck] = useState<boolean>(false);
-
+  const [postAuthor, setPostAuthor] = useState<boolean>(false);
   const {
     user,
     setUser,
@@ -39,8 +41,9 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
     setSelectedCommunity,
     setUserMemberships,
     setUserAdmins,
-    setAdminCommunities
+    setAdminCommunities,
   } = useAuth();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -50,7 +53,10 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
       );
       setUserLike(userPostLikeCheck);
     }
-  }, [userPostLikes, data.post_id]);
+    if (user?.user_id === data.author) {
+      setPostAuthor(true);
+    }
+  }, [userPostLikes, data.post_id, data.author, user?.user_id]);
 
   function handleShowComments() {
     if (+data.comment_count && member) {
@@ -117,7 +123,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   const handleDeletePost = async () => {
     try {
       const deleteRequest = await deletePost(token, data.post_id);
-      setDeleteCheck(!deleteCheck)
+      setDeleteCheck(!deleteCheck);
       setToken(deleteRequest.token);
       localStorage.setItem("token", deleteRequest.token);
     } catch (error: any) {
@@ -140,7 +146,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
-      setAdminCommunities
+      setAdminCommunities,
     });
     router.push("/login");
   };
@@ -148,15 +154,15 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   return (
     <>
       <section className="grid grid-cols-1 md:grid-cols-5 items-center rounded shadow-xl transition-500 duration-200 ease-in ease-out cursor-pointer relative">
-        {data.post_video_url ?
-        <ReactPlayer
-          url={data.post_video_url}
-          controls={true}
-          className="col-span-1 md:col-span-5 bg-indigo-500 rounded-xl mx-auto"
-        />
-        : 
-        data.post_img ? (
-          <div className="md:col-span-2 w-full h-40 max-h-60 md:h-full rounded-t md:rounded-tl overflow-hidden">
+        {data.post_video_url ? (
+            <ReactPlayer
+              url={data.post_video_url}
+              controls={true}
+              width={"100%"}
+              className="w-[100%] h-auto col-span-1 md:col-span-5 bg-indigo-500 rounded-xl mx-auto"
+            />
+        ) : data.post_img ? (
+          <div className="md:col-span-2 w-full h-80 md:h-full rounded-t md:rounded-tl overflow-hidden">
             <Image
               src={data.post_img}
               alt={`${data.post_title} header image`}
@@ -180,9 +186,11 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
           </span>
           <h2 className="font-bold text-xl mb-4">{data.post_title}</h2>
           <p className="font-light">{data.post_description}</p>
-          {data.post_location ?
-          <p className="font-medium text-sm mt-4 text-indigo-500">Location: {data.post_location}`</p>
-          : null}
+          {data.post_location ? (
+            <p className="font-medium text-sm mt-4 text-indigo-500">
+              Location: {data.post_location}`
+            </p>
+          ) : null}
           {data.web_link ? (
             data.web_title ? (
               <p className="text-sm font-semibold mt-4">
@@ -233,40 +241,46 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
             <p className="text-xs font-semibold">
               Posted: {formatDate(data.post_date)}
             </p>
-            {owner ? (
-              deleteCheck ? (
-                <>
-                  <button
-                    onClick={handleDeletePost}
-                    className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
-                  >
-                    Confirm
-                  </button>
-                  <button
-                    onClick={deletePostCheck}
-                    className="text-xs border-solid border-4 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={deletePostCheck}
-                  className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
-                >
-                  Delete
-                </button>
-              )
-            ) : null}
+            
           </div>
           <div className="flex gap-4">
+          {owner || postAuthor ? (
+              <div className="me-8 flex gap-4">
+                {deleteCheck ? (
+                  <>
+                    <button
+                      onClick={handleDeletePost}
+                      className="text-xs border-solid border-4 border-red-500 text-red-500 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-500 ease-out"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={deletePostCheck}
+                      className="text-xs border-solid border-4 py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <PostEditButton data={data} owner={owner} postAuthor={postAuthor} />
+                    <button
+                      onClick={deletePostCheck}
+                      className="text-red-500 hover:scale-110 transition-all duration-500 ease-out"
+                    >
+                      <MdDelete aria-label="delete post" size={24} title="Delete Post"/>
+                    </button>
+                  </>
+                )}
+              </div>
+            ) : null}
             {userLike ? (
               <div
                 onClick={() => (user ? handlePostDislike() : null)}
                 className="flex items-center text-rose-600 gap-1 transition-all duration-200"
               >
-                <IoHeartOutline size={24} />
-                <p className="text-black font-bold text-sm">
+                <IoHeartOutline size={24} aria-label="remove your like from this post" title="Remove Like" />
+                <p className="text-black font-bold text-xs">
                   {postLikes > 2
                     ? `You and ${postLikes - 1} others`
                     : postLikes === 2
@@ -279,7 +293,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
                 onClick={() => (user ? handlePostLike() : null)}
                 className="flex items-center text-rose-600 gap-1 hover:scale-110 transition-all duration-200"
               >
-                <IoHeartOutline size={24} />
+                <IoHeartOutline size={24} aria-label="Like post" title="Like Post" />
                 <p className="text-black font-bold text-sm">{postLikes}</p>
               </div>
             )}
@@ -287,7 +301,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               onClick={() => (user ? handleShowComments() : null)}
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
-              <IoChatboxOutline size={24} />
+              <IoChatboxOutline size={24} aria-label="Show comments" title="Show Comments" />
               <p className="text-black font-bold text-sm">
                 {data.comment_count}
               </p>
@@ -298,7 +312,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               }
               className="flex items-center text-indigo-500 gap-1 hover:scale-110 transition-all duration-200"
             >
-              <BsFillReplyFill size={24} />
+              <BsFillReplyFill size={24} aria-label="Comment on post" title="Comment on Post" />
             </div>
           </div>
         </div>

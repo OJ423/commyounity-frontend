@@ -151,7 +151,7 @@ export type PostData = {
   post_title: string;
   post_description: string;
   post_location: string;
-  post_img: string;
+  post_img: string | null;
   post_video_url: string | null;
   web_link: string;
   web_title: string;
