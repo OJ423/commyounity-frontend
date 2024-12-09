@@ -863,6 +863,24 @@ export async function postNewComment(
   }
 }
 
+export async function editComment(
+  token: string | null,
+  comment_id: string,
+  body: CommentInputs
+) {
+  try {
+    const response = await instance.patch(`posts/comment/${comment_id}`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error posting comment", error);
+    throw error;
+  }
+}
+
 export async function deleteComment(token: string | null, comment_id: string) {
   try {
     const response = await instance.delete(

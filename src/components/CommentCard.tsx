@@ -9,6 +9,7 @@ import { LiaComments } from "react-icons/lia";
 import { deleteComment } from "@/utils/apiCalls";
 import { MdDelete } from "react-icons/md";
 import { BsFillReplyFill } from "react-icons/bs";
+import CommentEditButton from "./CommentEditButton";
 
 interface CommentCardProps {
   comment: Comment;
@@ -87,24 +88,38 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   className="text-indigo-500 hover:scale-125 transition-all duration-500 ease-out"
                   onClick={() => setDisplayAddComment(!displayAddComment)}
                 >
-                  <BsFillReplyFill size={24} aria-label="reply to comment" title="Reply to Comment" />
+                  <BsFillReplyFill
+                    size={24}
+                    aria-label="reply to comment"
+                    title="Reply to Comment"
+                  />
                 </button>
+                {user?.user_id === comment.author ? (
+                  <CommentEditButton data={comment} />
+                ) : null}
                 {user?.user_id === comment.author || owner ? (
-                  <>
-                    <button
-                      onClick={() => handleDeleteComment(null)}
-                      className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
-                    >
-                      <MdDelete
-                        size={24}
-                        aria-label="Delete comment"
-                        title="Delete Comment"
-                      />
-                    </button>
-                  </>
+                  <button
+                    onClick={() => handleDeleteComment(null)}
+                    className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
+                  >
+                    <MdDelete
+                      size={24}
+                      aria-label="Delete comment"
+                      title="Delete Comment"
+                    />
+                  </button>
                 ) : null}
               </div>
               <div className="flex gap-4 items-center">
+                {replyCommentCount ? (
+                  <button
+                    onClick={() => setViewReplies(!viewReplies)}
+                    className="flex items-center gap-4 ms-auto p-2 bg-indigo-100 rounded transition-all duration-500 hover:bg-indigo-200"
+                  >
+                    <LiaComments size={24} className="text-indigo-500" />
+                    <p className="font-bold text-xs">{replyCommentCount}</p>
+                  </button>
+                ) : null}
                 {comment.user_avatar ? (
                   <div className="w-12 h-12">
                     <Image
@@ -164,15 +179,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
               </div>
             </>
           )}
-          {replyCommentCount ? (
-            <button
-              onClick={() => setViewReplies(!viewReplies)}
-              className="flex items-center gap-4 ms-auto mt-4 p-2 bg-indigo-100 rounded transition-all duration-500 hover:bg-indigo-200"
-            >
-              <LiaComments size={24} className="text-indigo-500" />
-              <p className="font-bold text-xs">{replyCommentCount}</p>
-            </button>
-          ) : null}
         </section>
       ) : null}
       {displayAddComment ? (
@@ -200,12 +206,16 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 <p className="font-semibold">{c.comment_title}</p>
                 <p>{c.comment_body}</p>
                 {user ? (
-                  user?.user_id === c.author ? (
+                  user?.user_id === c.author || owner ? (
                     <button
-                      onClick={() => handleDeleteComment(c.comment_id)}
-                      className="mt-4 font-bold text-indigo-500 transition-all duration-500 hover:text-indigo-200"
+                      onClick={() => handleDeleteComment(null)}
+                      className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
                     >
-                      Delete
+                      <MdDelete
+                        size={24}
+                        aria-label="Delete comment"
+                        title="Delete Comment"
+                      />
                     </button>
                   ) : null
                 ) : null}
