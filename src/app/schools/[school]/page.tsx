@@ -128,7 +128,7 @@ export default function SchoolPage() {
               backUpSchoolArr.schools
             );
             for (let i = 0; i < transformedData.length; i++) {
-              if (+transformedData[i].id === +params.school) {
+              if (transformedData[i].id === params.school) {
                 setNonParentView(transformedData[i]);
               }
             }

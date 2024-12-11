@@ -36,7 +36,7 @@ export default function VerifyPage() {
           localStorage.setItem('token', JSON.stringify(data.token))
 
           const timeoutId = setTimeout(() => {
-            router.push('/communities');
+            router.push('/profile');
           }, 2000);
 
         } catch(error:any) {
@@ -45,7 +45,7 @@ export default function VerifyPage() {
       }
       fetchData()
     }
-  }, [token])
+  }, [token, setToken, setUser, router])
 
   return (
     <>

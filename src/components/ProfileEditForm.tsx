@@ -142,13 +142,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
             Your bio needs to be less than 250 characters
           </span>
         )}
-        {watch("user_bio").length > 200 ? (
+        {user?.user_bio ? watch("user_bio").length > 200 ? (
           <span className="text-sm mb-4 text-rose-500 font-semibold">
             {watch("user_bio")
               ? `${watch("user_bio").length} characters`
               : null}
           </span>
-        ) : null}
+        ) : null : null}
 
         <label
           className="text-xs uppercase text-gray-700 font-bold"

@@ -29,15 +29,12 @@ export interface CommunityProfile {
 }
 
 export type LogInInputs = {
-  username: string;
-  password: string;
+  user_email: string;
 };
 
 export type RegistrationInputs = {
   username: string;
   user_email: string;
-  password: string;
-  confirmPassword: string;
 };
 
 export type UserJoinInputs = {

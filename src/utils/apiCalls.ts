@@ -201,12 +201,21 @@ export async function logUserIn(body: LogInInputs) {
   }
 }
 
+export async function confirmLogin(token: string) {
+  try {
+    const response = await instance.get(`users/login/confirm?token=${token}`);
+    return response.data
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error;
+  }
+}
+
 export async function registerUser(body: RegistrationInputs) {
   try {
     const registerBody = {
       username: body.username,
       email: body.user_email,
-      password: body.password,
     };
     const response = await instance.post("users/register", registerBody);
     return response.data;
@@ -881,10 +890,10 @@ export async function editComment(
   }
 }
 
-export async function deleteComment(token: string | null, comment_id: string) {
+export async function deleteComment(token: string | null, comment_id: string, post_id: string) {
   try {
     const response = await instance.delete(
-      `posts/comment/delete/${comment_id}`,
+      `posts/comment/delete/${comment_id}/${post_id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

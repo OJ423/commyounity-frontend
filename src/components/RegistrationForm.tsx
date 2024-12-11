@@ -10,13 +10,12 @@ export default function RegistrationForm() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<RegistrationInputs>();
 
   const onSubmit: SubmitHandler<RegistrationInputs> = async (data) => {
     try {
-      const userData = await registerUser(data);
+      await registerUser(data);
       router.push("/verify-email");
     } catch (error: any) {
       if (
@@ -27,7 +26,7 @@ export default function RegistrationForm() {
         error.response.data.msg === "Email already exists. Must be unique."
       ) {
         setRegistrationErr(
-          "That email address already exists in our system. This must be unique."
+          "That email address already exists in our system. Login with it and check your email."
         );
       } else {
         setRegistrationErr("Something went wrong. Please try again.");
@@ -37,8 +36,9 @@ export default function RegistrationForm() {
   };
 
   return (
-    <>
-      <h1 className="font-bold text-3xl mb-8">Register</h1>
+    <section className="max-w-sm">
+      <h1 className="font-bold text-3xl">Register for Comm<span className="text-indigo-500">you</span>nity</h1>
+      <p className="md:text-lg font-medium my-4">Give yourself a username and enter your email to sign up. You will then receive an email with a link to click to complete registration.</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         noValidate={true}
@@ -74,41 +74,9 @@ export default function RegistrationForm() {
             Email is required
           </span>
         )}
+        
         <input
-          className="p-4 mb-4 rounded"
-          placeholder="Password"
-          {...register("password", {
-            required: "Password required",
-            minLength: 6,
-          })}
-          name="password"
-          type="password"
-        />
-        {errors.password && (
-          <span className="mb-4 text-rose-600 text-xs font-bold">
-            Password needs to be 6 characters or more
-          </span>
-        )}
-        <input
-          className="p-4 mb-8 rounded"
-          placeholder="Confirm Password"
-          {...register("confirmPassword", {
-            required: "Please confirm your password",
-            validate: (value) =>
-              value === watch("password") || "Passwords do not match",
-          })}
-          name="confirmPassword"
-          id="confirmPassword"
-          type="password"
-        />
-        {errors.confirmPassword && (
-          <span className="mb-4 text-rose-600 text-xs font-bold">
-            Your passwords do not match.
-          </span>
-        )}
-
-        <input
-          className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
+          className="w-max mx-auto cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"
           type="submit"
         />
       </form>
@@ -117,6 +85,6 @@ export default function RegistrationForm() {
           {registrationErr}
         </p>
       ) : null}
-    </>
+    </section>
   );
 }

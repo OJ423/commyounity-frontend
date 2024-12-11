@@ -77,12 +77,16 @@ export default function Profile() {
         <main className="flex min-h-screen flex items-center">
           <>
             <ProfilePagesNav />
-            <section className="px-4 py-16 md:p-8 lg:p-16 w-full">
+            <section className="px-4 py-8 md:p-8 lg:p-16 w-full">
               <h1 className="font-bold text-2xl md:text-3xl pb-8 mb-8 border-b border-gray-300">{`Here's your profile ${user.username}`}</h1>
               <div className="flex gap-4 md:gap-8 lg:gap-16 items-center mb-8 pb-8 border-b border-gray-300">
                 <div>
+                {user.user_avatar ?
                   <p className="text-sm font-medium mb-4">Profile Pic:</p>
-                  <div className="w-[200px] h-[200px] lg:w-[300px] lg:h-[300px] xl:w-[400px] xl:h-[400px] relative">
+                  : 
+                  <p className="text-sm font-medium mb-4 text-green-600">Add a profile picture for your posts and comments</p>
+                }
+                  <div className="w-[200px] h-[200px] lg:w-[300px] lg:h-[300px] relative">
                     {user.user_avatar ? (
                       <Image
                         src={user.user_avatar}
@@ -126,7 +130,7 @@ export default function Profile() {
               </div>
               <div className="flex flex-col items-start mb-8 pb-8 border-b border-gray-300">
                 <p className="text-sm font-medium mb-8">Your bio:</p>
-                <p className="text-lg font-light p-8 rounded border border-gray-300 w-full">
+                <p className={`${user.user_bio ? "font-light" : "text-green-600 font-bold"} text-lg p-8 rounded border border-gray-300 w-full`}>
                   {user.user_bio
                     ? user.user_bio
                     : "Write a little about yourself to get to know other comm-YOU-nity members"}
@@ -139,9 +143,6 @@ export default function Profile() {
                     className="text-xs w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
                   >
                     <span>Edit</span>
-                  </button>
-                  <button className="text-xs w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                    <span>Change Password</span>
                   </button>
                 </div>
                 {deleteCheck ? (

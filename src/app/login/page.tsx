@@ -35,7 +35,7 @@ export default function Lists() {
         Logout
       </button>
     :
-    <section className="px-8 flex flex-col py-20">
+    <section className="px-8 flex flex-col py-20 max-w-sm">
       {!newUser ? 
         <>
         <LoginForm />

@@ -42,7 +42,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         commentId = comment.comment_id;
       }
       if (user && user.user_id === comment.author) {
-        const data = await deleteComment(token, commentId);
+        const data = await deleteComment(token, commentId, post[0]?.post_id);
         setToken(data.token);
         localStorage.setItem("token", data.token);
       }
