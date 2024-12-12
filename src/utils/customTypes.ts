@@ -29,7 +29,7 @@ export interface CommunityProfile {
 }
 
 export type LogInInputs = {
-  user_email: string;
+  email: string;
 };
 
 export type RegistrationInputs = {
@@ -70,6 +70,15 @@ export interface BlockUser {
 export interface PostAdminById {
   community_id: string;
   user_id: string;
+}
+
+export interface UnsplashImage {
+  id: string;
+  urls: {
+    small: string;
+    full: string;
+  };
+  alt_description: string;
 }
 
 // API Responses

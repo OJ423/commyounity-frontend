@@ -77,11 +77,15 @@ export default function BusinessPage() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
+      <main className="flex flex-col items-center justify-center my-10 max-w-screen-xl mx-auto px-4">
         {authErr ? (
           <ExpiredTokenMessage />
         ) : (
           <>
+            <Link
+              className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+              href="/businesses"
+            >{`<< Back to Businesses`}</Link>
             <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
               <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
                 <h1 className="font-semibold text-xl md:text-2xl">

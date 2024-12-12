@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 
 export default function Businesses() {
   const { selectedCommunity, communities } = useAuth();
-  const [ businessData, setBusinessData] = useState<CardData[] | []>([]);
-  const [communityMember, setCommunityMember] = useState<boolean>(false)
+  const [businessData, setBusinessData] = useState<CardData[] | []>([]);
+  const [communityMember, setCommunityMember] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -30,12 +30,15 @@ export default function Businesses() {
           String(selectedCommunity?.community_id)
         );
         const communityExists = communities.some(
-          (community) => community.community_id === selectedCommunity.community_id
+          (community) =>
+            community.community_id === selectedCommunity.community_id
         );
         if (communityExists) {
-          setCommunityMember(true)
+          setCommunityMember(true);
         }
-        const businesses: CardData[] = await transformBusinessData(data.businesses);
+        const businesses: CardData[] = await transformBusinessData(
+          data.businesses
+        );
         setBusinessData(businesses);
         setIsLoading(false);
       } catch (error: any) {
@@ -48,9 +51,17 @@ export default function Businesses() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center px-4 py-20 justify-center">
+      <main className="flex flex-col items-center px-4 py-10 justify-center max-w-screen-xl mx-auto">
         <>
-          {selectedCommunity ?
+          {selectedCommunity ? (
+            <>
+          <Link
+            className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+            href={{
+              pathname: `/communities/${selectedCommunity?.community_name}`,
+              query: {community: selectedCommunity.community_id}
+            }}
+          >{`<< Back to ${selectedCommunity?.community_name} home`}</Link>
             <section id="#businesses" className="max-w-screen-lg">
               <div className="flex gap-4 justify-between items-center flex-wrap mb-4">
                 <h1 className="font-bold text-3xl">
@@ -59,65 +70,85 @@ export default function Businesses() {
                 <NewGroupIcon type="business" />
               </div>
               <>
-              {businessData.length ?
-                <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"}>
-                  {businessData.map((business: CardData) => (
-                    <GenericCard
-                      key={business.id}
-                      data={business}
-                      urlParams={"/businesses/"}
-                      communityMember={communityMember}
-                      owner={false}
-                    />
-                  ))}
-                </div>
-                :
-                <div className="grid grid-cols-1 gap-8">
-                  {communityMember ?
-                  <>
-                    <section className="flex flex-col gap-4 justify-center items-start">
-                      <Image 
-                        src='/empty-placeholder.jpg'
-                        quality={80}
-                        alt="An empty subway train"
-                        priority
-                        width={400}
-                        height={200}
-                        className="rounded shadow-xl"
+                {businessData.length ? (
+                  <div
+                    className={
+                      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
+                    }
+                  >
+                    {businessData.map((business: CardData) => (
+                      <GenericCard
+                        key={business.id}
+                        data={business}
+                        urlParams={"/businesses/"}
+                        communityMember={communityMember}
+                        owner={false}
                       />
-                      <h2 className="font-semibold text-2xl">There are no businesses</h2>
-                    </section>
-                    <NewGroup type="business" />
-                  </>
-                  :
-                  <section className="flex flex-col gap-4 justify-center items-start">
-                    <Image 
-                      src='/empty-placeholder.jpg'
-                      quality={80}
-                      alt="An empty subway train"
-                      priority
-                      width={400}
-                      height={200}
-                      className="rounded shadow-xl"
-                    />
-                    <h2 className="font-semibold text-2xl">There are no businesses</h2>
-                    <p>Join the community to create one</p>
-                    <Link href={`/communities/${selectedCommunity.community_name}?community=${selectedCommunity.community_id}`} className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out">
-                      <span>Visit the community to join</span>
-                    </Link>
-                  </section>
-                  }
-                </div>
-              
-              }
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-8">
+                    {communityMember ? (
+                      <>
+                        <section className="flex flex-col gap-4 justify-center items-start">
+                          <Image
+                            src="/empty-placeholder.jpg"
+                            quality={80}
+                            alt="An empty subway train"
+                            priority
+                            width={400}
+                            height={200}
+                            className="rounded shadow-xl"
+                          />
+                          <h2 className="font-semibold text-2xl">
+                            There are no businesses
+                          </h2>
+                        </section>
+                        <NewGroup type="business" />
+                      </>
+                    ) : (
+                      <section className="flex flex-col gap-4 justify-center items-start">
+                        <Image
+                          src="/empty-placeholder.jpg"
+                          quality={80}
+                          alt="An empty subway train"
+                          priority
+                          width={400}
+                          height={200}
+                          className="rounded shadow-xl"
+                        />
+                        <h2 className="font-semibold text-2xl">
+                          There are no businesses
+                        </h2>
+                        <p>Join the community to create one</p>
+                        <Link
+                          href={`/communities/${selectedCommunity.community_name}?community=${selectedCommunity.community_id}`}
+                          className="border-solid border-4 border-black py-3 px-6 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                        >
+                          <span>Visit the community to join</span>
+                        </Link>
+                      </section>
+                    )}
+                  </div>
+                )}
               </>
             </section>
-            : 
+            </>
+          ) : (
             <section className="min-h-96 flex flex-col justify-center items-start">
               <h2 className="font-bold text-2xl mb-4">No community selected</h2>
-              <p className="text-xl font-medium">Please <Link className="text-indigo-500 hover:text-indigo-300 transition-all duration-500" href='/communities'>select a community</Link> to see its businesses.</p>
+              <p className="text-xl font-medium">
+                Please{" "}
+                <Link
+                  className="text-indigo-500 hover:text-indigo-300 transition-all duration-500"
+                  href="/communities"
+                >
+                  select a community
+                </Link>{" "}
+                to see its businesses.
+              </p>
             </section>
-          }
+          )}
         </>
       </main>
       <PersonalNav />

@@ -192,8 +192,11 @@ export async function removeCommunityAdmin(token: string | null, community_id: s
 // USER LOGIN, REGISTRATION AND PATCH
 
 export async function logUserIn(body: LogInInputs) {
+  const updatedBody = {
+    user_email: body.email
+  }
   try {
-    const response = await instance.post("users/login", body);
+    const response = await instance.post("users/login", updatedBody);
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
@@ -593,15 +596,15 @@ export async function addNewEntity(
   user_id: string | null
 ) {
   let urlParam: string = "void";
-  if (type === "group") urlParam = "groups";
-  if (type === "church") urlParam = "churches";
-  if (type === "business") urlParam = "businesses";
-  if (type === "school") urlParam = "schools";
+  if (type === "group") urlParam = `groups/${body?.community_id}/${user_id}`;
+  if (type === "church") urlParam = `churches/${body?.community_id}`;
+  if (type === "business") urlParam = `businesses/new/${body?.community_id}`;
+  if (type === "school") urlParam = `schools/new/${body?.community_id}`;
 
   if (body) {
     try {
       const response = await instance.post(
-        `${urlParam}/${body.community_id}/${user_id}`,
+        `${urlParam}`,
         body,
         {
           headers: {
@@ -631,15 +634,15 @@ export async function patchEntity(
   user_id: string | null
 ) {
   let urlParam: string = "void";
-  if (type === "group") urlParam = "groups";
-  if (type === "church") urlParam = "churches";
-  if (type === "business") urlParam = "businesses";
-  if (type === "school") urlParam = "schools";
+  if (type === "group") urlParam = `groups/edit/${entity_id}/${user_id}`;
+  if (type === "church") urlParam = `churches/edit/${entity_id}`;
+  if (type === "business") urlParam = `businesses/edit/${entity_id}`;
+  if (type === "school") urlParam = `schoolsedit/${entity_id}`;
 
   if (body) {
     try {
       const response = await instance.patch(
-        `${urlParam}/edit/${entity_id}/${user_id}`,
+        `${urlParam}`,
         body,
         {
           headers: {
@@ -666,27 +669,26 @@ export async function patchEntityImg(
   let urlParam: string = "void";
   let body;
   if (type === "group") {
-    urlParam = "groups";
+    urlParam = `groups/edit/${entity_id}/${user_id}`;
     body = { group_img: imgUrl };
   }
   if (type === "church") {
-    urlParam = "churches";
+    urlParam = `churches/edit/${entity_id}`;
     body = { church_img: imgUrl };
   }
   if (type === "business") {
-    urlParam = "businesses";
+    urlParam = `businesses/edit/${entity_id}`;
     body = { business_img: imgUrl };
   }
   if (type === "school") {
-    urlParam = "schools";
+    urlParam = `schools/edit/${entity_id}`;
     body = { school_img: imgUrl };
   }
 
   if (body) {
     try {
       const response = await instance.patch(
-        `${urlParam}/edit/${entity_id}/${user_id}`,
-        body,
+        `${urlParam}`, body,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -709,14 +711,14 @@ export async function deleteEntity(
   token: string | null
 ) {
   let urlParam: string = "void";
-  if (type === "group") urlParam = "groups";
-  if (type === "church") urlParam = "churches";
-  if (type === "business") urlParam = "businesses";
-  if (type === "school") urlParam = "schools";
+  if (type === "group") urlParam = `groups/delete/${id}/${user_id}`;
+  if (type === "church") urlParam = `churches/delete/${id}`;
+  if (type === "business") urlParam = `businesses/delete/${id}`;
+  if (type === "school") urlParam = `schools/delete/${id}`;
 
   try {
     const response = await instance.delete(
-      `${urlParam}/delete/${id}/${user_id}`,
+      `${urlParam}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

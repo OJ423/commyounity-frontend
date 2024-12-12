@@ -59,13 +59,13 @@ export default function SchoolPage() {
     setUserAdmins,
     setUserMemberships,
     setUserPostLikes,
-    setAdminCommunities
+    setAdminCommunities,
   } = useAuth();
 
   const [showAdminUsers, setShowAdminUsers] = useState<boolean>(false);
-  
+
   const handleShowAdminUsers = () => {
-    setShowRequests(false)
+    setShowRequests(false);
     setShowAdminUsers(!showAdminUsers);
   };
 
@@ -78,7 +78,7 @@ export default function SchoolPage() {
   };
 
   const handleShowRequests = () => {
-    setShowAdminUsers(false)
+    setShowAdminUsers(false);
     setShowRequests(!showRequests);
   };
 
@@ -91,7 +91,7 @@ export default function SchoolPage() {
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
-      setAdminCommunities
+      setAdminCommunities,
     });
     router.push("/login");
   };
@@ -179,7 +179,11 @@ export default function SchoolPage() {
       <Header />
       {nonParentView ? (
         <>
-          <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
+          <main className="flex flex-col items-center justify-center my-10 max-w-screen-xl mx-auto px-4">
+            <Link
+              className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+              href="/schools"
+            >{`<< Back to School`}</Link>
             <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
               <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
                 <h1 className="font-semibold text-xl md:text-2xl">
@@ -249,7 +253,11 @@ export default function SchoolPage() {
           </FormDrawer>
         </>
       ) : (
-        <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
+        <main className="flex flex-col items-center justify-center my-10 max-w-screen-xl mx-auto px-4">
+          <Link
+              className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+              href="/schools"
+            >{`<< Back to School`}</Link>
           <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
             <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
               {owner ? (
@@ -352,15 +360,15 @@ export default function SchoolPage() {
                   invalidTokenResponse={invalidTokenResponse}
                   handleShowRequests={handleShowRequests}
                 />
-              ) : showAdminUsers ?
-              <AdminUserList
-                type="school"
-                entityId={schoolData?.school_id}
-                entityName={schoolData?.school_name}
-                owner={owner}
-                handleShowUserAdmins={handleShowAdminUsers}
-              />
-              : (
+              ) : showAdminUsers ? (
+                <AdminUserList
+                  type="school"
+                  entityId={schoolData?.school_id}
+                  entityName={schoolData?.school_name}
+                  owner={owner}
+                  handleShowUserAdmins={handleShowAdminUsers}
+                />
+              ) : (
                 <>
                   <div className="flex gap-4 items-center justify-between">
                     <h2 className="font-semibold text-lg">

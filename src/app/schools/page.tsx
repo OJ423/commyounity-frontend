@@ -48,9 +48,17 @@ export default function Schools() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center px-4 py-20 justify-center">
+      <main className="flex flex-col items-center px-4 py-10 justify-center max-w-screen-xl mx-auto">
         <>
           {selectedCommunity ? (
+            <>
+            <Link
+                className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+                href={{
+                  pathname: `/communities/${selectedCommunity?.community_name}`,
+                  query: { community: selectedCommunity.community_id },
+                }}
+              >{`<< Back to ${selectedCommunity?.community_name} home`}</Link>
             <section id="#schools" className="max-w-screen-lg">
               <div className="flex gap-4 justify-between items-center flex-wrap mb-4">
                 <h1 className="font-bold text-3xl mb-4">
@@ -120,6 +128,7 @@ export default function Schools() {
               </>
               <NewGroup type="school" />
             </section>
+            </>
           ) : (
             <section className="min-h-96 flex flex-col justify-center items-start">
               <h2 className="font-bold text-2xl mb-4">No community selected</h2>

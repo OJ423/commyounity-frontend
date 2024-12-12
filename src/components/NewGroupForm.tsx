@@ -2,7 +2,7 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "./context/AuthContext";
-import { GenericFormData } from "@/utils/customTypes";
+import { GenericFormData, UnsplashImage } from "@/utils/customTypes";
 import { handleUpload } from "@/utils/blobFuncs";
 import {
   addNewEntity,
@@ -12,6 +12,7 @@ import {
 import { LogUserOut } from "@/utils/logOut";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import UnsplashImgSearch from "./UnplashImgSearch";
 
 interface NewGroupFormProps {
   type: string;
@@ -34,6 +35,31 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
 
   const [newEntityErr, setNewEntityErr] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+
+  
+  // Image Upload Type
+  const [imageInsertType, setImageInsertType] = useState<string>("upload");
+  const handleUploadType = (event:React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault() 
+    setImageInsertType("upload")
+  };
+  const handleUnsplashType = (event:React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault() 
+    setImageInsertType("unsplash")
+  };
+
+
+
+  // Unsplash Search States & Funcs
+  const [selectedImage, setSelectedImage] = useState("");
+  const [images, setImages] = useState<UnsplashImage[] | []>([]);
+  const [imageConfirm, setImageConfirm] = useState<string>("");
+
+  const handleImageSelect = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setImages([]);
+    setImageConfirm("Image selected");
+  };
 
   const router = useRouter();
 
@@ -102,7 +128,9 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
   const submitLogic = async (data: GenericFormData) => {
     try {
       let imageUrl: string;
-      if (data.img) {
+      if (selectedImage.length > 0) {
+        imageUrl = selectedImage;
+      } else if (data.img) {
         imageUrl = await handleUpload(data.img[0], token, "no existing image");
       } else {
         imageUrl = "";
@@ -314,19 +342,54 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
             </>
           ) : null}
 
-          <label
-            className="text-xs uppercase text-gray-700 font-bold"
-            htmlFor="img"
-          >
-            Upload {type} image:
-          </label>
-          <input
-            className="p-4 mb-4 rounded border-2 mt-2 file:px-4 file:py-2 file:transition-all file:duration-500 file:me-4 file:cursor-pointer"
-            {...register("img")}
-            id="img"
-            name="img"
-            type="file"
-          />
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={handleUploadType}
+              className={`${
+                imageInsertType === "upload"
+                  ? "bg-white border-x-2 border-t-2 border-indigo-500 z-50 font-bold"
+                  : null
+              } mb-[-3px] p-2 text-xs transition-all duration-200`}
+            >
+              Upload Image
+            </button>
+            <button
+              onClick={handleUnsplashType}
+              className={`${
+                imageInsertType === "unsplash"
+                  ? "bg-white border-x-2 border-t-2 border-indigo-500 z-50 font-bold"
+                  : null
+              } mb-[-2px] p-2 text-xs transition-all duration-200`}
+            >
+              Use Stock Image
+            </button>
+          </div>
+          <div className="flex flex-col p-2 border-2 border-indigo-500 mb-8">
+            {imageInsertType === "upload" ?
+            <>
+              <label
+                className="text-xs uppercase text-gray-700 font-bold"
+                htmlFor="img"
+              >
+                Upload {type} image:
+              </label>
+              <input
+                className="p-4 mb-4 rounded border-2 mt-2 file:px-4 file:py-2 file:transition-all file:duration-500 file:me-4 file:cursor-pointer"
+                {...register("img")}
+                id="img"
+                name="img"
+                type="file"
+              />
+            </>
+            : imageInsertType === "unsplash" ?
+          <UnsplashImgSearch
+            onSelectImage={handleImageSelect}
+            images={images}
+            setImages={setImages}
+            imageConfirm={imageConfirm}
+          /> : null
+            }
+          </div>
 
           <input
             className="cursor-pointer inline-flex items-center rounded-full px-9 py-3 text-xl font-semibold text-indigo-500 hover:text-white border-2 border-indigo-500 hover:bg-indigo-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-75 hover:bg-indigo-500 duration-300"

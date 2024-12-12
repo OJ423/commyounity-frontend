@@ -29,7 +29,7 @@ export default function UserCommunities() {
       fetchData();
     };
     fetchData();
-  }, [communities]);
+  }, []);
 
   return (
     <>

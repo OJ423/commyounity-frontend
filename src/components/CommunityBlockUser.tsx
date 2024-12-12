@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { blockUser } from "@/utils/apiCalls";
 
 interface CommunityBlockUserProps {
-  community_id: number;
+  community_id: string;
   username: string;
   handleDisplayForm: () => void;
   invalidTokenResponse: () => void;

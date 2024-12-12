@@ -1,25 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAuth } from "./context/AuthContext";
 import { LogInInputs } from "@/utils/customTypes";
-import { getUserPostLikes, logUserIn } from "@/utils/apiCalls";
+import {  logUserIn } from "@/utils/apiCalls";
+import { usePathname } from "next/navigation";
 
 export default function LoginForm() {
-  const { setToken, setUser, setCommunities, setAdminCommunities, setUserPostLikes } = useAuth();
   const [loginErr, setLoginErr] = useState<string | null>(null);
   const [loggingIn, setLoggingIn] = useState<boolean>(false)
-  const router = useRouter();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LogInInputs>();
-
-  
 
   const onSubmit: SubmitHandler<LogInInputs> = async (data) => {
     try {
@@ -46,15 +40,15 @@ export default function LoginForm() {
         <input
           className="p-4 mb-4 rounded"
           placeholder="Email address"
-          {...register("user_email", {
+          {...register("email", {
             required: "Email or Username is required",
             pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
           })}
-          id="user_email"
-          name="user_email"
-          autoComplete="user_email"
+          id="email"
+          name="email"
+          autoComplete="email"
           />
-        {errors.user_email && (
+        {errors.email && (
           <span className="mb-4 text-rose-600 text-xs font-bold">
             Correct email format is required
           </span>

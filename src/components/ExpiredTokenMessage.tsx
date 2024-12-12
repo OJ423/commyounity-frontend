@@ -34,20 +34,14 @@ export default function ExpiredTokenMessage() {
   return (
     <section className="max-w-screen-sm my-10 p-4 flex flex-col gap-4 justify center">
       <h2 className="font-bold text-3xl">Hmmm, something is amiss</h2>
-      <p className="font-medium md:text-lg">It seems that this could be one of a number of things.</p>
+      <p className="font-medium md:text-lg">It seems that this could be one of a couple of things.</p>
       <ol className="ps-4 font-medium md:text-lg">
         <li className="list-decimal pb-4">
           You&apos;ve been away from the app for a while so your security token
           has expired. In which case, you need to login again.
         </li>
         <li className="list-decimal pb-4">
-          You haven&apos;t verified your email address when you signed up so you
-          do not have full access yet. Fear not, click on the link below to
-          validate your account.
-        </li>
-        <li className="list-decimal pb-4">
-          You are a scammer, in which case, please take a look at your life and
-          question why you make these decisions? You are better than this.
+          You are trying to access a page that requires you to be a Commyounity member.
         </li>
       </ol>
       <div className="flex gap-8 me-auto">
@@ -55,14 +49,8 @@ export default function ExpiredTokenMessage() {
           href="/login"
           className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
         >
-          <span>Login</span>
-        </Link>
-        <Link
-          href="/reverify"
-          className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
-        >
-          <span>Verify Email</span>
-        </Link>    
+          <span>Login or Register</span>
+        </Link>   
       </div>
     </section>
   );
