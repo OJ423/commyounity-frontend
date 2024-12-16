@@ -52,6 +52,7 @@ export default function ChurchPage() {
         setChurchData(data.church);
         setPostData(data.posts);
         setToken(data.token);
+        localStorage.setItem("token", data.token)
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.churches.some(
             (c) => c.church_id === data.church.church_id

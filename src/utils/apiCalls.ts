@@ -20,6 +20,7 @@ import {
   PostData,
   RegistrationInputs,
 } from "./customTypes";
+
 import { headers } from "next/headers";
 
 const instance = axios.create({
@@ -28,9 +29,12 @@ const instance = axios.create({
 
 // COMMUNITY CALLS
 
-export async function getCommunities() {
+export async function getCommunities(token: string | null) {
   try {
-    const response = await instance.get("communities");
+    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    const response = await instance.get("communities", {
+      headers
+    });
     return response.data;
   } catch (error: any) {
     console.error("Error logging in:", error);
@@ -38,10 +42,13 @@ export async function getCommunities() {
   }
 }
 
-export async function getCommunityById(community_id: string | null) {
+export async function getCommunityById(community_id: string | null, token: string | null) {
   if (community_id) {
     try {
-      const response = await instance.get(`communities/${community_id}`);
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const response = await instance.get(`communities/${community_id}`, {
+        headers
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -464,10 +471,13 @@ export async function leaveUser(
 
 // GET COMMUNITY GROUPS ETC
 
-export async function getCommunityGroups(community_id: string | null) {
+export async function getCommunityGroups(community_id: string | null, token: string | null) {
   if (community_id) {
     try {
-      const response = await instance.get(`communities/${community_id}/groups`);
+      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
+      const response = await instance.get(`communities/${community_id}/groups`, {
+        headers
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -476,12 +486,13 @@ export async function getCommunityGroups(community_id: string | null) {
   }
 }
 
-export async function getCommunityChurches(community_id: string | null) {
+export async function getCommunityChurches(community_id: string | null, token: string | null) {
   if (community_id) {
     try {
-      const response = await instance.get(
-        `communities/${community_id}/churches`
-      );
+      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
+      const response = await instance.get(`communities/${community_id}/churches`, {
+        headers
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -490,12 +501,13 @@ export async function getCommunityChurches(community_id: string | null) {
   }
 }
 
-export async function getCommunityBusinesses(community_id: string | null) {
+export async function getCommunityBusinesses(community_id: string | null, token: string | null) {
   if (community_id) {
     try {
-      const response = await instance.get(
-        `communities/${community_id}/businesses`
-      );
+      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
+      const response = await instance.get(`communities/${community_id}/businesses`, {
+        headers
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -504,12 +516,13 @@ export async function getCommunityBusinesses(community_id: string | null) {
   }
 }
 
-export async function getCommunitySchools(community_id: string | undefined) {
+export async function getCommunitySchools(community_id: string | undefined, token: string | null) {
   if (community_id) {
     try {
-      const response = await instance.get(
-        `communities/${community_id}/schools`
-      );
+      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
+      const response = await instance.get(`communities/${community_id}/schools`, {
+        headers
+      });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);

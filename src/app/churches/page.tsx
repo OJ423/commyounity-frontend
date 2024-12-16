@@ -10,31 +10,62 @@ import { useAuth } from "@/components/context/AuthContext";
 import { getCommunityChurches } from "@/utils/apiCalls";
 import { CardData } from "@/utils/customTypes";
 import { transformChurchData } from "@/utils/dataTransformers";
+import { LogUserOut } from "@/utils/logOut";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Churches() {
-  const { selectedCommunity, communities } = useAuth();
+  const {
+    selectedCommunity,
+    communities,
+    setToken,
+    setUser,
+    setCommunities,
+    setSelectedCommunity,
+    setUserMemberships,
+    setUserAdmins,
+    setUserPostLikes,
+    setAdminCommunities,
+  } = useAuth();
   const [churchData, setChurchData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!selectedCommunity) {
+    const localSelectedComm = localStorage.getItem("selectedCommunity")
+    if (!localSelectedComm) {
       return;
     }
     const fetchData = async () => {
       try {
+        const parsedComm = JSON.parse(localSelectedComm)
+        const localToken = localStorage.getItem("token")
         const data = await getCommunityChurches(
-          String(selectedCommunity?.community_id)
+          parsedComm.community_id, localToken
         );
         const communityExists = communities.some(
           (community) =>
-            community.community_id === selectedCommunity.community_id
+            community.community_id === parsedComm.community_id
         );
         if (communityExists) {
           setCommunityMember(true);
+        }
+        if (data.token) {
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+        }
+        if (data.token === null) {
+          LogUserOut({
+            setToken,
+            setUser,
+            setCommunities,
+            setSelectedCommunity,
+            setUserMemberships,
+            setUserAdmins,
+            setUserPostLikes,
+            setAdminCommunities,
+          });
         }
         const churches: CardData[] = await transformChurchData(data.churches);
         setChurchData(churches);
@@ -44,7 +75,7 @@ export default function Churches() {
       }
     };
     fetchData();
-  }, [selectedCommunity, communities]);
+  }, []);
 
   return (
     <>

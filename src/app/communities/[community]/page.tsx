@@ -49,7 +49,6 @@ export default function CommunityPage() {
 
   const {
     user,
-    token,
     communities,
     selectedCommunity,
     adminCommunities,
@@ -113,7 +112,24 @@ export default function CommunityPage() {
     }
     const fetchData = async () => {
       try {
-        const data = await getCommunityById(community_id);
+        const localToken = localStorage.getItem("token")
+        const data = await getCommunityById(community_id, localToken);
+        if (data.token) {
+          setToken(data.token)
+          localStorage.setItem("token", data.token)
+        }
+        if (data.token === null) {
+          LogUserOut({
+            setToken,
+            setUser,
+            setCommunities,
+            setSelectedCommunity,
+            setUserMemberships,
+            setUserAdmins,
+            setUserPostLikes,
+            setAdminCommunities
+          })
+        }
         if (community_id) {
           const communityExists = communities.some(
             (community) => community.community_id === community_id
@@ -145,7 +161,7 @@ export default function CommunityPage() {
       }
     };
     fetchData();
-  }, [community_id, adminCommunities, communities, token]);
+  }, []);
 
   return (
     <>

@@ -10,29 +10,58 @@ import { useAuth } from "@/components/context/AuthContext";
 import { getCommunityGroups } from "@/utils/apiCalls";
 import { CardData } from "@/utils/customTypes";
 import { transformGroupData } from "@/utils/dataTransformers";
+import { LogUserOut } from "@/utils/logOut";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Groups() {
-  const { selectedCommunity, communities } = useAuth();
+  const {
+    selectedCommunity,
+    communities,
+    setToken,
+    setUser,
+    setCommunities,
+    setSelectedCommunity,
+    setUserMemberships,
+    setUserAdmins,
+    setUserPostLikes,
+    setAdminCommunities,
+  } = useAuth();
   const [groupData, setGroupData] = useState<CardData[] | []>([]);
   const [communityMember, setCommunityMember] = useState<boolean>(false);
   const [owner, setOwner] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  
   useEffect(() => {
-    if (!selectedCommunity) {
+    const localSelectedComm = localStorage.getItem("selectedCommunity")
+    if (!localSelectedComm) {
       return;
     }
     const fetchData = async () => {
       try {
-        const data = await getCommunityGroups(
-          String(selectedCommunity?.community_id)
-        );
+        const parsedComm = JSON.parse(localSelectedComm)
+        const localToken = localStorage.getItem("token")
+        const data = await getCommunityGroups(parsedComm?.community_id, localToken)
+        if (data.token) {
+          setToken(data.token);
+          localStorage.setItem("token", data.token);
+        }
+        if (data.token === null) {
+          LogUserOut({
+            setToken,
+            setUser,
+            setCommunities,
+            setSelectedCommunity,
+            setUserMemberships,
+            setUserAdmins,
+            setUserPostLikes,
+            setAdminCommunities,
+          });
+        }
         const communityExists = communities.some(
           (community) =>
-            community.community_id === selectedCommunity.community_id
+            community.community_id === parsedComm.community_id
         );
         if (communityExists) {
           setCommunityMember(true);
@@ -45,7 +74,7 @@ export default function Groups() {
       }
     };
     fetchData();
-  }, [selectedCommunity, communities]);
+  }, []);
 
   return (
     <>

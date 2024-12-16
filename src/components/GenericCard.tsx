@@ -16,7 +16,7 @@ const GenericCard: React.FC<ListProps> = ({
   owner,
 }) => {
   return (
-    <section className="rounded bg-gray-200 pb-4 shadow-xl flex flex-col justify-between">
+    <section className="rounded bg-gray-200 pb-4 shadow-xl flex flex-col">
       {data.img ? (
         <Image
           src={data.img}
