@@ -56,9 +56,9 @@ export default function NavBar() {
           <Image 
             src="/Commyounity.svg"
             alt="Commyounity Logo"
-            className='w-40 md:w-60'
-            width={250}
-            height={12}
+            className='w-18 h-auto'
+            width={150}
+            height={75}
             priority
             style={{height:'auto'}}
           />
@@ -118,9 +118,19 @@ export default function NavBar() {
           </li>
           </>
           :
+          <>
+          <p className="text-xs uppercase font-light mt-8 text-gray-500">You</p>
+          {user && 
+          <Link href="/profile">
+            <li onClick={handleMenuOpen} className={`${pathname.includes('/profile') ? 'text-indigo-500' : 'text-auto'} list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all`}>
+              Profile
+            </li>
+          </Link>
+          }
           <li onClick={handleLogOut} className="list-style-none font-bold text-lg mb-4 flex gap-4 justify-start items-center cursor-pointer hover:text-gray-400 duration-500 ease-out transition-all">
               Logout
           </li>
+          </>
           }
         </ul>
       </section>

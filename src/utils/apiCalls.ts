@@ -11,6 +11,7 @@ import {
   LogInInputs,
   NewBusinessData,
   NewChurchData,
+  NewCommunity,
   NewGroupData,
   NewPostData,
   NewSchoolData,
@@ -29,11 +30,11 @@ const instance = axios.create({
 
 // COMMUNITY CALLS
 
-export async function getCommunities(token: string | null) {
+export async function getCommunities(token: string | null, limit: number) {
   try {
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    const response = await instance.get("communities", {
-      headers
+    const response = await instance.get(`communities?limit=${limit}`, {
+      headers,
     });
     return response.data;
   } catch (error: any) {
@@ -42,18 +43,50 @@ export async function getCommunities(token: string | null) {
   }
 }
 
-export async function getCommunityById(community_id: string | null, token: string | null) {
+export async function getCommunityById(
+  community_id: string | null,
+  token: string | null
+) {
   if (community_id) {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
       const response = await instance.get(`communities/${community_id}`, {
-        headers
+        headers,
       });
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
       throw error;
     }
+  }
+}
+
+export async function fetchUserCommunities(token:string | null) {
+  try {
+    const response = await instance.get("/users/communities", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data
+  }
+  catch(error:any) {
+    console.log(error);
+    throw error
+  }
+}
+
+export async function postCommunity(body: NewCommunity, token: string | null) {
+  try {
+    const response = await instance.post("/communities/", body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    throw error;
   }
 }
 
@@ -64,11 +97,15 @@ export async function patchCommunity(
   body: Community | CommunityImg
 ) {
   try {
-    const response = await instance.patch(`communities/edit/${community_id}/${user_id}`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await instance.patch(
+      `communities/edit/${community_id}/${user_id}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error patching community:", error);
@@ -76,123 +113,164 @@ export async function patchCommunity(
   }
 }
 
-export async function getCommunityMembers(token: string | null, community_id: string) {
+export async function getCommunityMembers(
+  token: string | null,
+  community_id: string
+) {
   try {
     const response = await instance.get(`communities/members/${community_id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return response.data
-  }
-  catch(error:any) {
-    console.error("Error getting community members", error)
-    throw error
-  }
-}
-
-export async function blockUser(community_id: string, token: string | null, body: BlockUser) {
-  try{
-    const response = await instance.post(`communities/members/block/${community_id}`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
-  }
-  catch(error:any) {
-    console.error("Error blocking user", error)
-    throw error
-  }
-}
-
-export async function unblockUser(community_id: string, blockedUserId: string, token: string | null) {
-  try{
-    const response = await instance.delete(`communities/members/unblock/${community_id}/${blockedUserId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return response.data;
-  }
-  catch(error:any) {
-    console.error("Error blocking user", error)
-    throw error
+  } catch (error: any) {
+    console.error("Error getting community members", error);
+    throw error;
   }
 }
 
-export async function getBlockedUsers(community_id: string, token: string | null) {
+export async function blockUser(
+  community_id: string,
+  token: string | null,
+  body: BlockUser
+) {
   try {
-    const response = await instance.get(`communities/members/blocked/${community_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await instance.post(
+      `communities/members/block/${community_id}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
-    return response.data
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error blocking user", error);
+    throw error;
   }
-  catch (error:any) {
+}
+
+export async function unblockUser(
+  community_id: string,
+  blockedUserId: string,
+  token: string | null
+) {
+  try {
+    const response = await instance.delete(
+      `communities/members/unblock/${community_id}/${blockedUserId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error blocking user", error);
+    throw error;
+  }
+}
+
+export async function getBlockedUsers(
+  community_id: string,
+  token: string | null
+) {
+  try {
+    const response = await instance.get(
+      `communities/members/blocked/${community_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
     console.error("Error fetching blocked users:", error);
     throw error;
   }
 }
 
-export async function getCommunityAdmins(community_id: string, token: string | null) {
+export async function getCommunityAdmins(
+  community_id: string,
+  token: string | null
+) {
   try {
     const response = await instance.get(`communities/owners/${community_id}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return response.data
-  }
-  catch(error:any) {
-    console.error("Error getting community admins:", error)
+    return response.data;
+  } catch (error: any) {
+    console.error("Error getting community admins:", error);
     throw error;
   }
 }
 
-export async function postCommunityAdmin(community_id:string, token: string | null, body:any) {
+export async function postCommunityAdmin(
+  community_id: string,
+  token: string | null,
+  body: any
+) {
   try {
-    const response = await instance.post(`communities/owners/new/${community_id}`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await instance.post(
+      `communities/owners/new/${community_id}`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    );
     return response.data;
-  }
-  catch(error:any) {
+  } catch (error: any) {
     console.error("Error adding administrator", error);
     throw error;
   }
 }
 
-export async function postCommunityAdminById(token: string | null, body:PostAdminById) {
+export async function postCommunityAdminById(
+  token: string | null,
+  body: PostAdminById
+) {
   try {
-    const response = await instance.post(`communities/owners/new/byuserid`, body, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await instance.post(
+      `communities/owners/new/byuserid`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    );
     return response.data;
-  }
-  catch(error:any) {
+  } catch (error: any) {
     console.error("Error adding administrator", error);
     throw error;
   }
 }
 
-export async function removeCommunityAdmin(token: string | null, community_id: string, user_id: string) {
+export async function removeCommunityAdmin(
+  token: string | null,
+  community_id: string,
+  user_id: string
+) {
   try {
-    const response = await instance.delete(`communities/owners/remove/${community_id}/${user_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await instance.delete(
+      `communities/owners/remove/${community_id}/${user_id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
-    return response.data
-  }
-  catch(error:any) {
-    console.error("Error removing admin:", error)
-    throw error
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error removing admin:", error);
+    throw error;
   }
 }
 
@@ -200,8 +278,8 @@ export async function removeCommunityAdmin(token: string | null, community_id: s
 
 export async function logUserIn(body: LogInInputs) {
   const updatedBody = {
-    user_email: body.email
-  }
+    user_email: body.email,
+  };
   try {
     const response = await instance.post("users/login", updatedBody);
     return response.data;
@@ -214,7 +292,7 @@ export async function logUserIn(body: LogInInputs) {
 export async function confirmLogin(token: string) {
   try {
     const response = await instance.get(`users/login/confirm?token=${token}`);
-    return response.data
+    return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
     throw error;
@@ -471,13 +549,19 @@ export async function leaveUser(
 
 // GET COMMUNITY GROUPS ETC
 
-export async function getCommunityGroups(community_id: string | null, token: string | null) {
+export async function getCommunityGroups(
+  community_id: string | null,
+  token: string | null
+) {
   if (community_id) {
     try {
-      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
-      const response = await instance.get(`communities/${community_id}/groups`, {
-        headers
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const response = await instance.get(
+        `communities/${community_id}/groups`,
+        {
+          headers,
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -486,13 +570,19 @@ export async function getCommunityGroups(community_id: string | null, token: str
   }
 }
 
-export async function getCommunityChurches(community_id: string | null, token: string | null) {
+export async function getCommunityChurches(
+  community_id: string | null,
+  token: string | null
+) {
   if (community_id) {
     try {
-      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
-      const response = await instance.get(`communities/${community_id}/churches`, {
-        headers
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const response = await instance.get(
+        `communities/${community_id}/churches`,
+        {
+          headers,
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -501,13 +591,19 @@ export async function getCommunityChurches(community_id: string | null, token: s
   }
 }
 
-export async function getCommunityBusinesses(community_id: string | null, token: string | null) {
+export async function getCommunityBusinesses(
+  community_id: string | null,
+  token: string | null
+) {
   if (community_id) {
     try {
-      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
-      const response = await instance.get(`communities/${community_id}/businesses`, {
-        headers
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const response = await instance.get(
+        `communities/${community_id}/businesses`,
+        {
+          headers,
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -516,13 +612,19 @@ export async function getCommunityBusinesses(community_id: string | null, token:
   }
 }
 
-export async function getCommunitySchools(community_id: string | undefined, token: string | null) {
+export async function getCommunitySchools(
+  community_id: string | undefined,
+  token: string | null
+) {
   if (community_id) {
     try {
-      const headers = token ? {Authorization: `Bearer ${token}`} : undefined;
-      const response = await instance.get(`communities/${community_id}/schools`, {
-        headers
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+      const response = await instance.get(
+        `communities/${community_id}/schools`,
+        {
+          headers,
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error("Error logging in:", error);
@@ -533,7 +635,10 @@ export async function getCommunitySchools(community_id: string | undefined, toke
 
 // GET GROUP ETC PROFILES
 
-export async function getGroupById(group_id: string | null, token:string | null) {
+export async function getGroupById(
+  group_id: string | null,
+  token: string | null
+) {
   if (group_id) {
     try {
       const response = await instance.get(`groups/${group_id}`, {
@@ -549,7 +654,10 @@ export async function getGroupById(group_id: string | null, token:string | null)
   }
 }
 
-export async function getChurchById(church_id: string | null, token: string | null) {
+export async function getChurchById(
+  church_id: string | null,
+  token: string | null
+) {
   if (church_id) {
     try {
       const response = await instance.get(`churches/${church_id}`, {
@@ -565,7 +673,10 @@ export async function getChurchById(church_id: string | null, token: string | nu
   }
 }
 
-export async function getBusinessById(business_id: string | null, token:string | null) {
+export async function getBusinessById(
+  business_id: string | null,
+  token: string | null
+) {
   if (business_id) {
     try {
       const response = await instance.get(`businesses/${business_id}`, {
@@ -616,15 +727,11 @@ export async function addNewEntity(
 
   if (body) {
     try {
-      const response = await instance.post(
-        `${urlParam}`,
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await instance.post(`${urlParam}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return response.data;
     } catch (error: any) {
@@ -654,15 +761,11 @@ export async function patchEntity(
 
   if (body) {
     try {
-      const response = await instance.patch(
-        `${urlParam}`,
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await instance.patch(`${urlParam}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return response.data;
     } catch (error: any) {
@@ -700,14 +803,11 @@ export async function patchEntityImg(
 
   if (body) {
     try {
-      const response = await instance.patch(
-        `${urlParam}`, body,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await instance.patch(`${urlParam}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return response.data;
     } catch (error: any) {
@@ -730,14 +830,11 @@ export async function deleteEntity(
   if (type === "school") urlParam = `schools/delete/${id}`;
 
   try {
-    const response = await instance.delete(
-      `${urlParam}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await instance.delete(`${urlParam}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error: any) {
     console.error(`Error adding ${type}`, error);
@@ -785,15 +882,19 @@ export async function addPost(
   }
 }
 
-export async function editPost(token: string | null, post_id: string, body: NewPostData) {
+export async function editPost(
+  token: string | null,
+  post_id: string,
+  body: NewPostData
+) {
   try {
     const response = await instance.patch(`posts/edit/${post_id}`, body, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    return response.data
-  } catch (error:any) {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
     console.log("Error editing post", error);
     throw error;
   }
@@ -905,7 +1006,11 @@ export async function editComment(
   }
 }
 
-export async function deleteComment(token: string | null, comment_id: string, post_id: string) {
+export async function deleteComment(
+  token: string | null,
+  comment_id: string,
+  post_id: string
+) {
   try {
     const response = await instance.delete(
       `posts/comment/delete/${comment_id}/${post_id}`,
@@ -929,14 +1034,17 @@ export async function getUsersCommunityPosts(
   filter: string | null
 ) {
   try {
-    const response = await instance.get(`posts/user/${community_id}?limit=${limit}`, {
-      params: {
-        filter: filter,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await instance.get(
+      `posts/user/${community_id}?limit=${limit}`,
+      {
+        params: {
+          filter: filter,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error log in:", error);
@@ -963,7 +1071,7 @@ export async function uploadFile(formData: any, token: string | null) {
 
 // School Parent Management
 
-export async function getSchoolParents(token: string | null, schoolId: number) {
+export async function getSchoolParents(token: string | null, schoolId: string) {
   try {
     const response = await instance.get(`schools/parents/${schoolId}`, {
       headers: {
@@ -983,7 +1091,7 @@ interface AddParentBody {
 
 export async function addNewParent(
   token: string | null,
-  schoolId: number,
+  schoolId: string,
   body: AddParentBody
 ) {
   try {

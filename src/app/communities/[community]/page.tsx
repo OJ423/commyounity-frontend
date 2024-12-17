@@ -291,7 +291,7 @@ export default function CommunityPage() {
                       <CommunityEditForm
                         community={communityData}
                         owner={owner}
-                        user_id={Number(user?.user_id)}
+                        user_id={user?.user_id}
                         handleDisplayForm={handleShowForm}
                         invalidTokenResponse={invalidTokenResponse}
                       />

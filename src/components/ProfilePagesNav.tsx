@@ -149,7 +149,7 @@ export default function ProfilePagesNav() {
             <Image
               src="/Commyounity.svg"
               alt="Commyounity Logo"
-              className="w-40 md:w-60"
+              className="w-40 mb-8"
               width={250}
               height={12}
               priority

@@ -48,6 +48,8 @@ const NewGroupForm: React.FC<NewGroupFormProps> = ({ type }) => {
     setImageInsertType("unsplash")
   };
 
+  
+
 
 
   // Unsplash Search States & Funcs

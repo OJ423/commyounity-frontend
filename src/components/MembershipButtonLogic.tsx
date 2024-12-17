@@ -157,13 +157,12 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   async function handleLeave() {
     try {
       if (user && selectedCommunity) {
-        const deleteCall = await leaveUser(
+        await leaveUser(
           user.user_id,
           String(id),
           type,
           token
         );
-        deleteCall()
         await setMemberships(
           String(selectedCommunity?.community_id),
           token

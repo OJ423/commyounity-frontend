@@ -89,13 +89,15 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     router.push("/login");
   };
 
+  console.log(selectedImage)
+
   const onSubmit: SubmitHandler<NewPostData> = async (data) => {
     try {
       let imageUrl: string = "";
       if (selectedImage.length > 0) {
         imageUrl = selectedImage;
       }
-      if (data.post_img) {
+      if (data.post_img && data.post_img.length) {
         imageUrl = await handleUpload(
           data.post_img[0],
           token,
@@ -146,6 +148,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
         web_title: "",
       });
       setImageConfirm("");
+      setSelectedImage("")
     }
   }, [formState, reset]);
 

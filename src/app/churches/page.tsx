@@ -75,7 +75,7 @@ export default function Churches() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedCommunity, communities]);
 
   return (
     <>

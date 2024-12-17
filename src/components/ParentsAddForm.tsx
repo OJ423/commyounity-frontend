@@ -5,7 +5,7 @@ import { addNewParent } from "@/utils/apiCalls";
 import { useEffect, useState } from "react";
 
 interface ParentAddFormProps {
-  id: number;
+  id: string;
   invalidTokenResponse: () => void;
   updateToken: (token: string) => void;
   userToken: string | null;

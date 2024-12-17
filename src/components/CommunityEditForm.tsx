@@ -12,7 +12,7 @@ import { patchCommunity } from "@/utils/apiCalls";
 interface CommunityEditFormProps {
   community: Community;
   owner: boolean;
-  user_id: number | undefined;
+  user_id: string | undefined;
   handleDisplayForm: (value:string) => void;
   invalidTokenResponse: () => void;
 }

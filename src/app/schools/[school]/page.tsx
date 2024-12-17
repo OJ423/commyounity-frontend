@@ -122,7 +122,7 @@ export default function SchoolPage() {
         ) {
           const fetchBackUp = async () => {
             const backUpSchoolArr = await getCommunitySchools(
-              selectedCommunity?.community_id
+              selectedCommunity?.community_id, localToken
             );
             const transformedData = await transformSchoolData(
               backUpSchoolArr.schools

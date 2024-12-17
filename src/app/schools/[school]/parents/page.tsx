@@ -59,7 +59,7 @@ export default function SchoolParents() {
     if (localUserAdmins) {
       const parsedUserAdmins = JSON.parse(localUserAdmins);
       const checkAdmin = parsedUserAdmins.schools.some(
-        (s: any) => +s.school_id === +schoolParam
+        (s: any) => s.school_id === schoolParam
       );
       if (checkAdmin) {
         setAdminCheck(true);
@@ -86,7 +86,7 @@ export default function SchoolParents() {
     // Get parent data
     const fetchParentData = async () => {
       try {
-        const data = await getSchoolParents(localToken, +schoolParam);
+        const data = await getSchoolParents(localToken, schoolParam);
         setParents(data.parents);
         updateToken(data.token);
       } catch (error: any) {
@@ -105,7 +105,7 @@ export default function SchoolParents() {
   return (
     <>
       <Header />
-      <main className="flex flex-col items-center justify-center my-10 md:my-20 max-w-screen-xl mx-auto px-4">
+      <main className="flex flex-col items-center justify-center my-10 max-w-screen-xl mx-auto px-4">
         <button
           className="transition-all duration-500 font-bold text-indigo-500 hover:text-indigo-300 w-full text-left mb-8"
           onClick={() => router.back()}>
@@ -124,7 +124,7 @@ export default function SchoolParents() {
                     invalidTokenResponse={invalidTokenResponse}
                     updateToken={updateToken}
                     userToken={token}
-                    schoolId={+schoolParam}
+                    schoolId={schoolParam}
                     key={parent.school_parent_junction_id}
                   />
                 ))}
@@ -132,7 +132,7 @@ export default function SchoolParents() {
               <div className="lg:col-span-1 flex flex-col gap-8">
                 <h2 className="font-semibold text-lg">Add a parent</h2>
                 <p>{`Add the parent's email address. They must already be registered on Commyounity to successfully add them as a parent.`}</p>
-                <ParentAddForm id={+schoolParam} invalidTokenResponse={invalidTokenResponse} updateToken={updateToken} userToken={token} />
+                <ParentAddForm id={schoolParam} invalidTokenResponse={invalidTokenResponse} updateToken={updateToken} userToken={token} />
               </div>
             </section>
           </>

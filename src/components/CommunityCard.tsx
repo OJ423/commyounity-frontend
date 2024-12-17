@@ -39,6 +39,7 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
 
   return (
     <section className="rounded bg-gray-200 shadow-lg">
+      {community.community_img ?
       <Image
         src={community.community_img}
         width={200}
@@ -48,6 +49,17 @@ const CommunityCard: React.FC<ListProps> = ({ community }) => {
         alt={`${community.community_name} community image`}
         className="w-full h-60 object-cover rounded-t mb-4"
       />
+      : 
+      <Image
+        src="/community-img-placeholder.jpg"
+        width={200}
+        height={100}
+        quality={60}
+        priority
+        alt={`${community.community_name} community image`}
+        className="w-full h-60 object-cover rounded-t mb-4"
+      />
+      }
 
       <h3 className="font-semibold px-2 text-lg pb-4">
         {community.community_name}

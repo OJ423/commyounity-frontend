@@ -15,9 +15,9 @@ export default function Header() {
           <Image 
             src="/Commyounity.svg"
             alt="Commyounity Logo"
-            className='w-40 md:w-60'
+            className='w-40'
             width={250}
-            height={12}
+            height={125}
             priority
             style={{height:'auto'}}
           />

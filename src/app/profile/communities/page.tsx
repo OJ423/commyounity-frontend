@@ -11,14 +11,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function UserCommunities() {
-  const { user, communities } = useAuth();
+  const { token, user, communities } = useAuth();
+  const [limit, setLimit] = useState<number>(6);
+
+  function handleLimit() {
+    setLimit((currentLimit) => currentLimit + 6);
+  }
 
   const [userCommunities, setUserCommunities] = useState<Community[] | []>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getCommunities();
+        const data = await getCommunities(token, limit);
         const communityMemberships = data.communities.filter((c: Community) =>
           communities.some((uc) => uc.community_id === c.community_id)
         );
@@ -26,10 +31,9 @@ export default function UserCommunities() {
       } catch (error: any) {
         console.log(error.message);
       }
-      fetchData();
     };
     fetchData();
-  }, []);
+  }, [limit, communities, token]);
 
   return (
     <>
@@ -48,6 +52,14 @@ export default function UserCommunities() {
                     with your fellow comm-you-nity members..
                   </p>
                 </div>
+                {userCommunities.length < limit ? null : (
+                  <button
+                    onClick={handleLimit}
+                    className="text-xs w-max border-solid border-4 border-black py-4 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
+                  >
+                    Load more
+                  </button>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
                   {userCommunities.map((community: Community) => (
                     <CommunityCard

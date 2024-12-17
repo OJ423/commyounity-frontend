@@ -41,7 +41,7 @@ const UnsplashImgSearch: React.FC<UnsplashImgSearchProps> = ({
         <p className="text-green-500 font-bold">{imageConfirm}</p>
       ) : (
         <>
-          <h2 className="font-bold mb-4">Choose an image</h2>
+          <h2 className="text-xs uppercase text-gray-700 font-bold mt-4">Choose an image</h2>
             <input
               type="text"
               value={query}

@@ -17,7 +17,7 @@ export default function Footer() {
   return (
     <footer className="w-screen pt-20 bg-gray-200 flex flex-col items-center justify-center">
       <section className="box-sizing grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 px-8 md:px-24 items-center">
-        <div>
+        <div className="mx-auto">
           <h2 className="font-bold text-2xl mb-4">Comm-you-nity</h2>
           <p className="font-light">
             Connecting all that is good in the community without using your
@@ -91,7 +91,7 @@ export default function Footer() {
             <Image
               src="/Commyounity.svg"
               alt="Commyounity Logo"
-              className="w-40 md:w-60"
+              className="w-40 md:w-60 mx-auto"
               width={250}
               height={12}
               priority
@@ -101,7 +101,7 @@ export default function Footer() {
         )}
       </section>
       <section className="mt-20 py-8 bg-gray-300 flex items-center justify-center w-[100%] box-sizing">
-        <p className="font-bold text-sm">© 2024 Copyright: Commyounity</p>
+        <p className="font-bold text-sm">© {new Date().getFullYear()} Copyright: Commyounity</p>
       </section>
     </footer>
   );

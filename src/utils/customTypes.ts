@@ -4,12 +4,18 @@ export interface Community {
   created_date: string;
   community_name: string;
   community_description: string;
-  community_img: string;
+  community_img: any;
   member_count: string;
   group_count: string;
   school_count: string;
   church_count: string;
   business_count: string;
+}
+
+export interface NewCommunity {
+  community_name: string;
+  community_description: string;
+  community_img: any;
 }
 export interface CommunityProfile {
   community_id: string;

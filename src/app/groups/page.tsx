@@ -74,7 +74,7 @@ export default function Groups() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedCommunity, communities]);
 
   return (
     <>
