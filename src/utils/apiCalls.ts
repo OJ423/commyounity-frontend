@@ -358,6 +358,21 @@ export async function deleteUser(
   }
 }
 
+export async function getUserBio(username: string, token: string | null) {
+  try {
+    const response = await instance.get(`/users/userbio/${username}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    return response.data;
+  }
+  catch (error:any) {
+    console.log("Error fetching user bio", error);
+    throw error;
+  }
+}
+
 // Admin Users for Entities
 
 export async function getEntityAdmins(

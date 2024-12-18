@@ -16,6 +16,7 @@ import { LogUserOut } from "@/utils/logOut";
 import ReactPlayer from "react-player";
 import PostEditButton from "./PostEditButton";
 import { MdDelete } from "react-icons/md";
+import UserBio from "./UserBio";
 
 type PostCardProps = {
   data: PostData | TimelinePosts;
@@ -30,6 +31,8 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   const [userLike, setUserLike] = useState<boolean>(false);
   const [deleteCheck, setDeleteCheck] = useState<boolean>(false);
   const [postAuthor, setPostAuthor] = useState<boolean>(false);
+  const [showUserBio, setShowUserBio] = useState<boolean>(false);
+
   const {
     user,
     setUser,
@@ -45,6 +48,12 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   } = useAuth();
 
   const router = useRouter();
+
+  // Toggle Userbio
+
+  const handleShowUserBio = () => {
+    setShowUserBio(!showUserBio);
+  };
 
   useEffect(() => {
     if (userPostLikes) {
@@ -202,13 +211,19 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
             <p className="text-xs font-semibold text-indigo-500 p-2 bg-indigo-100 rounded">
               {formatDate(data.post_date)}
             </p>
+            <p
+              onClick={handleShowUserBio}
+              className="text-xs font-semibold text-indigo-500 p-2 bg-indigo-100 rounded"
+            >
+              {data.username}
+            </p>
           </div>
           <span className="text-sm proper text-gray-400 font-semibold">
-            {data.name ? data.name : null}
-            {data.business_name ? data.business_name : null}
-            {data.church_name ? data.church_name : null}
-            {data.group_name ? data.group_name : null}
-            {data.school_name ? data.school_name : null}
+            {data.name && data.name}
+            {data.business_name && data.business_name}
+            {data.church_name && data.church_name}
+            {data.group_name && data.group_name}
+            {data.school_name && data.school_name}
           </span>
           <h2 className="font-bold text-xl mb-4">{data.post_title}</h2>
           <p className="font-light">{data.post_description}</p>
@@ -356,6 +371,14 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
           ) : null}
         </section>
       </section>
+      {member && (
+        <UserBio
+          username={data.username}
+          handleShowUserBio={handleShowUserBio}
+          showUserBio={showUserBio}
+          member={member}
+        />
+      )}
     </>
   );
 };

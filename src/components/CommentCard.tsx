@@ -10,6 +10,7 @@ import { deleteComment } from "@/utils/apiCalls";
 import { MdDelete } from "react-icons/md";
 import { BsFillReplyFill } from "react-icons/bs";
 import CommentEditButton from "./CommentEditButton";
+import UserBio from "./UserBio";
 
 interface CommentCardProps {
   comment: Comment;
@@ -33,6 +34,13 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const [displayAddComment, setDisplayAddComment] = useState<boolean>(false);
   const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [apiErr, setApiErr] = useState<string | null>(null);
+  const [showUserBio, setShowUserBio] = useState<boolean>(false);
+
+  // Toggle Userbio
+
+  const handleShowUserBio = () => {
+    setShowUserBio(!showUserBio);
+  };
 
   const handleDeleteComment = async (id: string | null) => {
     try {
@@ -121,7 +129,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   </button>
                 ) : null}
                 {comment.user_avatar ? (
-                  <div className="w-12 h-12">
+                  <div onClick={handleShowUserBio} className="w-12 h-12">
                     <Image
                       src={comment.user_avatar}
                       alt={comment.author_name}
@@ -131,7 +139,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                     />
                   </div>
                 ) : null}
-                <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
+                <p onClick={handleShowUserBio} className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
                   {comment.author_name}
                 </p>
               </div>
@@ -161,7 +169,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 ) : null}
                 <div className="flex items-center gap-4">
                   {comment.user_avatar ? (
-                    <div className="w-12 h-12">
+                    <div onClick={handleShowUserBio} className="w-12 h-12">
                       <Image
                         src={comment.user_avatar}
                         alt={comment.author_name}
@@ -172,7 +180,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                       />
                     </div>
                   ) : null}
-                  <p className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
+                  <p onClick={handleShowUserBio} className="font-bold text-sm py-2 px-4 bg-indigo-100 rounded">
                     {comment.author_name}
                   </p>
                 </div>
@@ -241,6 +249,12 @@ const CommentCard: React.FC<CommentCardProps> = ({
           ))}
         </section>
       ) : null}
+        <UserBio
+          username={comment.author_name}
+          handleShowUserBio={handleShowUserBio}
+          showUserBio={showUserBio}
+          member={member}
+        />
     </>
   );
 };

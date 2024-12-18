@@ -179,11 +179,11 @@ export type PostData = {
   post_likes: number;
   comment_count: string;
   name: string;
+  username:string;
 };
 
 export type TimelinePosts = {
   author: string;
-  author_name: string;
   business_id: string | null;
   business_name: string | null;
   church_id: string | null;
@@ -204,6 +204,7 @@ export type TimelinePosts = {
   web_link: string | null;
   web_title: string | null;
   name: string | null;
+  username:string;
 };
 
 export interface Comment {
