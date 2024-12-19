@@ -52,7 +52,7 @@ export default function ChurchPage() {
         setChurchData(data.church);
         setPostData(data.posts);
         setToken(data.token);
-        localStorage.setItem("token", data.token)
+        localStorage.setItem("token", data.token);
         if (userMemberships) {
           const memberCheck = userMemberships?.userMemberships?.churches.some(
             (c) => c.church_id === data.church.church_id
@@ -62,13 +62,15 @@ export default function ChurchPage() {
           }
         }
       } catch (error: any) {
+        const errorMessage = error?.response?.data?.msg;
+
         if (
-          error.response.data.msg === "Authorization header missing" ||
-          error.response.data.msg === "Invalid or expired token"
+          errorMessage === "Authorization header missing" ||
+          errorMessage === "Invalid or expired token"
         ) {
           setAuthErr(true);
         } else {
-          console.log(error.message);
+          console.log(error);
         }
       }
     };

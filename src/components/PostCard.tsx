@@ -218,12 +218,12 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
               {data.username}
             </p>
           </div>
-          <span className="text-sm proper text-gray-400 font-semibold">
-            {data.name && data.name}
-            {data.business_name && data.business_name}
-            {data.church_name && data.church_name}
-            {data.group_name && data.group_name}
-            {data.school_name && data.school_name}
+          <span className="text-sm proper text-gray-400 hover:text-indigo-500 font-semibold transition-all duration-500">
+            {data.name && <Link href={`/groups/${data.group_id}`}>{data.name}</Link>}
+            {data.business_name && <Link href={`/businesses/${data.business_id}`}>{data.business_name}</Link>}
+            {data.church_name && <Link href={`/churches/${data.church_id}`}>{data.church_name}</Link>}
+            {data.group_name && <Link href={`/groups/${data.group_id}`}>{data.group_name}</Link>}
+            {data.school_name && <Link href={`/schools/${data.school_id}`}>{data.school_name}</Link>}
           </span>
           <h2 className="font-bold text-xl mb-4">{data.post_title}</h2>
           <p className="font-light">{data.post_description}</p>
@@ -308,7 +308,13 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
                   aria-label="remove your like from this post"
                   title="Remove Like"
                 />
-                <p className="text-black font-bold text-xs">{postLikes}</p>
+                <p className="text-black font-bold text-sm">
+                  {postLikes > 2
+                    ? `You and ${postLikes - 1} others`
+                    : postLikes === 2
+                    ? `You and 1 other`
+                    : "You like this"}
+                </p>
               </div>
             ) : (
               <div

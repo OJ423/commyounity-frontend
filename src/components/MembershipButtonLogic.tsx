@@ -32,9 +32,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   id,
   showForm,
   setShowForm,
-  handleShowUserAdmins
+  handleShowUserAdmins,
 }) => {
-
   const {
     user,
     setUser,
@@ -48,7 +47,7 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     setToken,
     setUserPostLikes,
     setUserAdmins,
-    setAdminCommunities
+    setAdminCommunities,
   } = useAuth();
 
   const router = useRouter();
@@ -64,37 +63,37 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
       setUserMemberships,
       setUserAdmins,
       setUserPostLikes,
-      setAdminCommunities
+      setAdminCommunities,
     });
     router.push("/login");
   };
 
   async function setMemberships(
-    communityId: string,
+    communityId: string | undefined,
     token: string | null
   ) {
     try {
       if (user) {
-        const memberships = await getUserMemberships(
-          communityId,
-          token
-        );
+        const memberships = await getUserMemberships(communityId, token);
         setUserMemberships(memberships);
         localStorage.setItem("userMemberships", JSON.stringify(memberships));
       }
     } catch (error: any) {
+      const errorMessage = error?.response?.data?.msg;
+
       if (
-        error.response.data.msg === "Authorization header missing" ||
-        error.response.data.msg === "Invalid or expired token"
+        errorMessage === "Authorization header missing" ||
+        errorMessage === "Invalid or expired token"
       ) {
         invalidTokenResponse();
+      } else {
+        console.log(error); 
       }
-      console.log(error);
     }
   }
 
   async function setAdmins(
-    communityId: string,
+    communityId: string | undefined,
     token: string | null
   ) {
     try {
@@ -104,13 +103,16 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
         localStorage.setItem("userAdmins", JSON.stringify(admins));
       }
     } catch (error: any) {
+      const errorMessage = error?.response?.data?.msg;
+
       if (
-        error.response.data.msg === "Authorization header missing" ||
-        error.response.data.msg === "Invalid or expired token"
+        errorMessage === "Authorization header missing" ||
+        errorMessage === "Invalid or expired token"
       ) {
         invalidTokenResponse();
+      } else {
+        console.log(error); 
       }
-      console.log(error);
     }
   }
 
@@ -157,16 +159,8 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
   async function handleLeave() {
     try {
       if (user && selectedCommunity) {
-        await leaveUser(
-          user.user_id,
-          String(id),
-          type,
-          token
-        );
-        await setMemberships(
-          String(selectedCommunity?.community_id),
-          token
-        );
+        await leaveUser(user.user_id, String(id), type, token);
+        await setMemberships(String(selectedCommunity?.community_id), token);
         setMember(false);
       }
     } catch (error: any) {
@@ -202,9 +196,9 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
     if (type === "school") routeToPush = "schools";
     try {
       const deleteRequest = await deleteEntity(type, id, user?.user_id, token);
-      if (user && id && token) {
-        setMemberships(String(id), token);
-        setAdmins(String(id), token);
+      if (id) {
+        setMemberships(selectedCommunity?.community_id, deleteRequest.token);
+        setAdmins(selectedCommunity?.community_id, deleteRequest.token);
         router.push(`/${routeToPush}`);
       }
     } catch (error: any) {
@@ -302,9 +296,9 @@ const MembershipButtonLogic: React.FC<ButtonProps> = ({
                 and comments will be deleted forever!
               </p>
               <div className="flex items-center gap-8">
-              {type === "school" ? (
+                {type === "school" ? (
                   <Link
-                    className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out" 
+                    className="w-max border-solid border-4 border-black py-2 px-3 inline-block rounded-xl uppercase font-semibold hover:bg-indigo-500 hover:border-indigo-500 hover:text-white transition-all duration-500 ease-out"
                     href={`/schools/${id}/parents`}
                   >
                     Parents

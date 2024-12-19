@@ -479,7 +479,7 @@ export async function getUserMemberships(
 }
 
 export async function getUserAdmins(
-  community_id: string,
+  community_id: string | undefined,
   token: string | null
 ) {
   try {

@@ -63,13 +63,15 @@ export default function GroupPage() {
           }
         }
       } catch (error: any) {
+        const errorMessage = error?.response?.data?.msg;
+
         if (
-          error.response.data.msg === "Authorization header missing" ||
-          error.response.data.msg === "Invalid or expired token"
+          errorMessage === "Authorization header missing" ||
+          errorMessage === "Invalid or expired token"
         ) {
           setAuthErr(true);
         } else {
-          console.log(error.message);
+          console.log(error);
         }
       }
     };

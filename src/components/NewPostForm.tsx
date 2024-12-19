@@ -89,8 +89,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
     router.push("/login");
   };
 
-  console.log(selectedImage)
-
   const onSubmit: SubmitHandler<NewPostData> = async (data) => {
     try {
       let imageUrl: string = "";

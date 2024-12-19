@@ -122,7 +122,8 @@ export default function SchoolPage() {
         ) {
           const fetchBackUp = async () => {
             const backUpSchoolArr = await getCommunitySchools(
-              selectedCommunity?.community_id, localToken
+              selectedCommunity?.community_id,
+              localToken
             );
             const transformedData = await transformSchoolData(
               backUpSchoolArr.schools
@@ -152,13 +153,16 @@ export default function SchoolPage() {
           setToken(data.token);
           localStorage.setItem("token", data.token);
         } catch (error: any) {
+          const errorMessage = error?.response?.data?.msg;
+
           if (
-            error.response.data.msg === "Authorization header missing" ||
-            error.response.data.msg === "Invalid or expired token"
+            errorMessage === "Authorization header missing" ||
+            errorMessage === "Invalid or expired token"
           ) {
             invalidTokenResponse();
+          } else {
+            console.log(error);
           }
-          console.log(error);
         }
       };
       fetchParentRequests();
@@ -255,9 +259,9 @@ export default function SchoolPage() {
       ) : (
         <main className="flex flex-col items-center justify-center my-10 max-w-screen-xl mx-auto px-4">
           <Link
-              className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
-              href="/schools"
-            >{`<< Back to School`}</Link>
+            className="text-xs font-bold text-indigo-500 hover:text-teal-500 transition-all duration-500 me-auto mb-8"
+            href="/schools"
+          >{`<< Back to School`}</Link>
           <section className="grid grid-cols-1 gap-16 md:grid-cols-8 md:gap-20 justify-start">
             <div className="flex flex-col gap-4 text-left justify-start items-start md:col-span-3">
               {owner ? (
