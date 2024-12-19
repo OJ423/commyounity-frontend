@@ -104,7 +104,7 @@ const UserBio: React.FC<UserBioProps> = ({
             </div>
           </div>
           <div className="flex flex-col gap-4 p-4">
-            <p className="text-lg font-medium">{userBio.user_bio}.</p>
+            <p className="text-lg font-medium">{userBio.user_bio}</p>
           </div>
         </div>
       )}

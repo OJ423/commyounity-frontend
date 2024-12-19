@@ -10,15 +10,40 @@ import { MdOutlineChurch } from "react-icons/md";
 import { useAuth } from "./context/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import { LogUserOut } from "@/utils/logOut";
 
 export default function Footer() {
-  const { user, selectedCommunity } = useAuth();
+  const {
+    user,
+    selectedCommunity,
+    setToken,
+    setUser,
+    setCommunities,
+    setSelectedCommunity,
+    setUserMemberships,
+    setUserAdmins,
+    setUserPostLikes,
+    setAdminCommunities,
+  } = useAuth();
+
+  const handleLogOut = () => {
+    LogUserOut(
+      {setToken,
+      setUser,
+      setCommunities,
+      setSelectedCommunity,
+      setUserMemberships,
+      setUserAdmins,
+      setUserPostLikes,
+      setAdminCommunities}
+    );
+  };
 
   return (
     <footer className="w-screen pt-20 bg-gray-200 flex flex-col items-center justify-center">
       <section className="box-sizing grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 px-8 md:px-24 items-center">
         <div className="mx-auto">
-          <h2 className="font-bold text-2xl mb-4">Comm-you-nity</h2>
+          <h2 className="font-bold text-2xl mb-4">Comm<span className="text-indigo-500">you</span>nity</h2>
           <p className="font-light">
             Connecting all that is good in the community without using your
             data.
@@ -69,20 +94,26 @@ export default function Footer() {
               ) : null}
             </>
           ) : (
-            <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500 text-center">
-              Login / Register
-            </p>
+            <Link href="/login">
+              <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500 text-center">
+                Login / Register
+              </p>
+            </Link>
           )}
         </div>
         {user ? (
           <div>
-            <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
-              Profile
-            </p>
-            <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
-              Community Timeline
-            </p>
-            <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
+            <Link href="/profile">
+              <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
+                Profile
+              </p>
+            </Link>
+            <Link href="/timeline">
+              <p className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
+                Community Timeline
+              </p>
+            </Link>
+            <p onClick={handleLogOut} className="font-medium hover:opacity-50 cursor-pointer transition-all duration-500">
               Logout
             </p>
           </div>
@@ -101,7 +132,9 @@ export default function Footer() {
         )}
       </section>
       <section className="mt-20 py-8 bg-gray-300 flex items-center justify-center w-[100%] box-sizing">
-        <p className="font-bold text-sm">© {new Date().getFullYear()} Copyright: Commyounity</p>
+        <p className="font-bold text-sm">
+          © {new Date().getFullYear()} Copyright: Commyounity
+        </p>
       </section>
     </footer>
   );

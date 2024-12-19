@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PersonalNav from "@/components/PersonalNav";
 import PostCard from "@/components/PostCard";
+import TimeLinePostButton from "@/components/TimeLinePostButton";
 import { getUsersCommunityPosts } from "@/utils/apiCalls";
 import { TimelinePosts } from "@/utils/customTypes";
 import { LogUserOut } from "@/utils/logOut";
@@ -125,9 +126,12 @@ export default function Timeline() {
             ) : (
               <>
                 <section className="w-full sm:w-4/5 lg:w-3/5 xl:w-2/5 mb-8 pb-8 mt-10 border-b border-gray-300 max-w-screen-xl">
-                  <h1 className="font-semibold text-3xl mb-8">
-                    Memberships Posts
+                  <div className="flex items-center justify-between mb-8">
+                  <h1 className="font-semibold text-3xl">
+                    Timeline
                   </h1>
+                  <TimeLinePostButton />
+                  </div>
                   <div className="w-full flex flex-col sm:flex-row gap-4 justify-start sm:items-center p-4 bg-gray-300 shadow-xl rounded">
                     <p className="font-semibold text-xs">Filter by...</p>
                     <div className="flex gap-2 sm:gap-4 items-center flex-wrap">

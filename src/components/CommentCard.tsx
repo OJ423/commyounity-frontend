@@ -42,14 +42,14 @@ const CommentCard: React.FC<CommentCardProps> = ({
     setShowUserBio(!showUserBio);
   };
 
-  const handleDeleteComment = async (id: string | null) => {
+  const handleDeleteComment = async (id: string | null, authorId: string | null) => {
     try {
       let commentId;
       if (id) commentId = id;
       else {
         commentId = comment.comment_id;
       }
-      if (user && user.user_id === comment.author) {
+      if (user && user.user_id === authorId) {
         const data = await deleteComment(token, commentId, post[0]?.post_id);
         setToken(data.token);
         localStorage.setItem("token", data.token);
@@ -107,7 +107,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 ) : null}
                 {user?.user_id === comment.author || owner ? (
                   <button
-                    onClick={() => handleDeleteComment(null)}
+                    onClick={() => handleDeleteComment(comment.comment_id, comment.author)}
                     className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
                   >
                     <MdDelete
@@ -156,7 +156,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 {user?.user_id === comment.author || owner ? (
                   <>
                     <button
-                      onClick={() => handleDeleteComment(null)}
+                      onClick={() => handleDeleteComment(comment.comment_id, comment.author)}
                       className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
                     >
                       <MdDelete
@@ -216,7 +216,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 {user ? (
                   user?.user_id === c.author || owner ? (
                     <button
-                      onClick={() => handleDeleteComment(null)}
+                      onClick={() => handleDeleteComment(c.comment_id, c.author)}
                       className="text-red-500 hover:scale-125 transition-all duration-500 ease-out"
                     >
                       <MdDelete

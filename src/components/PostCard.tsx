@@ -9,7 +9,7 @@ import { BsFillReplyFill } from "react-icons/bs";
 import CommentList from "./CommentList";
 import { useAuth } from "./context/AuthContext";
 import { deletePost, dislikePost, likePost } from "@/utils/apiCalls";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { formatDate } from "@/utils/dataTransformers";
 import CommentNewForm from "./CommentNewForm";
 import { LogUserOut } from "@/utils/logOut";
@@ -48,6 +48,7 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
   } = useAuth();
 
   const router = useRouter();
+  const path = usePathname()
 
   // Toggle Userbio
 
@@ -219,17 +220,28 @@ const PostCard: React.FC<PostCardProps> = ({ data, member, owner }) => {
             </p>
           </div>
           <span className="text-sm proper text-gray-400 hover:text-indigo-500 font-semibold transition-all duration-500">
-            {data.name && <Link href={`/groups/${data.group_id}`}>{data.name}</Link>}
-            {data.business_name && <Link href={`/businesses/${data.business_id}`}>{data.business_name}</Link>}
-            {data.church_name && <Link href={`/churches/${data.church_id}`}>{data.church_name}</Link>}
-            {data.group_name && <Link href={`/groups/${data.group_id}`}>{data.group_name}</Link>}
-            {data.school_name && <Link href={`/schools/${data.school_id}`}>{data.school_name}</Link>}
+            {path.includes('/timeline') ?
+            <>
+              {data.name && data.name !==null && <Link href={`/groups/${data.group_id}`}>{data.name}</Link>}
+              {data.business_name && <Link href={`/businesses/${data.business_id}`}>{data.business_name}</Link>}
+              {data.church_name && <Link href={`/churches/${data.church_id}`}>{data.church_name}</Link>}
+              {data.group_name && <Link href={`/groups/${data.group_id}`}>{data.group_name}</Link>}
+              {data.school_name && <Link href={`/schools/${data.school_id}`}>{data.school_name}</Link>}
+            </>
+            :
+            <>
+              {data.business_id && <Link href={`/businesses/${data.business_id}`}>{data.name}</Link>}
+              {data.church_id && <Link href={`/churches/${data.church_id}`}>{data.name}</Link>}
+              {data.group_id && <Link href={`/groups/${data.group_id}`}>{data.name}</Link>}
+              {data.school_id && <Link href={`/schools/${data.school_id}`}>{data.name}</Link>}
+            </>
+            }          
           </span>
           <h2 className="font-bold text-xl mb-4">{data.post_title}</h2>
           <p className="font-light">{data.post_description}</p>
           {data.post_location ? (
             <p className="font-medium text-sm mt-4 text-indigo-500">
-              Location: {data.post_location}`
+              Location: {data.post_location}
             </p>
           ) : null}
           {data.web_link ? (

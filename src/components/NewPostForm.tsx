@@ -17,6 +17,8 @@ interface NewPostFormProps {
   setFetchPosts: React.Dispatch<React.SetStateAction<boolean>>;
   showForm: boolean;
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setTypeSelected?:React.Dispatch<React.SetStateAction<boolean>>
+  setType?: React.Dispatch<React.SetStateAction<string>>
 }
 
 const NewPostForm: React.FC<NewPostFormProps> = ({
@@ -26,6 +28,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
   setFetchPosts,
   showForm,
   setShowForm,
+  setTypeSelected,
+  setType
 }) => {
   const {
     user,
@@ -121,6 +125,8 @@ const NewPostForm: React.FC<NewPostFormProps> = ({
       localStorage.setItem("token", response.token);
       setFormSubmitted(!formSubmitted);
       setFetchPosts(!fetchPosts);
+      if (setTypeSelected !== undefined) setTypeSelected(false)
+      if (setType !== undefined) setType("")
       setShowForm(!showForm);
     } catch (error: any) {
       console.error("There was an error:", error);

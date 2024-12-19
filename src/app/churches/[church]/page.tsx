@@ -179,14 +179,14 @@ export default function ChurchPage() {
                       <h2 className="font-semibold text-lg">
                         {churchData?.church_name} Posts
                       </h2>
-                      {member || owner ? (
+                      {owner && (
                         <NewPostIcon
                           type={"church"}
                           id={churchData?.church_id}
                           fetchPosts={fetchPosts}
                           setFetchPosts={setFetchPosts}
                         />
-                      ) : null}
+                      ) }
                     </div>
                     <>
                       {postData.length ? (
@@ -208,6 +208,7 @@ export default function ChurchPage() {
                 )}
               </div>
             </section>
+            {owner &&
             <FormDrawer
               setShowForm={setShowForm}
               showForm={showForm}
@@ -222,6 +223,7 @@ export default function ChurchPage() {
                 showForm={showForm}
               />
             </FormDrawer>
+            }
             <PersonalNav />
           </>
         )}
