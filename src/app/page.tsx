@@ -17,7 +17,7 @@ export default function Home() {
         <section className="mx-auto py-10 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center max-w-screen-xl">
           <div className="md:w-4/5 md:w-full mx-auto">
             <h1 className="font-bold text-3xl lg:text-5xl mb-8">
-              Comm-you-nity
+              Comm<span className="text-indigo-500">you</span>nity
             </h1>
             <p className="font-medium text-lg">
               Connect with your local community in a whole new way. Commyounity
